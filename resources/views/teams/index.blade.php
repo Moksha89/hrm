@@ -229,8 +229,12 @@
                                         <span class="font-medium text-gray-900 dark:text-white">{{ $team->employees_count }}</span>
                                     </div>
                                     <div class="flex justify-between text-sm">
-                                        <span class="text-gray-600 dark:text-gray-400">Total Salary:</span>
+                                        <span class="text-gray-600 dark:text-gray-400">Gross Salary:</span>
                                         <span class="font-medium text-gray-900 dark:text-white">₹{{ number_format($team->total_salary, 2) }}</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-600 dark:text-gray-400">Net Pay:</span>
+                                        <span class="font-medium text-green-600 dark:text-green-400">₹{{ number_format($team->total_net_pay, 2) }}</span>
                                     </div>
                                     <div class="flex justify-between text-sm">
                                         <span class="text-gray-600 dark:text-gray-400">Total Loans:</span>

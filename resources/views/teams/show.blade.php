@@ -204,7 +204,7 @@
                     </div>
                     @endif
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                             <div class="flex items-center justify-between">
                                 <div>
@@ -222,8 +222,22 @@
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Total Salary</p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Gross Salary</p>
                                     <p class="text-3xl font-bold text-gray-900 dark:text-white mt-1">₹{{ number_format($totalSalary, 2) }}</p>
+                                </div>
+                                <div class="flex items-center justify-center w-12 h-12 bg-gray-100 dark:bg-gray-900/20 rounded-lg">
+                                    <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Net Pay ({{ date('M Y', mktime(0, 0, 0, $currentMonth, 1, $currentYear)) }})</p>
+                                    <p class="text-3xl font-bold text-green-600 dark:text-green-400 mt-1">₹{{ number_format($totalNetPay, 2) }}</p>
                                 </div>
                                 <div class="flex items-center justify-center w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg">
                                     <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -277,6 +291,11 @@
                         @if($team->employees->count() > 0)
                         <div class="divide-y divide-gray-200 dark:divide-gray-700">
                             @foreach($team->employees as $employee)
+                            @php
+                                $workingDay = $employee->workingDays->first();
+                                $currentWorkingDays = $workingDay ? $workingDay->working_days : 30;
+                                $netPay = $employee->getNetPay($currentMonth, $currentYear);
+                            @endphp
                             <div class="p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                 <div class="flex items-center space-x-4">
                                     <div class="flex items-center justify-center w-12 h-12 bg-blue-600 rounded-full text-white font-semibold text-lg">
@@ -289,8 +308,32 @@
                                 </div>
                                 <div class="flex items-center space-x-6">
                                     <div class="text-right">
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">Salary</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Gross Salary</p>
                                         <p class="font-semibold text-gray-900 dark:text-white">₹{{ number_format($employee->salary ?? 0, 2) }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <form action="{{ route('teams.updateWorkingDays', $team->id) }}" method="POST" class="inline-flex items-center space-x-2">
+                                            @csrf
+                                            <input type="hidden" name="employee_id" value="{{ $employee->id }}">
+                                            <input type="hidden" name="month" value="{{ $currentMonth }}">
+                                            <input type="hidden" name="year" value="{{ $currentYear }}">
+                                            <div>
+                                                <label class="text-xs text-gray-600 dark:text-gray-400 block mb-1">Working Days</label>
+                                                <input 
+                                                    type="number" 
+                                                    name="working_days" 
+                                                    value="{{ $currentWorkingDays }}" 
+                                                    min="0" 
+                                                    max="31" 
+                                                    class="w-20 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                                                    onchange="this.form.submit()"
+                                                >
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Net Pay</p>
+                                        <p class="font-semibold text-green-600 dark:text-green-400">₹{{ number_format($netPay, 2) }}</p>
                                     </div>
                                     <div class="text-right">
                                         <p class="text-sm text-gray-600 dark:text-gray-400">Loan</p>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\EmployeeWorkingDay;
 use App\Models\Team;
 use Illuminate\Http\Request;
 
@@ -10,9 +11,15 @@ class TeamController extends Controller
 {
     public function index()
     {
-        $teams = Team::withCount('employees')->get()->map(function ($team) {
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+        
+        $teams = Team::withCount('employees')->get()->map(function ($team) use ($currentMonth, $currentYear) {
             $team->total_salary = $team->employees->sum('salary') ?? 0;
             $team->total_loan = $team->employees->sum('loan') ?? 0;
+            $team->total_net_pay = $team->employees->sum(function ($employee) use ($currentMonth, $currentYear) {
+                return $employee->getNetPay($currentMonth, $currentYear);
+            });
             return $team;
         });
 
@@ -34,17 +41,25 @@ class TeamController extends Controller
 
     public function show($id)
     {
-        $team = Team::with(['employees.user'])->findOrFail($id);
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+        
+        $team = Team::with(['employees.user', 'employees.workingDays' => function ($query) use ($currentMonth, $currentYear) {
+            $query->where('month', $currentMonth)->where('year', $currentYear);
+        }])->findOrFail($id);
         
         $totalSalary = $team->employees->sum('salary');
         $totalLoan = $team->employees->sum('loan');
+        $totalNetPay = $team->employees->sum(function ($employee) use ($currentMonth, $currentYear) {
+            return $employee->getNetPay($currentMonth, $currentYear);
+        });
         
         $unassignedEmployees = Employee::with('user')
             ->whereNull('team_id')
             ->where('status', 'active')
             ->get();
 
-        return view('teams.show', compact('team', 'totalSalary', 'totalLoan', 'unassignedEmployees'));
+        return view('teams.show', compact('team', 'totalSalary', 'totalLoan', 'totalNetPay', 'unassignedEmployees', 'currentMonth', 'currentYear'));
     }
 
     public function assignEmployee(Request $request, $id)
@@ -67,5 +82,28 @@ class TeamController extends Controller
         $employee->save();
 
         return redirect()->route('teams.show', $teamId)->with('success', 'Employee removed from team successfully!');
+    }
+
+    public function updateWorkingDays(Request $request, $teamId)
+    {
+        $request->validate([
+            'employee_id' => 'required|exists:employees,id',
+            'working_days' => 'required|integer|min:0|max:31',
+            'month' => 'required|integer|min:1|max:12',
+            'year' => 'required|integer|min:2020|max:2100',
+        ]);
+
+        $employee = Employee::findOrFail($request->employee_id);
+        
+        EmployeeWorkingDay::updateOrCreate(
+            [
+                'employee_id' => $request->employee_id,
+                'month' => $request->month,
+                'year' => $request->year,
+            ],
+            ['working_days' => $request->working_days]
+        );
+
+        return redirect()->route('teams.show', $teamId)->with('success', 'Working days updated successfully!');
     }
 }

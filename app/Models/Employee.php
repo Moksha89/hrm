@@ -53,4 +53,25 @@ class Employee extends Model
     {
         return $this->hasMany(Document::class);
     }
+
+    public function workingDays()
+    {
+        return $this->hasMany(EmployeeWorkingDay::class);
+    }
+
+    public function getNetPay($month = null, $year = null)
+    {
+        $month = $month ?? now()->month;
+        $year = $year ?? now()->year;
+        
+        $workingDay = $this->workingDays()
+            ->where('month', $month)
+            ->where('year', $year)
+            ->first();
+        
+        $days = $workingDay ? $workingDay->working_days : 30;
+        $dailySalary = ($this->salary ?? 0) / 30;
+        
+        return round($dailySalary * $days, 2);
+    }
 }
