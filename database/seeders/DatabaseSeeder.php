@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RoleSeeder::class,
+            TeamSeeder::class,
         ]);
 
         $adminRole = Role::where('slug', 'admin')->first();
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
             'name' => env('ADMIN_NAME', 'admin'),
             'mobile' => env('ADMIN_MOBILE', '0000000000'),
             'password' => bcrypt(env('ADMIN_PASSWORD', 'password')),
+            'password_changed_at' => now(),
         ]);
 
         $admin->roles()->attach($adminRole);

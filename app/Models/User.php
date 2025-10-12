@@ -14,6 +14,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'mobile',
+        'email',
         'password',
     ];
 
@@ -26,6 +27,7 @@ class User extends Authenticatable
     {
         return [
             'password' => 'hashed',
+            'password_changed_at' => 'datetime',
         ];
     }
 
@@ -37,5 +39,10 @@ class User extends Authenticatable
     public function hasRole(string $role): bool
     {
         return $this->roles()->where('slug', $role)->exists();
+    }
+
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
     }
 }
