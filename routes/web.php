@@ -38,6 +38,21 @@ Route::middleware('auth')->group(function () {
     Route::post('/payments/disburse/{loanId}', [App\Http\Controllers\PaymentController::class, 'disburseLoan'])->name('payments.disburse');
     Route::post('/payments/collect/{loanPaymentId}', [App\Http\Controllers\PaymentController::class, 'collectEmi'])->name('payments.collect');
     
+    Route::get('/payments/salary/teams', [App\Http\Controllers\PaymentController::class, 'salaryTeams'])->name('payments.salary.teams');
+    Route::get('/payments/salary/team/{teamId}', [App\Http\Controllers\PaymentController::class, 'salaryTeamEmployees'])->name('payments.salary.team');
+    Route::post('/payments/salary/disburse/{employeeId}', [App\Http\Controllers\PaymentController::class, 'disburseSalary'])->name('payments.salary.disburse');
+    
+    Route::get('/payments/salary/history', [App\Http\Controllers\PaymentController::class, 'salaryHistory'])->name('payments.salary.history');
+    Route::get('/payments/transactions', [App\Http\Controllers\PaymentController::class, 'transactionHistory'])->name('payments.transaction.history');
+    
+    Route::get('/documents', [App\Http\Controllers\DocumentController::class, 'index'])->name('documents.index');
+    Route::get('/documents/team/{teamId}', [App\Http\Controllers\DocumentController::class, 'showTeam'])->name('documents.team');
+    Route::get('/documents/employee/{employeeId}', [App\Http\Controllers\DocumentController::class, 'showEmployee'])->name('documents.employee');
+    Route::post('/documents', [App\Http\Controllers\DocumentController::class, 'store'])->name('documents.store');
+    Route::put('/documents/{documentId}', [App\Http\Controllers\DocumentController::class, 'update'])->name('documents.update');
+    Route::delete('/documents/{documentId}', [App\Http\Controllers\DocumentController::class, 'destroy'])->name('documents.destroy');
+    Route::get('/documents/{documentId}/download', [App\Http\Controllers\DocumentController::class, 'download'])->name('documents.download');
+    
     Route::get('/password/change', [App\Http\Controllers\PasswordChangeController::class, 'show'])->name('password.change');
     Route::post('/password/change', [App\Http\Controllers\PasswordChangeController::class, 'update'])->name('password.update');
 });

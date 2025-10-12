@@ -78,6 +78,23 @@
 
             <main class="flex-1 overflow-y-auto p-6">
                 <div class="max-w-7xl mx-auto">
+                    <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
+                        <nav class="flex space-x-8">
+                            <a href="{{ route('payments.index') }}" class="px-3 py-2 border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 font-medium">
+                                Pending Payments
+                            </a>
+                            <a href="{{ route('payments.salary.teams') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
+                                Salary Payments
+                            </a>
+                            <a href="{{ route('payments.salary.history') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
+                                Salary History
+                            </a>
+                            <a href="{{ route('payments.transaction.history') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
+                                Transaction History
+                            </a>
+                        </nav>
+                    </div>
+
                     @if(session('success'))
                     <div class="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-300 px-4 py-3 rounded-lg">
                         {{ session('success') }}

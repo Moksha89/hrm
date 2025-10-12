@@ -97,4 +97,22 @@ class Employee extends Model
         
         return max(0, round($netPay - $monthlyEmi, 2));
     }
+
+    public function getWorkingDays($month = null, $year = null)
+    {
+        $month = $month ?? now()->month;
+        $year = $year ?? now()->year;
+        
+        $workingDay = $this->workingDays()
+            ->where('month', $month)
+            ->where('year', $year)
+            ->first();
+        
+        return $workingDay ? $workingDay->working_days : 0;
+    }
+
+    public function salaryPayments()
+    {
+        return $this->hasMany(SalaryPayment::class);
+    }
 }

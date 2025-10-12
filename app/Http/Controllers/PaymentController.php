@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
 use App\Models\Loan;
 use App\Models\LoanPayment;
 use App\Models\Payment;
+use App\Models\SalaryPayment;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -106,5 +109,114 @@ class PaymentController extends Controller
         });
 
         return redirect()->route('payments.index')->with('success', 'EMI payment collected successfully!');
+    }
+
+    public function salaryTeams()
+    {
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+        
+        $teams = Team::withCount(['employees' => function ($query) {
+            $query->where('status', 'active');
+        }])
+        ->with(['employees' => function ($query) use ($currentMonth, $currentYear) {
+            $query->where('status', 'active')
+                  ->with(['user', 'salaryPayments' => function ($q) use ($currentMonth, $currentYear) {
+                      $q->where('month', $currentMonth)->where('year', $currentYear);
+                  }]);
+        }])
+        ->get();
+        
+        return view('payments.salary-teams', compact('teams', 'currentMonth', 'currentYear'));
+    }
+
+    public function salaryTeamEmployees($teamId)
+    {
+        $team = Team::with(['employees' => function ($query) {
+            $query->where('status', 'active')->with(['user', 'bankAccounts']);
+        }])->findOrFail($teamId);
+        
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+        
+        $employees = $team->employees->map(function ($employee) use ($currentMonth, $currentYear) {
+            $employee->net_pay = $employee->getNetPay($currentMonth, $currentYear);
+            $employee->total_emi = $employee->getTotalMonthlyEmi();
+            $employee->final_pay = $employee->getFinalPay($currentMonth, $currentYear);
+            $employee->working_days_count = $employee->getWorkingDays($currentMonth, $currentYear);
+            $employee->has_salary_payment = $employee->salaryPayments()
+                ->where('month', $currentMonth)
+                ->where('year', $currentYear)
+                ->where('status', 'completed')
+                ->exists();
+            return $employee;
+        });
+        
+        return view('payments.salary-employees', compact('team', 'employees', 'currentMonth', 'currentYear'));
+    }
+
+    public function disburseSalary(Request $request, $employeeId)
+    {
+        $employee = Employee::with(['bankAccounts'])->findOrFail($employeeId);
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+        
+        $existingPayment = SalaryPayment::where('employee_id', $employeeId)
+            ->where('month', $currentMonth)
+            ->where('year', $currentYear)
+            ->first();
+            
+        if ($existingPayment && $existingPayment->status === 'completed') {
+            return redirect()->back()->with('error', 'Salary already paid for this month.');
+        }
+        
+        $netPay = $employee->getNetPay($currentMonth, $currentYear);
+        $totalEmi = $employee->getTotalMonthlyEmi();
+        $finalPay = $employee->getFinalPay($currentMonth, $currentYear);
+        $workingDays = $employee->getWorkingDays($currentMonth, $currentYear);
+        
+        $defaultBankAccount = $employee->bankAccounts()->where('is_default', true)->first();
+        
+        DB::transaction(function () use ($employee, $currentMonth, $currentYear, $netPay, $totalEmi, $finalPay, $workingDays, $defaultBankAccount, $request) {
+            SalaryPayment::updateOrCreate(
+                [
+                    'employee_id' => $employee->id,
+                    'month' => $currentMonth,
+                    'year' => $currentYear,
+                ],
+                [
+                    'gross_salary' => $employee->salary,
+                    'working_days' => $workingDays,
+                    'net_pay' => $netPay,
+                    'total_emi' => $totalEmi,
+                    'final_pay' => $finalPay,
+                    'bank_account_id' => $defaultBankAccount?->id,
+                    'status' => 'completed',
+                    'payment_date' => now(),
+                    'notes' => $request->notes ?? 'Salary disbursed to employee bank account',
+                ]
+            );
+        });
+        
+        return redirect()->back()->with('success', 'Salary payment disbursed successfully!');
+    }
+
+    public function salaryHistory()
+    {
+        $payments = SalaryPayment::with(['employee.user', 'employee.team', 'bankAccount'])
+            ->orderBy('year', 'desc')
+            ->orderBy('month', 'desc')
+            ->paginate(50);
+        
+        return view('payments.salary-history', compact('payments'));
+    }
+
+    public function transactionHistory()
+    {
+        $transactions = Payment::with(['employee.user', 'loan', 'loanPayment'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(50);
+        
+        return view('payments.transaction-history', compact('transactions'));
     }
 }
