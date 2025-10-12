@@ -59,6 +59,21 @@ class Employee extends Model
         return $this->hasMany(EmployeeWorkingDay::class);
     }
 
+    public function loans()
+    {
+        return $this->hasMany(Loan::class);
+    }
+
+    public function activeLoans()
+    {
+        return $this->loans()->where('status', 'active')->where('remaining_balance', '>', 0);
+    }
+
+    public function getTotalMonthlyEmi()
+    {
+        return $this->activeLoans()->sum('monthly_emi');
+    }
+
     public function getNetPay($month = null, $year = null)
     {
         $month = $month ?? now()->month;
@@ -73,5 +88,13 @@ class Employee extends Model
         $dailySalary = ($this->salary ?? 0) / 30;
         
         return round($dailySalary * $days, 2);
+    }
+
+    public function getFinalPay($month = null, $year = null)
+    {
+        $netPay = $this->getNetPay($month, $year);
+        $monthlyEmi = $this->getTotalMonthlyEmi();
+        
+        return max(0, round($netPay - $monthlyEmi, 2));
     }
 }

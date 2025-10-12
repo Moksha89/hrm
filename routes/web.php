@@ -27,6 +27,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/teams/{teamId}/remove/{employeeId}', [App\Http\Controllers\TeamController::class, 'removeEmployee'])->name('teams.remove');
     Route::post('/teams/{teamId}/working-days', [App\Http\Controllers\TeamController::class, 'updateWorkingDays'])->name('teams.updateWorkingDays');
     
+    Route::get('/loans', [App\Http\Controllers\LoanController::class, 'index'])->name('loans.index');
+    Route::get('/loans/team/{teamId}', [App\Http\Controllers\LoanController::class, 'showTeam'])->name('loans.team');
+    Route::get('/loans/employee/{employeeId}', [App\Http\Controllers\LoanController::class, 'showEmployee'])->name('loans.employee');
+    Route::post('/loans/employee/{employeeId}', [App\Http\Controllers\LoanController::class, 'store'])->name('loans.store');
+    Route::post('/loans/{loanId}/activate', [App\Http\Controllers\LoanController::class, 'activateLoan'])->name('loans.activate');
+    Route::post('/loans/payment/{paymentId}/mark-paid', [App\Http\Controllers\LoanController::class, 'markPaymentPaid'])->name('loans.markPaymentPaid');
+    
     Route::get('/password/change', [App\Http\Controllers\PasswordChangeController::class, 'show'])->name('password.change');
     Route::post('/password/change', [App\Http\Controllers\PasswordChangeController::class, 'update'])->name('password.update');
 });

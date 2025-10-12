@@ -53,13 +53,19 @@ class TeamController extends Controller
         $totalNetPay = $team->employees->sum(function ($employee) use ($currentMonth, $currentYear) {
             return $employee->getNetPay($currentMonth, $currentYear);
         });
+        $totalEmi = $team->employees->sum(function ($employee) {
+            return $employee->getTotalMonthlyEmi();
+        });
+        $totalFinalPay = $team->employees->sum(function ($employee) use ($currentMonth, $currentYear) {
+            return $employee->getFinalPay($currentMonth, $currentYear);
+        });
         
         $unassignedEmployees = Employee::with('user')
             ->whereNull('team_id')
             ->where('status', 'active')
             ->get();
 
-        return view('teams.show', compact('team', 'totalSalary', 'totalLoan', 'totalNetPay', 'unassignedEmployees', 'currentMonth', 'currentYear'));
+        return view('teams.show', compact('team', 'totalSalary', 'totalLoan', 'totalNetPay', 'totalEmi', 'totalFinalPay', 'unassignedEmployees', 'currentMonth', 'currentYear'));
     }
 
     public function assignEmployee(Request $request, $id)
