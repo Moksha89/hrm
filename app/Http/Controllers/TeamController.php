@@ -41,6 +41,7 @@ class TeamController extends Controller
         
         $unassignedEmployees = Employee::with('user')
             ->whereNull('team_id')
+            ->where('status', 'active')
             ->get();
 
         return view('teams.show', compact('team', 'totalSalary', 'totalLoan', 'unassignedEmployees'));

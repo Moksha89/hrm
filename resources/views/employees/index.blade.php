@@ -216,17 +216,67 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @forelse($employees as $employee)
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
-                            <div class="flex items-center space-x-4">
-                                <div class="flex items-center justify-center w-12 h-12 bg-blue-600 rounded-full text-white font-semibold text-lg">
-                                    {{ strtoupper(substr($employee->user->name, 0, 1)) }}
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center space-x-4 flex-1">
+                                    <div class="flex items-center justify-center w-12 h-12 bg-blue-600 rounded-full text-white font-semibold text-lg flex-shrink-0">
+                                        {{ strtoupper(substr($employee->user->name, 0, 1)) }}
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $employee->user->name }}</h3>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">{{ $employee->user->mobile }}</p>
+                                        <p class="text-sm text-blue-600 dark:text-blue-400 mt-1">
+                                            {{ $employee->team ? $employee->team->name : 'No Team' }}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div class="flex-1">
-                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $employee->user->name }}</h3>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">{{ $employee->user->mobile }}</p>
-                                    <p class="text-sm text-blue-600 dark:text-blue-400 mt-1">
-                                        {{ $employee->team ? $employee->team->name : 'No Team' }}
-                                    </p>
+                                <div class="relative">
+                                    <button onclick="toggleStatusDropdown({{ $employee->id }})" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+                                        <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                        </svg>
+                                    </button>
+                                    <div id="status-dropdown-{{ $employee->id }}" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
+                                        <form action="{{ route('employees.updateStatus', [$employee->id, 'active']) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-green-600 dark:text-green-400 flex items-center space-x-2">
+                                                <span class="w-2 h-2 bg-green-600 rounded-full"></span>
+                                                <span>Active</span>
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('employees.updateStatus', [$employee->id, 'inactive']) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 flex items-center space-x-2">
+                                                <span class="w-2 h-2 bg-gray-600 rounded-full"></span>
+                                                <span>Inactive</span>
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('employees.updateStatus', [$employee->id, 'resigned']) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 flex items-center space-x-2">
+                                                <span class="w-2 h-2 bg-red-600 rounded-full"></span>
+                                                <span>Resigned</span>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
+                            </div>
+                            <div class="flex items-center justify-start">
+                                @if($employee->status === 'active')
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300">
+                                    <span class="w-1.5 h-1.5 bg-green-600 rounded-full mr-1.5"></span>
+                                    Active
+                                </span>
+                                @elseif($employee->status === 'inactive')
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-300">
+                                    <span class="w-1.5 h-1.5 bg-gray-600 rounded-full mr-1.5"></span>
+                                    Inactive
+                                </span>
+                                @elseif($employee->status === 'resigned')
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300">
+                                    <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-1.5"></span>
+                                    Resigned
+                                </span>
+                                @endif
                             </div>
                         </div>
                         @empty
@@ -533,6 +583,20 @@
         document.getElementById('documents-container').addEventListener('click', (e) => {
             if (e.target.classList.contains('remove-document')) {
                 e.target.closest('.document-item').remove();
+            }
+        });
+
+        function toggleStatusDropdown(employeeId) {
+            const dropdown = document.getElementById(`status-dropdown-${employeeId}`);
+            document.querySelectorAll('[id^="status-dropdown-"]').forEach(d => {
+                if (d !== dropdown) d.classList.add('hidden');
+            });
+            dropdown.classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('[onclick^="toggleStatusDropdown"]') && !event.target.closest('[id^="status-dropdown-"]')) {
+                document.querySelectorAll('[id^="status-dropdown-"]').forEach(d => d.classList.add('hidden'));
             }
         });
     </script>

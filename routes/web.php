@@ -18,6 +18,7 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/employees', [App\Http\Controllers\EmployeeController::class, 'index'])->name('employees.index');
     Route::post('/employees', [App\Http\Controllers\EmployeeController::class, 'store'])->name('employees.store');
+    Route::post('/employees/{id}/status/{status}', [App\Http\Controllers\EmployeeController::class, 'updateStatus'])->name('employees.updateStatus');
     
     Route::get('/teams', [App\Http\Controllers\TeamController::class, 'index'])->name('teams.index');
     Route::post('/teams', [App\Http\Controllers\TeamController::class, 'store'])->name('teams.store');

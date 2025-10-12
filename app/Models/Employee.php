@@ -20,6 +20,7 @@ class Employee extends Model
         'pan',
         'dob',
         'date_of_joining',
+        'status',
     ];
 
     protected function casts(): array

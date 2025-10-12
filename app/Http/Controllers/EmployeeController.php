@@ -82,4 +82,18 @@ class EmployeeController extends Controller
             return back()->withErrors(['error' => 'Failed to create employee: ' . $e->getMessage()])->withInput();
         }
     }
+
+    public function updateStatus($id, $status)
+    {
+        $employee = Employee::findOrFail($id);
+        
+        if (in_array($status, ['resigned', 'inactive'])) {
+            $employee->team_id = null;
+        }
+        
+        $employee->status = $status;
+        $employee->save();
+
+        return redirect()->route('employees.index')->with('success', 'Employee status updated successfully!');
+    }
 }
