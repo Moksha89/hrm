@@ -54,14 +54,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/payments/employees', [App\Http\Controllers\PaymentController::class, 'employees'])->name('payments.employees');
     Route::get('/payments/employee/{employeeId}', [App\Http\Controllers\PaymentController::class, 'employeeDetail'])->name('payments.employee.detail');
     
-    Route::get('/documents', [App\Http\Controllers\DocumentController::class, 'index'])->name('documents.index');
-    Route::get('/documents/team/{teamId}', [App\Http\Controllers\DocumentController::class, 'showTeam'])->name('documents.team');
-    Route::get('/documents/employee/{employeeId}', [App\Http\Controllers\DocumentController::class, 'showEmployee'])->name('documents.employee');
-    Route::post('/documents', [App\Http\Controllers\DocumentController::class, 'store'])->name('documents.store');
-    Route::put('/documents/{documentId}', [App\Http\Controllers\DocumentController::class, 'update'])->name('documents.update');
-    Route::delete('/documents/{documentId}', [App\Http\Controllers\DocumentController::class, 'destroy'])->name('documents.destroy');
-    Route::get('/documents/{documentId}/download', [App\Http\Controllers\DocumentController::class, 'download'])->name('documents.download');
-    
     Route::get('/password/change', [App\Http\Controllers\PasswordChangeController::class, 'show'])->name('password.change');
     Route::post('/password/change', [App\Http\Controllers\PasswordChangeController::class, 'update'])->name('password.update');
 });
