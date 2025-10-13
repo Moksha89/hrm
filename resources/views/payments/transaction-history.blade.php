@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transaction History - HRM</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 dark:bg-gray-900">
@@ -71,13 +72,29 @@
         </aside>
 
         <div class="flex-1 flex flex-col overflow-hidden">
-            <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Transaction History</h2>
+            <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Payments - Transactions</h2>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Complete audit trail of loan disbursements and EMI collections</p>
             </header>
 
             <main class="flex-1 overflow-y-auto p-6">
                 <div class="max-w-7xl mx-auto">
+                    <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
+                        <nav class="flex space-x-8">
+                            <a href="{{ route('payments.salaries') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
+                                Salaries
+                            </a>
+                            <a href="{{ route('payments.index') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
+                                Loans
+                            </a>
+                            <a href="{{ route('payments.transactions') }}" class="px-3 py-2 border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 font-medium">
+                                Transactions
+                            </a>
+                            <a href="{{ route('payments.employees') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
+                                Employees
+                            </a>
+                        </nav>
+                    </div>
 
                     @if($transactions->isEmpty())
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
@@ -162,15 +179,34 @@
     </div>
 
     <script>
-        document.getElementById('profile-menu-btn').addEventListener('click', function() {
-            document.getElementById('profile-dropdown').classList.toggle('hidden');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebarClose = document.getElementById('sidebar-close');
+        
+        const savedState = localStorage.getItem('sidebarExpanded');
+        if (savedState === 'false') {
+            sidebar.classList.add('collapsed');
+        }
+        
+        function toggleSidebar() {
+            sidebar.classList.toggle('collapsed');
+            const isExpanded = !sidebar.classList.contains('collapsed');
+            localStorage.setItem('sidebarExpanded', isExpanded);
+        }
+        
+        sidebarToggle?.addEventListener('click', toggleSidebar);
+        sidebarClose?.addEventListener('click', toggleSidebar);
+
+        const profileMenuBtn = document.getElementById('profile-menu-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
+
+        profileMenuBtn?.addEventListener('click', () => {
+            profileDropdown.classList.toggle('hidden');
         });
 
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('profile-dropdown');
-            const button = document.getElementById('profile-menu-btn');
-            if (!button.contains(event.target) && !dropdown.contains(event.target)) {
-                dropdown.classList.add('hidden');
+        document.addEventListener('click', (e) => {
+            if (!profileMenuBtn?.contains(e.target) && !profileDropdown?.contains(e.target)) {
+                profileDropdown?.classList.add('hidden');
             }
         });
     </script>

@@ -72,7 +72,7 @@
 
         <div class="flex-1 flex flex-col overflow-hidden">
             <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Payments</h2>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Payments - Loans</h2>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Manage loan disbursements and EMI collections</p>
             </header>
 
@@ -80,17 +80,17 @@
                 <div class="max-w-7xl mx-auto">
                     <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
                         <nav class="flex space-x-8">
+                            <a href="{{ route('payments.salaries') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
+                                Salaries
+                            </a>
                             <a href="{{ route('payments.index') }}" class="px-3 py-2 border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 font-medium">
-                                Pending Payments
+                                Loans
                             </a>
-                            <a href="{{ route('payments.salary.teams') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
-                                Salary Payments
+                            <a href="{{ route('payments.transactions') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
+                                Transactions
                             </a>
-                            <a href="{{ route('payments.salary.history') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
-                                Salary History
-                            </a>
-                            <a href="{{ route('payments.transaction.history') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
-                                Transaction History
+                            <a href="{{ route('payments.employees') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
+                                Employees
                             </a>
                         </nav>
                     </div>

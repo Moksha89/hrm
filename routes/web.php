@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/teams/{id}/assign', [App\Http\Controllers\TeamController::class, 'assignEmployee'])->name('teams.assign');
     Route::delete('/teams/{teamId}/remove/{employeeId}', [App\Http\Controllers\TeamController::class, 'removeEmployee'])->name('teams.remove');
     Route::post('/teams/{teamId}/working-days', [App\Http\Controllers\TeamController::class, 'updateWorkingDays'])->name('teams.updateWorkingDays');
+    Route::post('/teams/{teamId}/salary-settings', [App\Http\Controllers\TeamController::class, 'updateBulkSalarySettings'])->name('teams.updateBulkSalarySettings');
     
     Route::get('/loans', [App\Http\Controllers\LoanController::class, 'index'])->name('loans.index');
     Route::get('/loans/team/{teamId}', [App\Http\Controllers\LoanController::class, 'showTeam'])->name('loans.team');
@@ -38,12 +39,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/payments/disburse/{loanId}', [App\Http\Controllers\PaymentController::class, 'disburseLoan'])->name('payments.disburse');
     Route::post('/payments/collect/{loanPaymentId}', [App\Http\Controllers\PaymentController::class, 'collectEmi'])->name('payments.collect');
     
+    Route::get('/payments/salaries', [App\Http\Controllers\PaymentController::class, 'salaries'])->name('payments.salaries');
     Route::get('/payments/salary/teams', [App\Http\Controllers\PaymentController::class, 'salaryTeams'])->name('payments.salary.teams');
     Route::get('/payments/salary/team/{teamId}', [App\Http\Controllers\PaymentController::class, 'salaryTeamEmployees'])->name('payments.salary.team');
     Route::post('/payments/salary/disburse/{employeeId}', [App\Http\Controllers\PaymentController::class, 'disburseSalary'])->name('payments.salary.disburse');
-    
     Route::get('/payments/salary/history', [App\Http\Controllers\PaymentController::class, 'salaryHistory'])->name('payments.salary.history');
-    Route::get('/payments/transactions', [App\Http\Controllers\PaymentController::class, 'transactionHistory'])->name('payments.transaction.history');
+    
+    Route::get('/payments/transactions', [App\Http\Controllers\PaymentController::class, 'transactionHistory'])->name('payments.transactions');
+    
+    Route::get('/payments/employees', [App\Http\Controllers\PaymentController::class, 'employees'])->name('payments.employees');
+    Route::get('/payments/employee/{employeeId}', [App\Http\Controllers\PaymentController::class, 'employeeDetail'])->name('payments.employee.detail');
     
     Route::get('/documents', [App\Http\Controllers\DocumentController::class, 'index'])->name('documents.index');
     Route::get('/documents/team/{teamId}', [App\Http\Controllers\DocumentController::class, 'showTeam'])->name('documents.team');

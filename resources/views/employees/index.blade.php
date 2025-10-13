@@ -235,28 +235,49 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
                                         </svg>
                                     </button>
-                                    <div id="status-dropdown-{{ $employee->id }}" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
-                                        <form action="{{ route('employees.updateStatus', [$employee->id, 'active']) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-green-600 dark:text-green-400 flex items-center space-x-2">
-                                                <span class="w-2 h-2 bg-green-600 rounded-full"></span>
-                                                <span>Active</span>
-                                            </button>
-                                        </form>
-                                        <form action="{{ route('employees.updateStatus', [$employee->id, 'inactive']) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 flex items-center space-x-2">
-                                                <span class="w-2 h-2 bg-gray-600 rounded-full"></span>
-                                                <span>Inactive</span>
-                                            </button>
-                                        </form>
-                                        <form action="{{ route('employees.updateStatus', [$employee->id, 'resigned']) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 flex items-center space-x-2">
-                                                <span class="w-2 h-2 bg-red-600 rounded-full"></span>
-                                                <span>Resigned</span>
-                                            </button>
-                                        </form>
+                                    <div id="status-dropdown-{{ $employee->id }}" class="hidden absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
+                                        <div class="py-1">
+                                            <div class="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
+                                                Status
+                                            </div>
+                                            <form action="{{ route('employees.updateStatus', [$employee->id, 'active']) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-green-600 dark:text-green-400 flex items-center space-x-2">
+                                                    <span class="w-2 h-2 bg-green-600 rounded-full"></span>
+                                                    <span>Active</span>
+                                                </button>
+                                            </form>
+                                            <form action="{{ route('employees.updateStatus', [$employee->id, 'inactive']) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 flex items-center space-x-2">
+                                                    <span class="w-2 h-2 bg-gray-600 rounded-full"></span>
+                                                    <span>Inactive</span>
+                                                </button>
+                                            </form>
+                                            <form action="{{ route('employees.updateStatus', [$employee->id, 'resigned']) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 flex items-center space-x-2">
+                                                    <span class="w-2 h-2 bg-red-600 rounded-full"></span>
+                                                    <span>Resigned</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                        <div class="border-t border-gray-200 dark:border-gray-700 py-1">
+                                            <div class="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
+                                                Actions
+                                            </div>
+                                            <a href="{{ route('payments.employee.detail', $employee->id) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                                                View Details
+                                            </a>
+                                            <a href="{{ route('loans.employee', $employee->id) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                                                Manage Loans
+                                            </a>
+                                            @if($employee->team)
+                                            <a href="{{ route('teams.show', $employee->team->id) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                                                View Team
+                                            </a>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>

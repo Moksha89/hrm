@@ -219,4 +219,54 @@ class PaymentController extends Controller
         
         return view('payments.transaction-history', compact('transactions'));
     }
+
+    public function salaries()
+    {
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+        
+        $teams = Team::withCount(['employees' => function ($query) {
+            $query->where('status', 'active');
+        }])
+        ->with(['employees' => function ($query) use ($currentMonth, $currentYear) {
+            $query->where('status', 'active')
+                  ->with(['user', 'salaryPayments' => function ($q) use ($currentMonth, $currentYear) {
+                      $q->where('month', $currentMonth)->where('year', $currentYear);
+                  }]);
+        }])
+        ->get();
+        
+        return view('payments.salaries', compact('teams', 'currentMonth', 'currentYear'));
+    }
+
+    public function employees()
+    {
+        $employees = Employee::with(['user', 'team'])->get();
+        
+        return view('payments.employees', compact('employees'));
+    }
+
+    public function employeeDetail($employeeId)
+    {
+        $employee = Employee::with([
+            'user',
+            'team',
+            'bankAccounts',
+            'loans.payments',
+            'salaryPayments' => function($query) {
+                $query->orderBy('year', 'desc')->orderBy('month', 'desc')->limit(6);
+            }
+        ])->findOrFail($employeeId);
+        
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+        
+        $recentTransactions = Payment::where('employee_id', $employeeId)
+            ->with(['loan', 'loanPayment'])
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+        
+        return view('payments.employee-detail', compact('employee', 'currentMonth', 'currentYear', 'recentTransactions'));
+    }
 }

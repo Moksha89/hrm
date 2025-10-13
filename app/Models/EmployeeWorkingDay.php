@@ -14,6 +14,7 @@ class EmployeeWorkingDay extends Model
         'month',
         'year',
         'working_days',
+        'deduct_emi',
     ];
 
     protected function casts(): array
@@ -22,6 +23,7 @@ class EmployeeWorkingDay extends Model
             'month' => 'integer',
             'year' => 'integer',
             'working_days' => 'integer',
+            'deduct_emi' => 'boolean',
         ];
     }
 

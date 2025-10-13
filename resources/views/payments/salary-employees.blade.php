@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $team->name }} - Salary Payments - HRM</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 dark:bg-gray-900">
@@ -71,7 +72,14 @@
         </aside>
 
         <div class="flex-1 flex flex-col overflow-hidden">
-            <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+            <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+                <nav class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    <a href="{{ route('payments.salaries') }}" class="hover:text-gray-900 dark:hover:text-white">Payments</a>
+                    <span class="mx-2">→</span>
+                    <a href="{{ route('payments.salaries') }}" class="hover:text-gray-900 dark:hover:text-white">Salaries</a>
+                    <span class="mx-2">→</span>
+                    <span class="text-gray-900 dark:text-white">{{ $team->name }}</span>
+                </nav>
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $team->name }} - Salary Payments</h2>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ \Carbon\Carbon::create()->month($currentMonth)->format('F') }} {{ $currentYear }}</p>
             </header>

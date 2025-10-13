@@ -92,8 +92,18 @@ class Employee extends Model
 
     public function getFinalPay($month = null, $year = null)
     {
+        $month = $month ?? now()->month;
+        $year = $year ?? now()->year;
+        
         $netPay = $this->getNetPay($month, $year);
-        $monthlyEmi = $this->getTotalMonthlyEmi();
+        
+        $workingDay = $this->workingDays()
+            ->where('month', $month)
+            ->where('year', $year)
+            ->first();
+        
+        $shouldDeductEmi = $workingDay ? ($workingDay->deduct_emi ?? true) : true;
+        $monthlyEmi = $shouldDeductEmi ? $this->getTotalMonthlyEmi() : 0;
         
         return max(0, round($netPay - $monthlyEmi, 2));
     }

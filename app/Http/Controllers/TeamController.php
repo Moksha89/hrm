@@ -112,4 +112,32 @@ class TeamController extends Controller
 
         return redirect()->route('teams.show', $teamId)->with('success', 'Working days updated successfully!');
     }
+
+    public function updateBulkSalarySettings(Request $request, $teamId)
+    {
+        $request->validate([
+            'employees' => 'required|array',
+            'employees.*.working_days' => 'required|integer|min:0|max:31',
+            'month' => 'required|integer|min:1|max:12',
+            'year' => 'required|integer|min:2020|max:2100',
+        ]);
+
+        foreach ($request->employees as $employeeId => $data) {
+            $employee = Employee::findOrFail($employeeId);
+            
+            EmployeeWorkingDay::updateOrCreate(
+                [
+                    'employee_id' => $employeeId,
+                    'month' => $request->month,
+                    'year' => $request->year,
+                ],
+                [
+                    'working_days' => $data['working_days'],
+                    'deduct_emi' => isset($data['deduct_emi']) ? true : false,
+                ]
+            );
+        }
+
+        return redirect()->route('teams.show', $teamId)->with('success', 'Salary settings updated successfully for all team members!');
+    }
 }

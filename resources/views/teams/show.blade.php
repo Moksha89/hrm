@@ -204,6 +204,18 @@
                     </div>
                     @endif
 
+                    <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
+                        <nav class="flex space-x-8">
+                            <button onclick="showTab('employees')" id="employees-tab" class="px-3 py-2 border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 font-medium">
+                                Employees
+                            </button>
+                            <button onclick="showTab('salary')" id="salary-tab" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
+                                Salary Management
+                            </button>
+                        </nav>
+                    </div>
+
+                    <div id="employees-content" class="tab-content">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-6">
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                             <div class="flex items-center justify-between">
@@ -383,11 +395,140 @@
                         @endif
                     </div>
                 </div>
+                    </div>
+
+                    <div id="salary-content" class="tab-content hidden">
+                        @php
+                            $currentMonth = now()->month;
+                            $currentYear = now()->year;
+                        @endphp
+                        
+                        <form action="{{ route('teams.updateBulkSalarySettings', $team->id) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="month" value="{{ $currentMonth }}">
+                            <input type="hidden" name="year" value="{{ $currentYear }}">
+                            
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+                                <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                                    <div>
+                                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Salary Settings - {{ date('F Y', mktime(0, 0, 0, $currentMonth, 1, $currentYear)) }}</h2>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Update working days and EMI deduction settings for all team members</p>
+                                    </div>
+                                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors">
+                                        Save All Changes
+                                    </button>
+                                </div>
+                                
+                                @if($team->employees->count() > 0)
+                                <div class="overflow-x-auto">
+                                    <table class="w-full">
+                                        <thead class="bg-gray-50 dark:bg-gray-700">
+                                            <tr>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Employee</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Gross Salary</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Working Days</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Net Pay</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Deduct EMI</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">EMI Amount</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Final Pay</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                            @foreach($team->employees as $employee)
+                                            @php
+                                                $workingDayRecord = $employee->workingDays()
+                                                    ->where('month', $currentMonth)
+                                                    ->where('year', $currentYear)
+                                                    ->first();
+                                                $currentWorkingDays = $workingDayRecord ? $workingDayRecord->working_days : 30;
+                                                $shouldDeductEmi = $workingDayRecord ? ($workingDayRecord->deduct_emi ?? true) : true;
+                                                $netPay = $employee->getNetPay($currentMonth, $currentYear);
+                                                $monthlyEmi = $employee->getTotalMonthlyEmi();
+                                                $finalPay = $employee->getFinalPay($currentMonth, $currentYear);
+                                            @endphp
+                                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="flex items-center">
+                                                        <div class="flex items-center justify-center w-10 h-10 bg-blue-600 rounded-full text-white font-semibold text-sm mr-3">
+                                                            {{ strtoupper(substr($employee->user->name, 0, 1)) }}
+                                                        </div>
+                                                        <div>
+                                                            <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $employee->user->name }}</div>
+                                                            <div class="text-sm text-gray-600 dark:text-gray-400">{{ $employee->user->mobile }}</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                                    ₹{{ number_format($employee->salary ?? 0, 2) }}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <input type="number" 
+                                                           name="employees[{{ $employee->id }}][working_days]" 
+                                                           value="{{ $currentWorkingDays }}" 
+                                                           min="0" 
+                                                           max="31" 
+                                                           class="w-20 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <span class="text-sm font-semibold text-green-600 dark:text-green-400">
+                                                        ₹{{ number_format($netPay, 2) }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <label class="relative inline-flex items-center cursor-pointer">
+                                                        <input type="checkbox" 
+                                                               name="employees[{{ $employee->id }}][deduct_emi]" 
+                                                               value="1"
+                                                               {{ $shouldDeductEmi ? 'checked' : '' }}
+                                                               class="sr-only peer">
+                                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                                    </label>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <span class="text-sm font-semibold text-orange-600 dark:text-orange-400">
+                                                        ₹{{ number_format($monthlyEmi, 2) }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <span class="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                                                        ₹{{ number_format($finalPay, 2) }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @else
+                                <div class="p-12 text-center text-gray-600 dark:text-gray-400">
+                                    No employees in this team
+                                </div>
+                                @endif
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </main>
         </div>
     </div>
 
     <script>
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            document.getElementById(tabName + '-content').classList.remove('hidden');
+            
+            document.querySelectorAll('[id$="-tab"]').forEach(btn => {
+                btn.classList.remove('border-blue-600', 'text-blue-600', 'dark:text-blue-400', 'font-medium');
+                btn.classList.add('border-transparent', 'text-gray-600', 'dark:text-gray-400');
+            });
+            
+            document.getElementById(tabName + '-tab').classList.add('border-blue-600', 'text-blue-600', 'dark:text-blue-400', 'font-medium');
+            document.getElementById(tabName + '-tab').classList.remove('border-transparent', 'text-gray-600', 'dark:text-gray-400');
+        }
+
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebar-toggle');
         const mobileSidebarToggle = document.getElementById('mobile-sidebar-toggle');
