@@ -18,7 +18,7 @@ class PaymentController extends Controller
         $currentMonth = now()->month;
         $currentYear = now()->year;
         
-        $pendingLoans = Loan::with(['employee.user', 'employee.team', 'bankAccount'])
+        $pendingLoans = Loan::with(['employee.user', 'employee.team', 'bankAccount', 'processedBy'])
             ->where('status', 'pending')
             ->get()
             ->map(function ($loan) use ($currentMonth, $currentYear) {
@@ -46,12 +46,43 @@ class PaymentController extends Controller
         return view('payments.index', compact('pendingLoans', 'pendingEmis', 'currentMonth', 'currentYear'));
     }
 
+    public function approveLoan(Request $request, $loanId)
+    {
+        $loan = Loan::findOrFail($loanId);
+        
+        if ($loan->status !== 'pending') {
+            return redirect()->back()->with('error', 'This loan has already been processed.');
+        }
+
+        $loan->approval_status = 'approved';
+        $loan->processed_by = auth()->id();
+        $loan->save();
+
+        return redirect()->route('payments.index')->with('success', 'Loan approved successfully! You can now disburse it.');
+    }
+
+    public function rejectLoan(Request $request, $loanId)
+    {
+        $loan = Loan::findOrFail($loanId);
+        
+        if ($loan->status !== 'pending') {
+            return redirect()->back()->with('error', 'This loan has already been processed.');
+        }
+
+        $loan->status = 'rejected';
+        $loan->approval_status = 'rejected';
+        $loan->processed_by = auth()->id();
+        $loan->save();
+
+        return redirect()->route('payments.index')->with('success', 'Loan rejected.');
+    }
+
     public function disburseLoan(Request $request, $loanId)
     {
         $loan = Loan::with(['employee', 'bankAccount'])->findOrFail($loanId);
         
-        if ($loan->status !== 'pending') {
-            return redirect()->back()->with('error', 'This loan has already been processed.');
+        if ($loan->status !== 'pending' || $loan->approval_status !== 'approved') {
+            return redirect()->back()->with('error', 'Loan must be approved before disbursement.');
         }
 
         DB::transaction(function () use ($loan, $request) {
@@ -62,6 +93,8 @@ class PaymentController extends Controller
                 'loan_id' => $loan->id,
                 'bank_account_id' => $loan->bank_account_id,
                 'status' => 'completed',
+                'approval_status' => 'approved',
+                'processed_by' => auth()->id(),
                 'transaction_date' => now(),
                 'notes' => $request->notes ?? 'Loan disbursed to employee bank account',
             ]);
@@ -155,6 +188,57 @@ class PaymentController extends Controller
         return view('payments.salary-employees', compact('team', 'employees', 'currentMonth', 'currentYear'));
     }
 
+    public function approveSalary(Request $request, $employeeId)
+    {
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+        
+        $salaryPayment = SalaryPayment::where('employee_id', $employeeId)
+            ->where('month', $currentMonth)
+            ->where('year', $currentYear)
+            ->first();
+        
+        if (!$salaryPayment) {
+            return redirect()->back()->with('error', 'No salary payment found for this employee.');
+        }
+        
+        if ($salaryPayment->status === 'completed') {
+            return redirect()->back()->with('error', 'Salary has already been disbursed.');
+        }
+
+        $salaryPayment->approval_status = 'approved';
+        $salaryPayment->processed_by = auth()->id();
+        $salaryPayment->save();
+
+        return redirect()->back()->with('success', 'Salary approved! You can now disburse it.');
+    }
+
+    public function rejectSalary(Request $request, $employeeId)
+    {
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+        
+        $salaryPayment = SalaryPayment::where('employee_id', $employeeId)
+            ->where('month', $currentMonth)
+            ->where('year', $currentYear)
+            ->first();
+        
+        if (!$salaryPayment) {
+            return redirect()->back()->with('error', 'No salary payment found for this employee.');
+        }
+        
+        if ($salaryPayment->status === 'completed') {
+            return redirect()->back()->with('error', 'Salary has already been disbursed.');
+        }
+
+        $salaryPayment->status = 'rejected';
+        $salaryPayment->approval_status = 'rejected';
+        $salaryPayment->processed_by = auth()->id();
+        $salaryPayment->save();
+
+        return redirect()->back()->with('success', 'Salary payment rejected.');
+    }
+
     public function disburseSalary(Request $request, $employeeId)
     {
         $employee = Employee::with(['bankAccounts'])->findOrFail($employeeId);
@@ -168,6 +252,10 @@ class PaymentController extends Controller
             
         if ($existingPayment && $existingPayment->status === 'completed') {
             return redirect()->back()->with('error', 'Salary already paid for this month.');
+        }
+        
+        if ($existingPayment && $existingPayment->approval_status !== 'approved') {
+            return redirect()->back()->with('error', 'Salary must be approved before disbursement.');
         }
         
         $netPay = $employee->getNetPay($currentMonth, $currentYear);
@@ -192,6 +280,8 @@ class PaymentController extends Controller
                     'final_pay' => $finalPay,
                     'bank_account_id' => $defaultBankAccount?->id,
                     'status' => 'completed',
+                    'approval_status' => 'approved',
+                    'processed_by' => auth()->id(),
                     'payment_date' => now(),
                     'notes' => $request->notes ?? 'Salary disbursed to employee bank account',
                 ]

@@ -11,7 +11,7 @@
     <div class="flex h-screen overflow-hidden">
         <aside id="sidebar" class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-300 ease-in-out">
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
+                <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
             </div>
 
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
@@ -73,7 +73,7 @@
 
         <div class="flex-1 flex flex-col overflow-hidden">
             <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Payments - Employees</h2>
+                <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Payments - Employees</h2>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">View employee financial details and payment history</p>
             </header>
 
@@ -102,11 +102,11 @@
                         <a href="{{ route('payments.employee.detail', $employee->id) }}" class="block bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400">
                             <div class="p-6">
                                 <div class="flex items-center space-x-4 mb-4">
-                                    <div class="flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full text-white font-semibold text-xl">
+                                    <div class="flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full text-white font-semibold text-lg md:text-xl">
                                         {{ strtoupper(substr($employee->user->name, 0, 1)) }}
                                     </div>
                                     <div class="flex-1">
-                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $employee->user->name }}</h3>
+                                        <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white">{{ $employee->user->name }}</h3>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">{{ $employee->user->mobile }}</p>
                                     </div>
                                 </div>

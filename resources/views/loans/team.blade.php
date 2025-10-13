@@ -10,7 +10,7 @@
     <div class="flex h-screen overflow-hidden">
         <aside id="sidebar" class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-300 ease-in-out">
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
+                <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
             </div>
 
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
@@ -79,7 +79,7 @@
                             <span class="mx-2">/</span>
                             <span class="text-gray-900 dark:text-white">{{ $team->name }}</span>
                         </nav>
-                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $team->name }} - Employee Loans</h2>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">{{ $team->name }} - Employee Loans</h2>
                     </div>
                 </div>
             </header>
@@ -101,11 +101,11 @@
                         @endphp
                         <a href="{{ route('loans.employee', $employee->id) }}" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
                             <div class="flex items-center space-x-4 mb-4">
-                                <div class="flex items-center justify-center w-12 h-12 bg-blue-600 rounded-full text-white font-semibold text-lg">
+                                <div class="flex items-center justify-center w-12 h-12 bg-blue-600 rounded-full text-white font-semibold text-base md:text-lg">
                                     {{ strtoupper(substr($employee->user->name, 0, 1)) }}
                                 </div>
                                 <div>
-                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $employee->user->name }}</h3>
+                                    <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white">{{ $employee->user->name }}</h3>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">{{ $employee->user->mobile }}</p>
                                 </div>
                             </div>
@@ -129,7 +129,7 @@
                             <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                             </svg>
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No employees in this team</h3>
+                            <h3 class="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">No employees in this team</h3>
                             <p class="text-gray-600 dark:text-gray-400">Assign employees to this team to view their loans.</p>
                         </div>
                         @endforelse

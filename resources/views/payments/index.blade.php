@@ -10,7 +10,7 @@
     <div class="flex h-screen overflow-hidden">
         <aside id="sidebar" class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-300 ease-in-out">
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
+                <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
             </div>
 
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
@@ -72,7 +72,7 @@
 
         <div class="flex-1 flex flex-col overflow-hidden">
             <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Payments - Loans</h2>
+                <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Payments - Loans</h2>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Manage loan disbursements and EMI collections</p>
             </header>
 
@@ -108,158 +108,170 @@
                     @endif
 
                     <div class="mb-8">
-                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Pending Loan Disbursements ({{ $pendingLoans->count() }})</h3>
+                        <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-4">Pending Loan Disbursements ({{ $pendingLoans->count() }})</h3>
                         
-                        @forelse($pendingLoans as $loan)
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-4">
-                            <div class="p-6">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div>
-                                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $loan->employee->user->name }}</h4>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                                            {{ $loan->employee->team ? $loan->employee->team->name : 'No Team' }} • 
-                                            {{ $loan->employee->user->mobile }}
-                                        </p>
-                                    </div>
-                                    <button onclick="openDisburseModal({{ $loan->id }})" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors">
-                                        Disburse Loan
-                                    </button>
-                                </div>
-
-                                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                                    <div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">Loan Amount</p>
-                                        <p class="text-lg font-semibold text-gray-900 dark:text-white">₹{{ number_format($loan->total_amount, 2) }}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">Monthly EMI</p>
-                                        <p class="text-lg font-semibold text-orange-600 dark:text-orange-400">₹{{ number_format($loan->monthly_emi, 2) }}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">Net Pay</p>
-                                        <p class="text-lg font-semibold text-green-600 dark:text-green-400">₹{{ number_format($loan->employee->net_pay, 2) }}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">Current EMI</p>
-                                        <p class="text-lg font-semibold text-orange-600 dark:text-orange-400">₹{{ number_format($loan->employee->total_emi, 2) }}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">Final Pay (After)</p>
-                                        <p class="text-lg font-semibold text-blue-600 dark:text-blue-400">₹{{ number_format($loan->employee->final_pay - $loan->monthly_emi, 2) }}</p>
-                                    </div>
-                                </div>
-
-                                @if($loan->bankAccount)
-                                <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white mb-2">Bank Account Details:</p>
-                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                                        <div>
-                                            <p class="text-gray-600 dark:text-gray-400">Account Holder</p>
-                                            <p class="text-gray-900 dark:text-white">{{ $loan->bankAccount->account_holder_name }}</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-gray-600 dark:text-gray-400">Account Number</p>
-                                            <p class="text-gray-900 dark:text-white">{{ $loan->bankAccount->account_number }}</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-gray-600 dark:text-gray-400">IFSC Code</p>
-                                            <p class="text-gray-900 dark:text-white">{{ $loan->bankAccount->ifsc_code }}</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-gray-600 dark:text-gray-400">Bank Name</p>
-                                            <p class="text-gray-900 dark:text-white">{{ $loan->bankAccount->bank_name }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endif
+                        @if($pendingLoans->count() > 0)
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-gray-50 dark:bg-gray-700">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Employee</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Team</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Loan Amount</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Monthly EMI</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Status</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                        @foreach($pendingLoans as $loan)
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                                            <td class="px-4 py-3">
+                                                <div class="flex items-center space-x-3">
+                                                    <div class="flex items-center justify-center w-8 h-8 bg-blue-600 rounded-full text-white font-semibold text-xs flex-shrink-0">
+                                                        {{ strtoupper(substr($loan->employee->user->name, 0, 1)) }}
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $loan->employee->user->name }}</div>
+                                                        <div class="text-xs text-gray-600 dark:text-gray-400">{{ $loan->employee->user->mobile }}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                                                {{ $loan->employee->team ? $loan->employee->team->name : 'No Team' }}
+                                            </td>
+                                            <td class="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white">
+                                                ₹{{ number_format($loan->total_amount, 2) }}
+                                            </td>
+                                            <td class="px-4 py-3 text-sm font-semibold text-orange-600 dark:text-orange-400">
+                                                ₹{{ number_format($loan->monthly_emi, 2) }}
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                @if($loan->approval_status === 'pending')
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300">
+                                                    Pending Approval
+                                                </span>
+                                                @elseif($loan->approval_status === 'approved')
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300">
+                                                    Approved
+                                                </span>
+                                                @endif
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <div class="flex items-center space-x-2">
+                                                    @if($loan->approval_status === 'pending')
+                                                    <form action="{{ route('payments.loan.approve', $loan->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs rounded transition-colors">
+                                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                            </svg>
+                                                            Accept
+                                                        </button>
+                                                    </form>
+                                                    <form action="{{ route('payments.loan.reject', $loan->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors">
+                                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                            </svg>
+                                                            Reject
+                                                        </button>
+                                                    </form>
+                                                    @elseif($loan->approval_status === 'approved')
+                                                    <button onclick="openDisburseModal({{ $loan->id }})" class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors">
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                        Disburse
+                                                    </button>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        @empty
+                        @else
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
                             <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No pending disbursements</h3>
-                            <p class="text-gray-600 dark:text-gray-400">All loan applications have been processed.</p>
+                            <h3 class="text-sm md:text-base font-medium text-gray-900 dark:text-white mb-2">No pending disbursements</h3>
+                            <p class="text-xs md:text-sm text-gray-600 dark:text-gray-400">All loan applications have been processed.</p>
                         </div>
-                        @endforelse
+                        @endif
                     </div>
 
                     <div>
-                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Pending EMI Collections ({{ $pendingEmis->count() }})</h3>
+                        <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-4">Pending EMI Collections ({{ $pendingEmis->count() }})</h3>
                         
-                        @forelse($pendingEmis as $payment)
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-4">
-                            <div class="p-6">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div>
-                                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $payment->loan->employee->user->name }}</h4>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                                            {{ $payment->loan->employee->team ? $payment->loan->employee->team->name : 'No Team' }} • 
-                                            {{ $payment->loan->employee->user->mobile }}
-                                        </p>
-                                    </div>
-                                    <button onclick="openCollectModal({{ $payment->id }})" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-                                        Collect EMI
-                                    </button>
-                                </div>
-
-                                <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
-                                    <div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">Installment #</p>
-                                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ $payment->installment_number }}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">EMI Amount</p>
-                                        <p class="text-lg font-semibold text-orange-600 dark:text-orange-400">₹{{ number_format($payment->amount, 2) }}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">Due Date</p>
-                                        <p class="text-lg font-semibold {{ $payment->due_date->isPast() ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white' }}">
-                                            {{ $payment->due_date->format('M d, Y') }}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">Net Pay</p>
-                                        <p class="text-lg font-semibold text-green-600 dark:text-green-400">₹{{ number_format($payment->loan->employee->net_pay, 2) }}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">Total EMI</p>
-                                        <p class="text-lg font-semibold text-orange-600 dark:text-orange-400">₹{{ number_format($payment->loan->employee->total_emi, 2) }}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">Final Pay</p>
-                                        <p class="text-lg font-semibold text-blue-600 dark:text-blue-400">₹{{ number_format($payment->loan->employee->final_pay, 2) }}</p>
-                                    </div>
-                                </div>
-
-                                <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-                                        <div>
-                                            <p class="text-gray-600 dark:text-gray-400">Loan ID</p>
-                                            <p class="text-gray-900 dark:text-white">#{{ $payment->loan->id }}</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-gray-600 dark:text-gray-400">Remaining Balance</p>
-                                            <p class="text-gray-900 dark:text-white">₹{{ number_format($payment->loan->remaining_balance, 2) }}</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-gray-600 dark:text-gray-400">Months Left</p>
-                                            <p class="text-gray-900 dark:text-white">{{ $payment->loan->remaining_months }} / {{ $payment->loan->total_months }}</p>
-                                        </div>
-                                    </div>
-                                </div>
+                        @if($pendingEmis->count() > 0)
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-gray-50 dark:bg-gray-700">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Employee</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Team</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Installment</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">EMI Amount</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Due Date</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                        @foreach($pendingEmis as $payment)
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                                            <td class="px-4 py-3">
+                                                <div class="flex items-center space-x-3">
+                                                    <div class="flex items-center justify-center w-8 h-8 bg-orange-600 rounded-full text-white font-semibold text-xs flex-shrink-0">
+                                                        {{ strtoupper(substr($payment->loan->employee->user->name, 0, 1)) }}
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $payment->loan->employee->user->name }}</div>
+                                                        <div class="text-xs text-gray-600 dark:text-gray-400">{{ $payment->loan->employee->user->mobile }}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                                                {{ $payment->loan->employee->team ? $payment->loan->employee->team->name : 'No Team' }}
+                                            </td>
+                                            <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">
+                                                #{{ $payment->installment_number }} of {{ $payment->loan->total_months }}
+                                            </td>
+                                            <td class="px-4 py-3 text-sm font-semibold text-orange-600 dark:text-orange-400">
+                                                ₹{{ number_format($payment->amount, 2) }}
+                                            </td>
+                                            <td class="px-4 py-3 text-sm {{ $payment->due_date->isPast() ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-gray-900 dark:text-white' }}">
+                                                {{ $payment->due_date->format('M d, Y') }}
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <button onclick="openCollectModal({{ $payment->id }})" class="inline-flex items-center px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white text-xs rounded transition-colors">
+                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                    </svg>
+                                                    Collect
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        @empty
+                        @else
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
                             <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No pending EMI collections</h3>
-                            <p class="text-gray-600 dark:text-gray-400">All EMI payments for this month have been collected.</p>
+                            <h3 class="text-sm md:text-base font-medium text-gray-900 dark:text-white mb-2">No pending EMI collections</h3>
+                            <p class="text-xs md:text-sm text-gray-600 dark:text-gray-400">All EMI payments for this month have been collected.</p>
                         </div>
-                        @endforelse
+                        @endif
                     </div>
                 </div>
             </main>
@@ -269,7 +281,7 @@
     <div id="disburse-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
             <div class="p-6">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Confirm Loan Disbursement</h3>
+                <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-4">Confirm Loan Disbursement</h3>
                 <p class="text-gray-600 dark:text-gray-400 mb-6">Are you sure you want to disburse this loan? This action will activate the loan and begin the EMI schedule.</p>
                 
                 <form id="disburse-form" method="POST">
@@ -295,7 +307,7 @@
     <div id="collect-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
             <div class="p-6">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Confirm EMI Collection</h3>
+                <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-4">Confirm EMI Collection</h3>
                 <p class="text-gray-600 dark:text-gray-400 mb-6">Are you sure you want to mark this EMI payment as collected? This will update the loan balance.</p>
                 
                 <form id="collect-form" method="POST">

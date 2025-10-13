@@ -20,6 +20,8 @@ class SalaryPayment extends Model
         'final_pay',
         'bank_account_id',
         'status',
+        'approval_status',
+        'processed_by',
         'payment_date',
         'notes',
     ];
@@ -46,5 +48,10 @@ class SalaryPayment extends Model
     public function bankAccount()
     {
         return $this->belongsTo(BankAccount::class);
+    }
+
+    public function processedBy()
+    {
+        return $this->belongsTo(User::class, 'processed_by');
     }
 }

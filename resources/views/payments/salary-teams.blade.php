@@ -10,7 +10,7 @@
     <div class="flex h-screen overflow-hidden">
         <aside id="sidebar" class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-300 ease-in-out">
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
+                <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
             </div>
 
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
@@ -72,7 +72,7 @@
 
         <div class="flex-1 flex flex-col overflow-hidden">
             <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Salary Payments</h2>
+                <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Salary Payments</h2>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ \Carbon\Carbon::create()->month($currentMonth)->format('F') }} {{ $currentYear }}</p>
             </header>
 
@@ -100,7 +100,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
                             </div>
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">{{ $team->name }}</h3>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-2">{{ $team->name }}</h3>
                             <div class="space-y-2">
                                 <div class="flex justify-between items-center">
                                     <span class="text-sm text-gray-600 dark:text-gray-400">Employees</span>

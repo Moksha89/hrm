@@ -10,7 +10,7 @@
     <div class="flex h-screen overflow-hidden">
         <aside id="sidebar" class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-300 ease-in-out">
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
+                <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
             </div>
 
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
@@ -73,7 +73,7 @@
         <div class="flex-1 flex flex-col overflow-hidden">
             <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Loans Management</h2>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Loans Management</h2>
                 </div>
             </header>
 
@@ -89,8 +89,8 @@
                         @forelse($teams as $team)
                         <a href="{{ route('loans.team', $team->id) }}" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
                             <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{{ $team->name }}</h3>
-                                <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                                <h3 class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">{{ $team->name }}</h3>
+                                <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-base md:text-lg">
                                     {{ $team->employees_count }}
                                 </div>
                             </div>
@@ -110,7 +110,7 @@
                             <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No teams yet</h3>
+                            <h3 class="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">No teams yet</h3>
                             <p class="text-gray-600 dark:text-gray-400">Create teams to start managing employee loans.</p>
                         </div>
                         @endforelse

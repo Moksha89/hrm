@@ -11,7 +11,7 @@
     <div class="flex h-screen overflow-hidden">
         <aside id="sidebar" class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-300 ease-in-out">
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
+                <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
             </div>
 
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
@@ -80,20 +80,20 @@
                     <span class="mx-2">→</span>
                     <span class="text-gray-900 dark:text-white">{{ $employee->user->name }}</span>
                 </nav>
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Employee Financial Details</h2>
+                <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Employee Financial Details</h2>
             </header>
 
             <main class="flex-1 overflow-y-auto p-6">
                 <div class="max-w-7xl mx-auto space-y-6">
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Employee Information</h3>
+                        <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-4">Employee Information</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="flex items-center space-x-4">
-                                <div class="flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full text-white font-semibold text-xl">
+                                <div class="flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full text-white font-semibold text-lg md:text-xl">
                                     {{ strtoupper(substr($employee->user->name, 0, 1)) }}
                                 </div>
                                 <div>
-                                    <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ $employee->user->name }}</p>
+                                    <p class="text-base md:text-lg font-semibold text-gray-900 dark:text-white">{{ $employee->user->name }}</p>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">{{ $employee->user->mobile }}</p>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">{{ $employee->user->email }}</p>
                                 </div>
@@ -127,41 +127,41 @@
                     </div>
 
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                        <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-4">
                             Salary Summary - {{ date('F Y', mktime(0, 0, 0, $currentMonth, 1, $currentYear)) }}
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                             <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Gross Salary</p>
-                                <p class="text-xl font-bold text-gray-900 dark:text-white">
+                                <p class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">
                                     ₹{{ number_format($employee->salary ?? 0, 2) }}
                                 </p>
                             </div>
                             
                             <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Working Days</p>
-                                <p class="text-xl font-bold text-gray-900 dark:text-white">
+                                <p class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">
                                     {{ $employee->getWorkingDays($currentMonth, $currentYear) }}/30
                                 </p>
                             </div>
                             
                             <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Net Pay</p>
-                                <p class="text-xl font-bold text-green-600 dark:text-green-400">
+                                <p class="text-lg md:text-xl font-bold text-green-600 dark:text-green-400">
                                     ₹{{ number_format($employee->getNetPay($currentMonth, $currentYear), 2) }}
                                 </p>
                             </div>
                             
                             <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">EMI Deduction</p>
-                                <p class="text-xl font-bold text-orange-600 dark:text-orange-400">
+                                <p class="text-lg md:text-xl font-bold text-orange-600 dark:text-orange-400">
                                     ₹{{ number_format($employee->getTotalMonthlyEmi(), 2) }}
                                 </p>
                             </div>
                             
                             <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Final Pay</p>
-                                <p class="text-xl font-bold text-blue-600 dark:text-blue-400">
+                                <p class="text-lg md:text-xl font-bold text-blue-600 dark:text-blue-400">
                                     ₹{{ number_format($employee->getFinalPay($currentMonth, $currentYear), 2) }}
                                 </p>
                             </div>
@@ -169,7 +169,7 @@
                     </div>
 
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Active Loans</h3>
+                        <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-4">Active Loans</h3>
                         @if($employee->activeLoans->count() > 0)
                         <div class="space-y-4">
                             @foreach($employee->activeLoans as $loan)
@@ -177,23 +177,23 @@
                                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                     <div>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">Loan ID</p>
-                                        <p class="text-lg font-semibold text-gray-900 dark:text-white">#{{ $loan->id }}</p>
+                                        <p class="text-base md:text-lg font-semibold text-gray-900 dark:text-white">#{{ $loan->id }}</p>
                                     </div>
                                     <div>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">Loan Amount</p>
-                                        <p class="text-lg font-semibold text-gray-900 dark:text-white">
+                                        <p class="text-base md:text-lg font-semibold text-gray-900 dark:text-white">
                                             ₹{{ number_format($loan->loan_amount, 2) }}
                                         </p>
                                     </div>
                                     <div>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">Remaining Balance</p>
-                                        <p class="text-lg font-semibold text-orange-600 dark:text-orange-400">
+                                        <p class="text-base md:text-lg font-semibold text-orange-600 dark:text-orange-400">
                                             ₹{{ number_format($loan->remaining_balance, 2) }}
                                         </p>
                                     </div>
                                     <div>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">Monthly EMI</p>
-                                        <p class="text-lg font-semibold text-blue-600 dark:text-blue-400">
+                                        <p class="text-base md:text-lg font-semibold text-blue-600 dark:text-blue-400">
                                             ₹{{ number_format($loan->monthly_emi, 2) }}
                                         </p>
                                     </div>
@@ -208,7 +208,7 @@
 
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
                         <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Transactions</h3>
+                            <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white">Recent Transactions</h3>
                         </div>
                         @if($recentTransactions->count() > 0)
                         <div class="overflow-x-auto">

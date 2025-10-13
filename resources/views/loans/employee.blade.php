@@ -10,7 +10,7 @@
     <div class="flex h-screen overflow-hidden">
         <aside id="sidebar" class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-300 ease-in-out">
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
+                <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
             </div>
 
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
@@ -83,7 +83,7 @@
                             <span class="mx-2">/</span>
                             <span class="text-gray-900 dark:text-white">{{ $employee->user->name }}</span>
                         </nav>
-                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $employee->user->name }} - Loans</h2>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">{{ $employee->user->name }} - Loans</h2>
                     </div>
                     <button id="add-loan-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
                         Apply New Loan
@@ -114,7 +114,7 @@
                         <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Loan #{{ $loan->id }}</h3>
+                                    <h3 class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">Loan #{{ $loan->id }}</h3>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Applied on {{ $loan->start_date->format('M d, Y') }}</p>
                                 </div>
                                 <div>
@@ -136,24 +136,24 @@
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Total Amount</p>
-                                    <p class="text-lg font-semibold text-gray-900 dark:text-white">₹{{ number_format($loan->total_amount, 2) }}</p>
+                                    <p class="text-base md:text-lg font-semibold text-gray-900 dark:text-white">₹{{ number_format($loan->total_amount, 2) }}</p>
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Monthly EMI</p>
-                                    <p class="text-lg font-semibold text-orange-600 dark:text-orange-400">₹{{ number_format($loan->monthly_emi, 2) }}</p>
+                                    <p class="text-base md:text-lg font-semibold text-orange-600 dark:text-orange-400">₹{{ number_format($loan->monthly_emi, 2) }}</p>
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Remaining Balance</p>
-                                    <p class="text-lg font-semibold text-red-600 dark:text-red-400">₹{{ number_format($loan->remaining_balance, 2) }}</p>
+                                    <p class="text-base md:text-lg font-semibold text-red-600 dark:text-red-400">₹{{ number_format($loan->remaining_balance, 2) }}</p>
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Months Left</p>
-                                    <p class="text-lg font-semibold text-blue-600 dark:text-blue-400">{{ $loan->remaining_months }} / {{ $loan->total_months }}</p>
+                                    <p class="text-base md:text-lg font-semibold text-blue-600 dark:text-blue-400">{{ $loan->remaining_months }} / {{ $loan->total_months }}</p>
                                 </div>
                             </div>
                         </div>
                         <div class="p-6">
-                            <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Payment Schedule</h4>
+                            <h4 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-4">Payment Schedule</h4>
                             <div class="overflow-x-auto">
                                 <table class="w-full">
                                     <thead class="bg-gray-50 dark:bg-gray-700">
@@ -193,7 +193,7 @@
                         <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No loans yet</h3>
+                        <h3 class="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">No loans yet</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-4">Apply for a new loan to get started.</p>
                         <button onclick="document.getElementById('add-loan-btn').click()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
                             Apply New Loan
@@ -208,7 +208,7 @@
     <div id="add-loan-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between z-10">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Apply New Loan</h2>
+                <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Apply New Loan</h2>
                 <button id="close-modal-btn" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>

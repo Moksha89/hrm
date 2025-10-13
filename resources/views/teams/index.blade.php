@@ -18,7 +18,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
                         </div>
-                        <span class="sidebar-text text-xl font-bold text-gray-900 dark:text-white">HRM</span>
+                        <span class="sidebar-text text-lg md:text-xl font-bold text-gray-900 dark:text-white">HRM</span>
                     </div>
                     <button id="sidebar-toggle" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,7 +138,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                                 </svg>
                             </div>
-                            <span class="text-xl font-bold text-gray-900 dark:text-white hidden sm:block">HRM Portal</span>
+                            <span class="text-lg md:text-xl font-bold text-gray-900 dark:text-white hidden sm:block">HRM Portal</span>
                         </div>
                     </div>
 
@@ -186,7 +186,7 @@
                 <div class="max-w-7xl mx-auto">
                     <div class="flex items-center justify-between mb-6">
                         <div>
-                            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Teams</h1>
+                            <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">Teams</h1>
                             <p class="text-gray-600 dark:text-gray-400 mt-1">Manage your organization's teams</p>
                         </div>
                         <button id="add-team-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
@@ -218,7 +218,7 @@
                         <a href="{{ route('teams.show', $team->id) }}" class="block">
                             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer">
                                 <div class="flex items-center justify-between mb-4">
-                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{{ $team->name }}</h3>
+                                    <h3 class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">{{ $team->name }}</h3>
                                     <div class="flex items-center justify-center w-10 h-10 bg-blue-600 rounded-full text-white font-semibold">
                                         {{ $team->employees_count }}
                                     </div>
@@ -248,7 +248,7 @@
                             <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No teams yet</h3>
+                            <h3 class="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">No teams yet</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">Get started by creating your first team.</p>
                             <button onclick="document.getElementById('add-team-btn').click()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
                                 Create Team
@@ -264,7 +264,7 @@
     <div id="add-team-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
             <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Create New Team</h2>
+                <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Create New Team</h2>
                 <button id="close-modal-btn" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>

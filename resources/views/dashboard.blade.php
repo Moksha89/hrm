@@ -17,7 +17,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
                         </div>
-                        <span class="sidebar-text text-xl font-bold text-gray-900 dark:text-white">HRM</span>
+                        <span class="sidebar-text text-lg md:text-xl font-bold text-gray-900 dark:text-white">HRM</span>
                     </div>
                     <button id="sidebar-toggle" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,7 +93,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <a href="{{ route('loans.index') }}" class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
@@ -137,7 +137,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                                 </svg>
                             </div>
-                            <span class="text-xl font-bold text-gray-900 dark:text-white hidden sm:block">HRM Portal</span>
+                            <span class="text-lg md:text-xl font-bold text-gray-900 dark:text-white hidden sm:block">HRM Portal</span>
                         </div>
                     </div>
 
@@ -184,7 +184,7 @@
             <main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 p-6">
                 <div class="max-w-7xl mx-auto">
                     <div class="mb-6">
-                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+                        <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
                         <p class="text-gray-600 dark:text-gray-400 mt-1">Welcome back, {{ Auth::user()->name }}!</p>
                     </div>
 
@@ -193,7 +193,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Total Employees</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">0</p>
+                                    <p class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mt-1">0</p>
                                 </div>
                                 <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
                                     <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,7 +207,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Active Teams</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">0</p>
+                                    <p class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mt-1">0</p>
                                 </div>
                                 <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
                                     <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -221,7 +221,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Pending Requests</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">0</p>
+                                    <p class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mt-1">0</p>
                                 </div>
                                 <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center">
                                     <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -235,7 +235,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Total Payments</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">₹0</p>
+                                    <p class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mt-1">₹0</p>
                                 </div>
                                 <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
                                     <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,7 +247,7 @@
                     </div>
 
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Quick Overview</h2>
+                        <h2 class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4">Quick Overview</h2>
                         <p class="text-gray-600 dark:text-gray-400">Welcome to the HRM system dashboard. Use the sidebar to navigate through different modules and manage your organization efficiently.</p>
                         <div class="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                             <p class="text-sm text-blue-800 dark:text-blue-300">

@@ -38,12 +38,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/payments', [App\Http\Controllers\PaymentController::class, 'index'])->name('payments.index');
     Route::post('/payments/disburse/{loanId}', [App\Http\Controllers\PaymentController::class, 'disburseLoan'])->name('payments.disburse');
     Route::post('/payments/collect/{loanPaymentId}', [App\Http\Controllers\PaymentController::class, 'collectEmi'])->name('payments.collect');
+    Route::post('/payments/approve-loan/{loanId}', [App\Http\Controllers\PaymentController::class, 'approveLoan'])->name('payments.loan.approve');
+    Route::post('/payments/reject-loan/{loanId}', [App\Http\Controllers\PaymentController::class, 'rejectLoan'])->name('payments.loan.reject');
     
     Route::get('/payments/salaries', [App\Http\Controllers\PaymentController::class, 'salaries'])->name('payments.salaries');
     Route::get('/payments/salary/teams', [App\Http\Controllers\PaymentController::class, 'salaryTeams'])->name('payments.salary.teams');
     Route::get('/payments/salary/team/{teamId}', [App\Http\Controllers\PaymentController::class, 'salaryTeamEmployees'])->name('payments.salary.team');
     Route::post('/payments/salary/disburse/{employeeId}', [App\Http\Controllers\PaymentController::class, 'disburseSalary'])->name('payments.salary.disburse');
     Route::get('/payments/salary/history', [App\Http\Controllers\PaymentController::class, 'salaryHistory'])->name('payments.salary.history');
+    Route::post('/payments/approve-salary/{employeeId}', [App\Http\Controllers\PaymentController::class, 'approveSalary'])->name('payments.salary.approve');
+    Route::post('/payments/reject-salary/{employeeId}', [App\Http\Controllers\PaymentController::class, 'rejectSalary'])->name('payments.salary.reject');
     
     Route::get('/payments/transactions', [App\Http\Controllers\PaymentController::class, 'transactionHistory'])->name('payments.transactions');
     

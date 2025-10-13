@@ -18,7 +18,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
                         </div>
-                        <span class="sidebar-text text-xl font-bold text-gray-900 dark:text-white">HRM</span>
+                        <span class="sidebar-text text-lg md:text-xl font-bold text-gray-900 dark:text-white">HRM</span>
                     </div>
                     <button id="sidebar-toggle" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,7 +138,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                                 </svg>
                             </div>
-                            <span class="text-xl font-bold text-gray-900 dark:text-white hidden sm:block">HRM Portal</span>
+                            <span class="text-lg md:text-xl font-bold text-gray-900 dark:text-white hidden sm:block">HRM Portal</span>
                         </div>
                     </div>
 
@@ -192,7 +192,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                     </svg>
                                 </a>
-                                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $team->name }}</h1>
+                                <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">{{ $team->name }}</h1>
                             </div>
                             <p class="text-gray-600 dark:text-gray-400 mt-1">{{ $team->employees->count() }} employees</p>
                         </div>
@@ -221,7 +221,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Total Employees</p>
-                                    <p class="text-3xl font-bold text-gray-900 dark:text-white mt-1">{{ $team->employees->count() }}</p>
+                                    <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mt-1">{{ $team->employees->count() }}</p>
                                 </div>
                                 <div class="flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
                                     <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -235,7 +235,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Gross Salary</p>
-                                    <p class="text-3xl font-bold text-gray-900 dark:text-white mt-1">₹{{ number_format($totalSalary, 2) }}</p>
+                                    <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mt-1">₹{{ number_format($totalSalary, 2) }}</p>
                                 </div>
                                 <div class="flex items-center justify-center w-12 h-12 bg-gray-100 dark:bg-gray-900/20 rounded-lg">
                                     <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -249,7 +249,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Net Pay (After WD)</p>
-                                    <p class="text-3xl font-bold text-green-600 dark:text-green-400 mt-1">₹{{ number_format($totalNetPay, 2) }}</p>
+                                    <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-green-600 dark:text-green-400 mt-1">₹{{ number_format($totalNetPay, 2) }}</p>
                                 </div>
                                 <div class="flex items-center justify-center w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg">
                                     <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -263,7 +263,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Total EMI</p>
-                                    <p class="text-3xl font-bold text-orange-600 dark:text-orange-400 mt-1">₹{{ number_format($totalEmi, 2) }}</p>
+                                    <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-orange-600 dark:text-orange-400 mt-1">₹{{ number_format($totalEmi, 2) }}</p>
                                 </div>
                                 <div class="flex items-center justify-center w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg">
                                     <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -277,7 +277,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Final Pay (After EMI)</p>
-                                    <p class="text-3xl font-bold text-blue-600 dark:text-blue-400 mt-1">₹{{ number_format($totalFinalPay, 2) }}</p>
+                                    <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-blue-600 dark:text-blue-400 mt-1">₹{{ number_format($totalFinalPay, 2) }}</p>
                                 </div>
                                 <div class="flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
                                     <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -290,7 +290,7 @@
 
                     @if($unassignedEmployees->count() > 0)
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
-                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Assign Employee</h2>
+                        <h2 class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-4">Assign Employee</h2>
                         <form action="{{ route('teams.assign', $team->id) }}" method="POST" class="flex items-end space-x-4">
                             @csrf
                             <div class="flex-1">
@@ -311,7 +311,7 @@
 
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
                         <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Team Members</h2>
+                            <h2 class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">Team Members</h2>
                         </div>
                         
                         @if($team->employees->count() > 0)
@@ -326,11 +326,11 @@
                             @endphp
                             <div class="p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                 <div class="flex items-center space-x-4">
-                                    <div class="flex items-center justify-center w-12 h-12 bg-blue-600 rounded-full text-white font-semibold text-lg">
+                                    <div class="flex items-center justify-center w-12 h-12 bg-blue-600 rounded-full text-white font-semibold text-base md:text-lg">
                                         {{ strtoupper(substr($employee->user->name, 0, 1)) }}
                                     </div>
                                     <div>
-                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $employee->user->name }}</h3>
+                                        <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white">{{ $employee->user->name }}</h3>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">{{ $employee->user->mobile }}</p>
                                     </div>
                                 </div>
@@ -389,7 +389,7 @@
                             <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                             </svg>
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No team members yet</h3>
+                            <h3 class="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">No team members yet</h3>
                             <p class="text-gray-600 dark:text-gray-400">Assign employees to this team to get started.</p>
                         </div>
                         @endif
@@ -411,7 +411,7 @@
                             <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
                                 <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                                     <div>
-                                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Salary Settings - {{ date('F Y', mktime(0, 0, 0, $currentMonth, 1, $currentYear)) }}</h2>
+                                        <h2 class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">Salary Settings - {{ date('F Y', mktime(0, 0, 0, $currentMonth, 1, $currentYear)) }}</h2>
                                         <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Update working days and EMI deduction settings for all team members</p>
                                     </div>
                                     <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors">

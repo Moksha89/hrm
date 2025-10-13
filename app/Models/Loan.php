@@ -19,6 +19,8 @@ class Loan extends Model
         'remaining_balance',
         'start_date',
         'status',
+        'approval_status',
+        'processed_by',
     ];
 
     protected function casts(): array
@@ -44,5 +46,10 @@ class Loan extends Model
     public function payments()
     {
         return $this->hasMany(LoanPayment::class);
+    }
+
+    public function processedBy()
+    {
+        return $this->belongsTo(User::class, 'processed_by');
     }
 }

@@ -11,7 +11,7 @@
     <div class="flex h-screen overflow-hidden">
         <aside id="sidebar" class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-300 ease-in-out">
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
+                <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
             </div>
 
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
@@ -80,7 +80,7 @@
                     <span class="mx-2">→</span>
                     <span class="text-gray-900 dark:text-white">{{ $team->name }}</span>
                 </nav>
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $team->name }} - Salary Payments</h2>
+                <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">{{ $team->name }} - Salary Payments</h2>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ \Carbon\Carbon::create()->month($currentMonth)->format('F') }} {{ $currentYear }}</p>
             </header>
 
@@ -113,7 +113,7 @@
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                             <div class="flex items-start justify-between mb-4">
                                 <div>
-                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{{ $employee->user->name }}</h3>
+                                    <h3 class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">{{ $employee->user->name }}</h3>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">{{ $employee->user->mobile }}</p>
                                 </div>
                                 @if($employee->has_salary_payment)
@@ -133,23 +133,23 @@
                             <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Gross Salary</p>
-                                    <p class="text-lg font-semibold text-gray-900 dark:text-white">₹{{ number_format($employee->salary, 2) }}</p>
+                                    <p class="text-base md:text-lg font-semibold text-gray-900 dark:text-white">₹{{ number_format($employee->salary, 2) }}</p>
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Working Days</p>
-                                    <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ $employee->working_days_count }}/30</p>
+                                    <p class="text-base md:text-lg font-semibold text-gray-900 dark:text-white">{{ $employee->working_days_count }}/30</p>
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Net Pay</p>
-                                    <p class="text-lg font-semibold text-green-600 dark:text-green-400">₹{{ number_format($employee->net_pay, 2) }}</p>
+                                    <p class="text-base md:text-lg font-semibold text-green-600 dark:text-green-400">₹{{ number_format($employee->net_pay, 2) }}</p>
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">EMI Deduction</p>
-                                    <p class="text-lg font-semibold text-orange-600 dark:text-orange-400">₹{{ number_format($employee->total_emi, 2) }}</p>
+                                    <p class="text-base md:text-lg font-semibold text-orange-600 dark:text-orange-400">₹{{ number_format($employee->total_emi, 2) }}</p>
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Final Pay</p>
-                                    <p class="text-lg font-semibold text-blue-600 dark:text-blue-400">₹{{ number_format($employee->final_pay, 2) }}</p>
+                                    <p class="text-base md:text-lg font-semibold text-blue-600 dark:text-blue-400">₹{{ number_format($employee->final_pay, 2) }}</p>
                                 </div>
                             </div>
 
@@ -172,7 +172,7 @@
     <div id="disburse-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4">
             <div class="p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Confirm Salary Disbursement</h3>
+                <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-4">Confirm Salary Disbursement</h3>
                 <p class="text-gray-600 dark:text-gray-400 mb-4">Are you sure you want to disburse salary for <span id="employee-name" class="font-semibold"></span>?</p>
                 
                 <form id="disburse-form" method="POST">

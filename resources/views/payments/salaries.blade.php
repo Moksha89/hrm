@@ -11,7 +11,7 @@
     <div class="flex h-screen overflow-hidden">
         <aside id="sidebar" class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-300 ease-in-out">
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
+                <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">HRM</h1>
             </div>
 
             <nav class="flex-1 overflow-y-auto p-4 space-y-2">
@@ -73,7 +73,7 @@
 
         <div class="flex-1 flex flex-col overflow-hidden">
             <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Payments - Salaries</h2>
+                <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Payments - Salaries</h2>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Process monthly salary payments and view payment history</p>
             </header>
 
@@ -104,7 +104,7 @@
 
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-6 p-6">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Salary Payments - {{ date('F Y', mktime(0, 0, 0, $currentMonth, 1, $currentYear)) }}</h3>
+                            <h3 class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">Salary Payments - {{ date('F Y', mktime(0, 0, 0, $currentMonth, 1, $currentYear)) }}</h3>
                             <a href="{{ route('payments.salary.history') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -119,7 +119,7 @@
                             @foreach($teams as $team)
                             <a href="{{ route('payments.salary.team', $team->id) }}" class="block p-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg border-2 border-gray-200 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 transition-colors">
                                 <div class="flex items-center justify-between mb-3">
-                                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $team->name }}</h4>
+                                    <h4 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white">{{ $team->name }}</h4>
                                     <span class="px-3 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full">
                                         {{ $team->employees_count }} {{ Str::plural('employee', $team->employees_count) }}
                                     </span>
