@@ -58,6 +58,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/documents/{documentId}', [App\Http\Controllers\DocumentController::class, 'destroy'])->name('documents.destroy');
     Route::get('/documents/{documentId}/download', [App\Http\Controllers\DocumentController::class, 'download'])->name('documents.download');
     
+    Route::get('/calendar', [App\Http\Controllers\CalendarController::class, 'index'])->name('calendar');
+    
     Route::get('/password/change', [App\Http\Controllers\PasswordChangeController::class, 'show'])->name('password.change');
     Route::post('/password/change', [App\Http\Controllers\PasswordChangeController::class, 'update'])->name('password.update');
 });
