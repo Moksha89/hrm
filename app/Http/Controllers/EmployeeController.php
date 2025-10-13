@@ -6,6 +6,8 @@ use App\Http\Requests\StoreEmployeeRequest;
 use App\Models\BankAccount;
 use App\Models\Document;
 use App\Models\Employee;
+use App\Models\Loan;
+use App\Models\LoanPayment;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -71,6 +73,36 @@ class EmployeeController extends Controller
                             'expiry_date' => $doc['expiry_date'] ?? null,
                         ]);
                     }
+                }
+            }
+
+            if ($request->loan > 0 && $request->emi > 0) {
+                $months = ceil($request->loan / $request->emi);
+                
+                $bankAccountId = $employee->bankAccounts()->first()?->id;
+                
+                $loan = Loan::create([
+                    'employee_id' => $employee->id,
+                    'bank_account_id' => $bankAccountId,
+                    'total_amount' => $request->loan,
+                    'monthly_emi' => $request->emi,
+                    'total_months' => $months,
+                    'remaining_months' => $months,
+                    'remaining_balance' => $request->loan,
+                    'start_date' => now(),
+                    'status' => 'pending',
+                ]);
+
+                for ($i = 1; $i <= $months; $i++) {
+                    $amount = ($i === $months) ? ($request->loan - ($request->emi * ($months - 1))) : $request->emi;
+                    
+                    LoanPayment::create([
+                        'loan_id' => $loan->id,
+                        'installment_number' => $i,
+                        'amount' => $amount,
+                        'due_date' => now()->addMonths($i - 1),
+                        'status' => 'pending',
+                    ]);
                 }
             }
 
