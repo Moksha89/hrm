@@ -57,6 +57,17 @@ class PaymentController extends Controller
         $loan->approval_status = 'approved';
         $loan->processed_by = auth()->id();
         $loan->save();
+        
+        \App\Models\EmployeeActivity::create([
+            'employee_id' => $loan->employee_id,
+            'activity_type' => 'loan_approved',
+            'description' => 'Loan application of ₹' . number_format($loan->total_amount, 2) . ' approved',
+            'data' => [
+                'loan_id' => $loan->id,
+                'amount' => $loan->total_amount,
+            ],
+            'performed_by' => auth()->id(),
+        ]);
 
         return redirect()->route('payments.index')->with('success', 'Loan approved successfully! You can now disburse it.');
     }
@@ -73,6 +84,17 @@ class PaymentController extends Controller
         $loan->approval_status = 'rejected';
         $loan->processed_by = auth()->id();
         $loan->save();
+        
+        \App\Models\EmployeeActivity::create([
+            'employee_id' => $loan->employee_id,
+            'activity_type' => 'loan_rejected',
+            'description' => 'Loan application of ₹' . number_format($loan->total_amount, 2) . ' rejected',
+            'data' => [
+                'loan_id' => $loan->id,
+                'amount' => $loan->total_amount,
+            ],
+            'performed_by' => auth()->id(),
+        ]);
 
         return redirect()->route('payments.index')->with('success', 'Loan rejected.');
     }
@@ -162,6 +184,18 @@ class PaymentController extends Controller
             }
             
             $loan->save();
+            
+            \App\Models\EmployeeActivity::create([
+                'employee_id' => $loanPayment->loan->employee_id,
+                'activity_type' => 'emi_collected',
+                'description' => 'EMI of ₹' . number_format($loanPayment->amount, 2) . ' collected for loan',
+                'data' => [
+                    'loan_id' => $loanPayment->loan_id,
+                    'amount' => $loanPayment->amount,
+                    'installment_number' => $loanPayment->installment_number,
+                ],
+                'performed_by' => auth()->id(),
+            ]);
         });
 
         return redirect()->route('payments.index')->with('success', 'EMI payment collected successfully!');
@@ -232,6 +266,19 @@ class PaymentController extends Controller
         $salaryPayment->approval_status = 'approved';
         $salaryPayment->processed_by = auth()->id();
         $salaryPayment->save();
+        
+        $monthName = date('F', mktime(0, 0, 0, $currentMonth, 1));
+        \App\Models\EmployeeActivity::create([
+            'employee_id' => $employeeId,
+            'activity_type' => 'salary_approved',
+            'description' => 'Salary for ' . $monthName . ' ' . $currentYear . ' approved',
+            'data' => [
+                'month' => $currentMonth,
+                'year' => $currentYear,
+                'final_pay' => $salaryPayment->final_pay,
+            ],
+            'performed_by' => auth()->id(),
+        ]);
 
         return redirect()->back()->with('success', 'Salary approved! You can now disburse it.');
     }
@@ -258,6 +305,18 @@ class PaymentController extends Controller
         $salaryPayment->approval_status = 'rejected';
         $salaryPayment->processed_by = auth()->id();
         $salaryPayment->save();
+        
+        $monthName = date('F', mktime(0, 0, 0, $currentMonth, 1));
+        \App\Models\EmployeeActivity::create([
+            'employee_id' => $employeeId,
+            'activity_type' => 'salary_rejected',
+            'description' => 'Salary for ' . $monthName . ' ' . $currentYear . ' rejected',
+            'data' => [
+                'month' => $currentMonth,
+                'year' => $currentYear,
+            ],
+            'performed_by' => auth()->id(),
+        ]);
 
         return redirect()->back()->with('success', 'Salary payment rejected.');
     }

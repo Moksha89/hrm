@@ -115,6 +115,19 @@ class LoanController extends Controller
                     'status' => 'pending',
                 ]);
             }
+            
+            \App\Models\EmployeeActivity::create([
+                'employee_id' => $employee->id,
+                'activity_type' => 'loan_created',
+                'description' => 'Loan application created for ₹' . number_format($loanAmount, 2) . ' with ' . $months . ' months EMI',
+                'data' => [
+                    'loan_id' => $loan->id,
+                    'amount' => $loanAmount,
+                    'monthly_emi' => $monthlyEmi,
+                    'total_months' => $months,
+                ],
+                'performed_by' => auth()->id(),
+            ]);
         });
 
         return redirect()->route('loans.employee', $employeeId)->with('success', 'Loan application created successfully! Pending disbursement.');

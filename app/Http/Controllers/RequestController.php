@@ -60,6 +60,18 @@ class RequestController extends Controller
                 'details' => $validated['details'] ?? [],
                 'status' => 'pending',
             ]);
+            
+            \App\Models\EmployeeActivity::create([
+                'employee_id' => $validated['employee_id'],
+                'activity_type' => 'request_created',
+                'description' => ucfirst(str_replace('_', ' ', $validated['type'])) . ' request created',
+                'data' => [
+                    'request_id' => $newRequest->id,
+                    'type' => $validated['type'],
+                    'details' => $validated['details'] ?? [],
+                ],
+                'performed_by' => auth()->id(),
+            ]);
 
             $admins = \App\Models\User::whereHas('roles', function ($q) {
                 $q->whereIn('slug', ['admin', 'manager']);
@@ -108,6 +120,32 @@ class RequestController extends Controller
                             'employee_id' => $req->employee_id,
                             'activity_type' => 'salary_hike',
                             'description' => 'Salary increased from ₹' . number_format($req->details['current_salary'], 2) . ' to ₹' . number_format($newSalary, 2),
+                            'data' => $req->details,
+                            'performed_by' => auth()->id(),
+                        ]);
+                    }
+                    break;
+                
+                case 'promotion':
+                    $newPosition = $req->details['new_position'] ?? null;
+                    if ($newPosition) {
+                        EmployeeActivity::create([
+                            'employee_id' => $req->employee_id,
+                            'activity_type' => 'promotion',
+                            'description' => 'Promoted from ' . $req->details['current_position'] . ' to ' . $newPosition,
+                            'data' => $req->details,
+                            'performed_by' => auth()->id(),
+                        ]);
+                    }
+                    break;
+                
+                case 'loan':
+                    $loanAmount = $req->details['loan_amount'] ?? null;
+                    if ($loanAmount) {
+                        EmployeeActivity::create([
+                            'employee_id' => $req->employee_id,
+                            'activity_type' => 'loan_request_approved',
+                            'description' => 'Loan request of ₹' . number_format($loanAmount, 2) . ' approved',
                             'data' => $req->details,
                             'performed_by' => auth()->id(),
                         ]);
@@ -182,6 +220,18 @@ class RequestController extends Controller
                 'approved_by' => auth()->id(),
                 'approved_at' => now(),
                 'rejection_reason' => $validated['rejection_reason'],
+            ]);
+            
+            \App\Models\EmployeeActivity::create([
+                'employee_id' => $req->employee_id,
+                'activity_type' => 'request_rejected',
+                'description' => ucfirst(str_replace('_', ' ', $req->type)) . ' request rejected',
+                'data' => [
+                    'request_id' => $req->id,
+                    'type' => $req->type,
+                    'rejection_reason' => $validated['rejection_reason'],
+                ],
+                'performed_by' => auth()->id(),
             ]);
 
             Notification::create([

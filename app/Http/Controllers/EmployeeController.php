@@ -128,12 +128,25 @@ class EmployeeController extends Controller
     {
         $employee = Employee::findOrFail($id);
         
+        $oldStatus = $employee->status;
+        
         if (in_array($status, ['resigned', 'inactive'])) {
             $employee->team_id = null;
         }
         
         $employee->status = $status;
         $employee->save();
+        
+        \App\Models\EmployeeActivity::create([
+            'employee_id' => $employee->id,
+            'activity_type' => 'status_changed',
+            'description' => 'Employee status changed from ' . $oldStatus . ' to ' . $status,
+            'data' => [
+                'old_status' => $oldStatus,
+                'new_status' => $status,
+            ],
+            'performed_by' => auth()->id(),
+        ]);
 
         return redirect()->route('employees.index')->with('success', 'Employee status updated successfully!');
     }
