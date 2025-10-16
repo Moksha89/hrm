@@ -27,6 +27,15 @@
                     <span x-show="sidebarOpen" class="text-sm md:text-base">Dashboard</span>
                 </a>
 
+                @if(auth()->user()->employee)
+                <a href="{{ route('profile.show') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    <span x-show="sidebarOpen" class="text-sm md:text-base">My Profile</span>
+                </a>
+                @endif
+
                 @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader() || auth()->user()->isManager() || auth()->user()->isHR() || auth()->user()->isAccountant())
                 <a href="{{ route('employees.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -214,16 +223,16 @@
     </div>
 
     <div id="createRequestModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
             <h3 class="text-lg md:text-xl font-semibold mb-4">Create Request</h3>
             <form method="POST" action="{{ route('requests.store') }}">
                 @csrf
                 <div class="mb-4">
                     <label class="block text-sm md:text-base font-medium mb-2">Request Type</label>
-                    <select name="type" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm md:text-base">
+                    <select name="type" id="request_type" required onchange="toggleRequestFields()" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm md:text-base">
                         <option value="">Select Type</option>
-                        <option value="promotion">Promotion</option>
                         <option value="salary_hike">Salary Hike</option>
+                        <option value="promotion">Promotion</option>
                         <option value="loan">Loan Request</option>
                         <option value="resign">Resignation</option>
                         <option value="idle">Mark as Idle</option>
@@ -232,23 +241,58 @@
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm md:text-base font-medium mb-2">Employee</label>
-                    <select name="employee_id" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm md:text-base">
+                    <select name="employee_id" id="request_employee_id" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm md:text-base">
                         <option value="">Select Employee</option>
-                        @if(auth()->user()->isAdmin())
-                            @foreach(\App\Models\Employee::with('user')->where('status', 'active')->get() as $emp)
+                        @foreach($employees ?? [] as $emp)
                             <option value="{{ $emp->id }}">{{ $emp->user->name }} ({{ $emp->user->mobile }})</option>
-                            @endforeach
-                        @elseif(auth()->user()->isTeamLeader())
-                            @foreach(\App\Models\Employee::with('user')->where('status', 'active')->whereIn('team_id', auth()->user()->assignedTeams()->pluck('teams.id'))->get() as $emp)
-                            <option value="{{ $emp->id }}">{{ $emp->user->name }} ({{ $emp->user->mobile }})</option>
-                            @endforeach
-                        @endif
+                        @endforeach
                     </select>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-sm md:text-base font-medium mb-2">Details (Optional)</label>
-                    <textarea name="details[notes]" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm md:text-base" rows="3" placeholder="Add any additional details..."></textarea>
+
+                <div id="salary_hike_fields" style="display: none;">
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium mb-1">Current Salary</label>
+                        <input type="number" name="details[current_salary]" id="current_salary" step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm">
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium mb-1">New Salary</label>
+                        <input type="number" name="details[new_salary]" id="new_salary" step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-1">Reason</label>
+                        <textarea name="details[reason]" id="salary_reason" rows="2" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm"></textarea>
+                    </div>
                 </div>
+
+                <div id="promotion_fields" style="display: none;">
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium mb-1">Current Position</label>
+                        <input type="text" name="details[current_position]" id="current_position" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-1">New Position</label>
+                        <input type="text" name="details[new_position]" id="new_position" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm">
+                    </div>
+                </div>
+
+                <div id="loan_fields" style="display: none;">
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium mb-1">Loan Amount</label>
+                        <input type="number" name="details[loan_amount]" id="loan_amount" step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-1">Monthly EMI</label>
+                        <input type="number" name="details[emi]" id="loan_emi" step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm">
+                    </div>
+                </div>
+
+                <div id="reason_field" style="display: none;">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-1">Reason</label>
+                        <textarea name="details[reason]" id="general_reason" rows="3" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm"></textarea>
+                    </div>
+                </div>
+
                 <div class="flex justify-end space-x-2">
                     <button type="button" onclick="hideCreateRequestModal()" class="px-4 py-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 rounded-lg text-sm md:text-base">Cancel</button>
                     <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm md:text-base">Submit Request</button>
@@ -275,6 +319,25 @@
     </div>
 
     <script>
+        function toggleRequestFields() {
+            const requestType = document.getElementById('request_type').value;
+            
+            document.getElementById('salary_hike_fields').style.display = 'none';
+            document.getElementById('promotion_fields').style.display = 'none';
+            document.getElementById('loan_fields').style.display = 'none';
+            document.getElementById('reason_field').style.display = 'none';
+            
+            if (requestType === 'salary_hike') {
+                document.getElementById('salary_hike_fields').style.display = 'block';
+            } else if (requestType === 'promotion') {
+                document.getElementById('promotion_fields').style.display = 'block';
+            } else if (requestType === 'loan') {
+                document.getElementById('loan_fields').style.display = 'block';
+            } else if (requestType === 'resign' || requestType === 'idle' || requestType === 'remove') {
+                document.getElementById('reason_field').style.display = 'block';
+            }
+        }
+
         function showCreateRequestModal() {
             const modal = document.getElementById('createRequestModal');
             modal.style.display = 'flex';
@@ -283,6 +346,8 @@
         function hideCreateRequestModal() {
             const modal = document.getElementById('createRequestModal');
             modal.style.display = 'none';
+            document.getElementById('request_type').value = '';
+            toggleRequestFields();
         }
 
         function showRejectModal(requestId) {

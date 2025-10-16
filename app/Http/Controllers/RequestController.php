@@ -19,6 +19,7 @@ class RequestController extends Controller
             $requests = Request::with(['employee.user', 'requestedBy', 'approvedBy'])
                 ->orderBy('created_at', 'desc')
                 ->paginate(20);
+            $employees = Employee::with('user')->where('status', 'active')->get();
         } elseif ($user->isTeamLeader()) {
             $assignedTeamIds = $user->assignedTeams()->pluck('teams.id');
             $requests = Request::with(['employee.user', 'requestedBy', 'approvedBy'])
@@ -27,15 +28,19 @@ class RequestController extends Controller
                 })
                 ->orderBy('created_at', 'desc')
                 ->paginate(20);
+            $employees = Employee::with('user')->where('status', 'active')
+                ->whereIn('team_id', $assignedTeamIds)
+                ->get();
         } else {
             $employeeId = $user->employee?->id;
             $requests = Request::with(['employee.user', 'requestedBy', 'approvedBy'])
                 ->where('employee_id', $employeeId)
                 ->orderBy('created_at', 'desc')
                 ->paginate(20);
+            $employees = collect();
         }
         
-        return view('requests.index', compact('requests'));
+        return view('requests.index', compact('requests', 'employees'));
     }
 
     public function store(HttpRequest $request)
