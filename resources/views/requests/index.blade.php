@@ -129,6 +129,14 @@
                 </div>
                 @endif
 
+                @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader())
+                <div class="mb-4 md:mb-6 flex justify-end">
+                    <button onclick="showCreateRequestModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm md:text-base">
+                        Create Request
+                    </button>
+                </div>
+                @endif
+
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full">
@@ -205,6 +213,50 @@
         </div>
     </div>
 
+    <div id="createRequestModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 class="text-lg md:text-xl font-semibold mb-4">Create Request</h3>
+            <form method="POST" action="{{ route('requests.store') }}">
+                @csrf
+                <div class="mb-4">
+                    <label class="block text-sm md:text-base font-medium mb-2">Request Type</label>
+                    <select name="type" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm md:text-base">
+                        <option value="">Select Type</option>
+                        <option value="promotion">Promotion</option>
+                        <option value="salary_hike">Salary Hike</option>
+                        <option value="loan">Loan Request</option>
+                        <option value="resign">Resignation</option>
+                        <option value="idle">Mark as Idle</option>
+                        <option value="remove">Remove from Team</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm md:text-base font-medium mb-2">Employee</label>
+                    <select name="employee_id" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm md:text-base">
+                        <option value="">Select Employee</option>
+                        @if(auth()->user()->isAdmin())
+                            @foreach(\App\Models\Employee::with('user')->where('status', 'active')->get() as $emp)
+                            <option value="{{ $emp->id }}">{{ $emp->user->name }} ({{ $emp->user->mobile }})</option>
+                            @endforeach
+                        @elseif(auth()->user()->isTeamLeader())
+                            @foreach(\App\Models\Employee::with('user')->where('status', 'active')->whereIn('team_id', auth()->user()->assignedTeams()->pluck('teams.id'))->get() as $emp)
+                            <option value="{{ $emp->id }}">{{ $emp->user->name }} ({{ $emp->user->mobile }})</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm md:text-base font-medium mb-2">Details (Optional)</label>
+                    <textarea name="details[notes]" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm md:text-base" rows="3" placeholder="Add any additional details..."></textarea>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" onclick="hideCreateRequestModal()" class="px-4 py-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 rounded-lg text-sm md:text-base">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm md:text-base">Submit Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="rejectModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
         <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
             <h3 class="text-lg md:text-xl font-semibold mb-4">Reject Request</h3>
@@ -223,6 +275,16 @@
     </div>
 
     <script>
+        function showCreateRequestModal() {
+            const modal = document.getElementById('createRequestModal');
+            modal.style.display = 'flex';
+        }
+
+        function hideCreateRequestModal() {
+            const modal = document.getElementById('createRequestModal');
+            modal.style.display = 'none';
+        }
+
         function showRejectModal(requestId) {
             const modal = document.getElementById('rejectModal');
             const form = document.getElementById('rejectForm');
