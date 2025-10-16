@@ -27,22 +27,22 @@ class DatabaseSeeder extends Seeder
         $teams = Team::all();
         
         $adminUser = User::updateOrCreate(
-            ['mobile' => env('ADMIN_MOBILE', '9182982174')],
+            ['mobile' => '9182982174'],
             [
-                'name' => env('ADMIN_NAME', 'jvv'),
+                'name' => 'jvv',
                 'email' => 'jvv@example.com',
-                'password' => bcrypt(env('ADMIN_PASSWORD', 'password')),
+                'password' => bcrypt('Sarkar@00'),
                 'password_changed_at' => now(),
             ]
         );
         $adminUser->roles()->sync([$adminRole->id]);
         
         $manager = User::updateOrCreate(
-            ['mobile' => env('MANAGER_MOBILE', '9876543210')],
+            ['mobile' => '9876543210'],
             [
                 'name' => 'Manager User',
                 'email' => 'manager@example.com',
-                'password' => bcrypt(env('MANAGER_PASSWORD', 'password')),
+                'password' => bcrypt('Password@00'),
                 'password_changed_at' => now(),
             ]
         );
@@ -57,11 +57,11 @@ class DatabaseSeeder extends Seeder
         }
         
         $teamLeader = User::updateOrCreate(
-            ['mobile' => env('TEAM_LEADER_MOBILE', '9876543211')],
+            ['mobile' => '9876543211'],
             [
                 'name' => 'Team Leader User',
                 'email' => 'teamleader@example.com',
-                'password' => bcrypt(env('TEAM_LEADER_PASSWORD', 'password')),
+                'password' => bcrypt('Password@00'),
                 'password_changed_at' => now(),
             ]
         );
@@ -74,22 +74,22 @@ class DatabaseSeeder extends Seeder
         ]);
         
         $hr = User::updateOrCreate(
-            ['mobile' => env('HR_MOBILE', '9876543212')],
+            ['mobile' => '9876543212'],
             [
                 'name' => 'HR User',
                 'email' => 'hr@example.com',
-                'password' => bcrypt(env('HR_PASSWORD', 'password')),
+                'password' => bcrypt('Password@00'),
                 'password_changed_at' => now(),
             ]
         );
         $hr->roles()->sync([$hrRole->id]);
         
         $accountant = User::updateOrCreate(
-            ['mobile' => env('ACCOUNTANT_MOBILE', '9876543213')],
+            ['mobile' => '9876543213'],
             [
                 'name' => 'Accountant User',
                 'email' => 'accountant@example.com',
-                'password' => bcrypt(env('ACCOUNTANT_PASSWORD', 'password')),
+                'password' => bcrypt('Password@00'),
                 'password_changed_at' => now(),
             ]
         );
