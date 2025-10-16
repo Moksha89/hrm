@@ -79,13 +79,22 @@ class PaymentController extends Controller
 
     public function disburseLoan(Request $request, $loanId)
     {
+        if (!auth()->user()->isAccountant() && !auth()->user()->isAdmin()) {
+            abort(403, 'Only accountants can disburse payments.');
+        }
+        
+        $validated = $request->validate([
+            'utr' => 'required|string',
+            'remarks' => 'nullable|string',
+        ]);
+        
         $loan = Loan::with(['employee', 'bankAccount'])->findOrFail($loanId);
         
         if ($loan->status !== 'pending' || $loan->approval_status !== 'approved') {
             return redirect()->back()->with('error', 'Loan must be approved before disbursement.');
         }
 
-        DB::transaction(function () use ($loan, $request) {
+        DB::transaction(function () use ($loan, $validated) {
             Payment::create([
                 'payment_type' => 'loan_disbursement',
                 'employee_id' => $loan->employee_id,
@@ -96,11 +105,25 @@ class PaymentController extends Controller
                 'approval_status' => 'approved',
                 'processed_by' => auth()->id(),
                 'transaction_date' => now(),
-                'notes' => $request->notes ?? 'Loan disbursed to employee bank account',
+                'notes' => 'Loan disbursed to employee bank account',
+                'utr' => $validated['utr'],
+                'remarks' => $validated['remarks'] ?? null,
             ]);
 
             $loan->status = 'active';
             $loan->save();
+            
+            \App\Models\EmployeeActivity::create([
+                'employee_id' => $loan->employee_id,
+                'activity_type' => 'loan_disbursed',
+                'description' => 'Loan of ₹' . number_format($loan->total_amount, 2) . ' disbursed',
+                'data' => [
+                    'loan_id' => $loan->id,
+                    'amount' => $loan->total_amount,
+                    'utr' => $validated['utr'],
+                ],
+                'performed_by' => auth()->id(),
+            ]);
         });
 
         return redirect()->route('payments.index')->with('success', 'Loan disbursed successfully!');
@@ -241,6 +264,15 @@ class PaymentController extends Controller
 
     public function disburseSalary(Request $request, $employeeId)
     {
+        if (!auth()->user()->isAccountant() && !auth()->user()->isAdmin()) {
+            abort(403, 'Only accountants can disburse payments.');
+        }
+        
+        $validated = $request->validate([
+            'utr' => 'required|string',
+            'remarks' => 'nullable|string',
+        ]);
+        
         $employee = Employee::with(['bankAccounts'])->findOrFail($employeeId);
         $currentMonth = now()->month;
         $currentYear = now()->year;
@@ -265,7 +297,7 @@ class PaymentController extends Controller
         
         $defaultBankAccount = $employee->bankAccounts()->where('is_default', true)->first();
         
-        DB::transaction(function () use ($employee, $currentMonth, $currentYear, $netPay, $totalEmi, $finalPay, $workingDays, $defaultBankAccount, $request) {
+        DB::transaction(function () use ($employee, $currentMonth, $currentYear, $netPay, $totalEmi, $finalPay, $workingDays, $defaultBankAccount, $validated) {
             SalaryPayment::updateOrCreate(
                 [
                     'employee_id' => $employee->id,
@@ -283,9 +315,28 @@ class PaymentController extends Controller
                     'approval_status' => 'approved',
                     'processed_by' => auth()->id(),
                     'payment_date' => now(),
-                    'notes' => $request->notes ?? 'Salary disbursed to employee bank account',
+                    'notes' => 'Salary disbursed to employee bank account',
+                    'utr' => $validated['utr'],
+                    'remarks' => $validated['remarks'] ?? null,
                 ]
             );
+            
+            $monthName = date('F', mktime(0, 0, 0, $currentMonth, 1));
+            \App\Models\EmployeeActivity::create([
+                'employee_id' => $employee->id,
+                'activity_type' => 'salary_credited',
+                'description' => 'Salary of ₹' . number_format($finalPay, 2) . ' credited for ' . $monthName . ' ' . $currentYear,
+                'data' => [
+                    'month' => $currentMonth,
+                    'year' => $currentYear,
+                    'gross_salary' => $employee->salary,
+                    'net_pay' => $netPay,
+                    'total_emi' => $totalEmi,
+                    'final_pay' => $finalPay,
+                    'utr' => $validated['utr'],
+                ],
+                'performed_by' => auth()->id(),
+            ]);
         });
         
         return redirect()->back()->with('success', 'Salary payment disbursed successfully!');

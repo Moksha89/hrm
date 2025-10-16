@@ -125,4 +125,14 @@ class Employee extends Model
     {
         return $this->hasMany(SalaryPayment::class);
     }
+
+    public function activities()
+    {
+        return $this->hasMany(EmployeeActivity::class)->orderBy('created_at', 'desc');
+    }
+
+    public function requests()
+    {
+        return $this->hasMany(Request::class);
+    }
 }

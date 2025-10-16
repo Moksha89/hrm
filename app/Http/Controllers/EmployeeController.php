@@ -15,7 +15,21 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $employees = Employee::with(['user', 'team'])->get();
+        $this->authorize('viewAny', Employee::class);
+        
+        $user = auth()->user();
+        
+        if ($user->isAdmin() || $user->isHR() || $user->isAccountant()) {
+            $employees = Employee::with(['user', 'team'])->get();
+        } elseif ($user->isManager() || $user->isTeamLeader()) {
+            $assignedTeamIds = $user->assignedTeams()->pluck('teams.id');
+            $employees = Employee::with(['user', 'team'])
+                ->whereIn('team_id', $assignedTeamIds)
+                ->get();
+        } else {
+            $employees = collect();
+        }
+        
         $teams = Team::all();
         
         return view('employees.index', compact('employees', 'teams'));
@@ -23,8 +37,18 @@ class EmployeeController extends Controller
 
     public function store(StoreEmployeeRequest $request)
     {
+        $this->authorize('create', Employee::class);
+        
         try {
             DB::beginTransaction();
+            
+            $teamId = $request->team_id;
+            if (auth()->user()->isTeamLeader() && !auth()->user()->isAdmin()) {
+                $assignedTeamIds = auth()->user()->assignedTeams()->pluck('teams.id');
+                if (!$assignedTeamIds->contains($teamId)) {
+                    return back()->withErrors(['error' => 'You can only assign employees to your own teams.'])->withInput();
+                }
+            }
 
             $user = User::create([
                 'name' => $request->name,
@@ -33,6 +57,11 @@ class EmployeeController extends Controller
                 'password' => bcrypt('Password@00'),
                 'password_changed_at' => null,
             ]);
+            
+            $employeeRole = \App\Models\Role::where('slug', 'employee')->first();
+            if ($employeeRole) {
+                $user->roles()->attach($employeeRole->id);
+            }
 
             $employee = Employee::create([
                 'user_id' => $user->id,
@@ -73,6 +102,18 @@ class EmployeeController extends Controller
                     }
                 }
             }
+            
+            \App\Models\EmployeeActivity::create([
+                'employee_id' => $employee->id,
+                'activity_type' => 'joined',
+                'description' => 'Employee joined the organization',
+                'data' => [
+                    'team_id' => $teamId,
+                    'salary' => $request->salary,
+                    'date_of_joining' => $request->date_of_joining,
+                ],
+                'performed_by' => auth()->id(),
+            ]);
 
             DB::commit();
 

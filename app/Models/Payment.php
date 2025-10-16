@@ -21,6 +21,8 @@ class Payment extends Model
         'processed_by',
         'transaction_date',
         'notes',
+        'utr',
+        'remarks',
     ];
 
     protected function casts(): array

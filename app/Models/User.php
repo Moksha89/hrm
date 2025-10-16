@@ -41,8 +41,58 @@ class User extends Authenticatable
         return $this->roles()->where('slug', $role)->exists();
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
+    }
+
+    public function isManager(): bool
+    {
+        return $this->hasRole('manager');
+    }
+
+    public function isTeamLeader(): bool
+    {
+        return $this->hasRole('team-leader');
+    }
+
+    public function isHR(): bool
+    {
+        return $this->hasRole('hr');
+    }
+
+    public function isAccountant(): bool
+    {
+        return $this->hasRole('accountant');
+    }
+
+    public function isEmployee(): bool
+    {
+        return $this->hasRole('employee');
+    }
+
+    public function teamAssignments()
+    {
+        return $this->hasMany(TeamAssignment::class);
+    }
+
+    public function assignedTeams()
+    {
+        return $this->belongsToMany(Team::class, 'team_assignments')->withPivot('role_type')->withTimestamps();
+    }
+
     public function employee()
     {
         return $this->hasOne(Employee::class);
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class)->orderBy('created_at', 'desc');
+    }
+
+    public function unreadNotifications()
+    {
+        return $this->notifications()->whereNull('read_at');
     }
 }

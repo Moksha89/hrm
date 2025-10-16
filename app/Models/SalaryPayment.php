@@ -24,6 +24,8 @@ class SalaryPayment extends Model
         'processed_by',
         'payment_date',
         'notes',
+        'utr',
+        'remarks',
     ];
 
     protected function casts(): array
