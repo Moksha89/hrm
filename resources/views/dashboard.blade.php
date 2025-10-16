@@ -36,6 +36,7 @@
                                 <span class="sidebar-text font-medium">Dashboard</span>
                             </a>
                         </li>
+                        @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader() || auth()->user()->isManager() || auth()->user()->isHR() || auth()->user()->isAccountant())
                         <li>
                             <a href="{{ route('employees.index') }}" class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -44,6 +45,8 @@
                                 <span class="sidebar-text">Employees</span>
                             </a>
                         </li>
+                        @endif
+                        @if(auth()->user()->isAdmin() || auth()->user()->isManager() || auth()->user()->isTeamLeader())
                         <li>
                             <a href="{{ route('teams.index') }}" class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,6 +55,8 @@
                                 <span class="sidebar-text">Teams</span>
                             </a>
                         </li>
+                        @endif
+                        @if(auth()->user()->isAdmin() || auth()->user()->isAccountant())
                         <li>
                             <a href="{{ route('payments.index') }}" class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -60,6 +65,8 @@
                                 <span class="sidebar-text">Payments</span>
                             </a>
                         </li>
+                        @endif
+                        @if(auth()->user()->isAdmin() || auth()->user()->isManager() || auth()->user()->isTeamLeader() || auth()->user()->isAccountant())
                         <li>
                             <a href="{{ route('loans.index') }}" class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,6 +75,7 @@
                                 <span class="sidebar-text">Loans</span>
                             </a>
                         </li>
+                        @endif
                         <li>
                             <a href="{{ route('calendar') }}" class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors {{ request()->routeIs('calendar') ? 'bg-blue-50 dark:bg-blue-900/20' : '' }}">
                                 <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('calendar') ? 'text-blue-600 dark:text-blue-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
