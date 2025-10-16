@@ -14,7 +14,20 @@ class TeamController extends Controller
         $currentMonth = now()->month;
         $currentYear = now()->year;
         
-        $teams = Team::withCount('employees')->get()->map(function ($team) use ($currentMonth, $currentYear) {
+        $user = auth()->user();
+        
+        if ($user->isAdmin()) {
+            $teams = Team::withCount('employees')->get();
+        } elseif ($user->isManager() || $user->isTeamLeader()) {
+            $assignedTeamIds = $user->assignedTeams()->pluck('teams.id');
+            $teams = Team::withCount('employees')
+                ->whereIn('id', $assignedTeamIds)
+                ->get();
+        } else {
+            $teams = collect();
+        }
+        
+        $teams = $teams->map(function ($team) use ($currentMonth, $currentYear) {
             $team->total_salary = $team->employees->sum('salary') ?? 0;
             $team->total_loan = $team->employees->sum('loan') ?? 0;
             $team->total_net_pay = $team->employees->sum(function ($employee) use ($currentMonth, $currentYear) {
@@ -43,6 +56,19 @@ class TeamController extends Controller
     {
         $currentMonth = now()->month;
         $currentYear = now()->year;
+        
+        $user = auth()->user();
+        
+        if (!$user->isAdmin()) {
+            if ($user->isManager() || $user->isTeamLeader()) {
+                $assignedTeamIds = $user->assignedTeams()->pluck('teams.id');
+                if (!$assignedTeamIds->contains($id)) {
+                    abort(403, 'Unauthorized access.');
+                }
+            } else {
+                abort(403, 'Unauthorized access.');
+            }
+        }
         
         $team = Team::with(['employees.user', 'employees.workingDays' => function ($query) use ($currentMonth, $currentYear) {
             $query->where('month', $currentMonth)->where('year', $currentYear);

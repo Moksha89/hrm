@@ -13,7 +13,20 @@ class LoanController extends Controller
 {
     public function index()
     {
-        $teams = Team::withCount('employees')->get()->map(function ($team) {
+        $user = auth()->user();
+        
+        if ($user->isAdmin() || $user->isAccountant()) {
+            $teams = Team::withCount('employees')->get();
+        } elseif ($user->isManager() || $user->isTeamLeader()) {
+            $assignedTeamIds = $user->assignedTeams()->pluck('teams.id');
+            $teams = Team::withCount('employees')
+                ->whereIn('id', $assignedTeamIds)
+                ->get();
+        } else {
+            $teams = collect();
+        }
+        
+        $teams = $teams->map(function ($team) {
             $team->total_loans = $team->employees->sum(function ($employee) {
                 return $employee->activeLoans()->sum('remaining_balance');
             });
@@ -28,6 +41,19 @@ class LoanController extends Controller
 
     public function showTeam($teamId)
     {
+        $user = auth()->user();
+        
+        if (!$user->isAdmin() && !$user->isAccountant()) {
+            if ($user->isManager() || $user->isTeamLeader()) {
+                $assignedTeamIds = $user->assignedTeams()->pluck('teams.id');
+                if (!$assignedTeamIds->contains($teamId)) {
+                    abort(403, 'Unauthorized access.');
+                }
+            } else {
+                abort(403, 'Unauthorized access.');
+            }
+        }
+        
         $team = Team::with(['employees.user', 'employees.loans' => function ($query) {
             $query->where('status', 'active')->where('remaining_balance', '>', 0);
         }])->findOrFail($teamId);
