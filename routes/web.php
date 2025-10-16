@@ -16,7 +16,7 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
     
-    Route::middleware('role:admin,team-leader,manager,hr,accountant')->group(function () {
+    Route::middleware('role:admin,team-leader,manager,hr')->group(function () {
         Route::get('/employees', [App\Http\Controllers\EmployeeController::class, 'index'])->name('employees.index');
     });
     Route::post('/employees', [App\Http\Controllers\EmployeeController::class, 'store'])->name('employees.store')->middleware('role:admin,team-leader');
