@@ -52,6 +52,32 @@ class TeamController extends Controller
         return redirect()->route('teams.index')->with('success', 'Team created successfully!');
     }
 
+    public function update(Request $request, $id)
+    {
+        $team = Team::findOrFail($id);
+        
+        $request->validate([
+            'name' => 'required|string|max:255|unique:teams,name,' . $id,
+        ]);
+
+        $team->update([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('teams.index')->with('success', 'Team updated successfully!');
+    }
+
+    public function destroy($id)
+    {
+        $team = Team::findOrFail($id);
+        
+        $team->employees()->update(['team_id' => null]);
+        
+        $team->delete();
+
+        return redirect()->route('teams.index')->with('success', 'Team deleted successfully!');
+    }
+
     public function show($id)
     {
         $currentMonth = now()->month;

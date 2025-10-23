@@ -27,6 +27,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/teams/{id}', [App\Http\Controllers\TeamController::class, 'show'])->name('teams.show');
     });
     Route::post('/teams', [App\Http\Controllers\TeamController::class, 'store'])->name('teams.store')->middleware('role:admin');
+    Route::put('/teams/{id}', [App\Http\Controllers\TeamController::class, 'update'])->name('teams.update')->middleware('role:admin');
+    Route::delete('/teams/{id}', [App\Http\Controllers\TeamController::class, 'destroy'])->name('teams.destroy')->middleware('role:admin');
     Route::post('/teams/{id}/assign', [App\Http\Controllers\TeamController::class, 'assignEmployee'])->name('teams.assign')->middleware('role:admin,team-leader');
     Route::delete('/teams/{teamId}/remove/{employeeId}', [App\Http\Controllers\TeamController::class, 'removeEmployee'])->name('teams.remove')->middleware('role:admin,team-leader');
     Route::post('/teams/{teamId}/working-days', [App\Http\Controllers\TeamController::class, 'updateWorkingDays'])->name('teams.updateWorkingDays')->middleware('role:admin,manager,team-leader');

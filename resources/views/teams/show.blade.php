@@ -13,7 +13,7 @@
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                     <div id="sidebar-logo" class="flex items-center space-x-3">
-                        <div class="flex items-center justify-center w-10 h-10 bg-blue-600 rounded-lg flex-shrink-0">
+                        <div class="flex items-center justify-center w-10 h-10 bg-teal-600 rounded-lg flex-shrink-0">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
@@ -59,8 +59,8 @@
                         @endif
                         @if(auth()->user()->isAdmin() || auth()->user()->isManager() || auth()->user()->isTeamLeader())
                         <li>
-                            <a href="{{ route('teams.index') }}" class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/20 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors">
-                                <svg class="w-5 h-5 flex-shrink-0 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <a href="{{ route('teams.index') }}" class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 bg-teal-50 dark:bg-teal-900/20 rounded-lg hover:bg-teal-100 dark:hover:bg-teal-900/30 transition-colors">
+                                <svg class="w-5 h-5 flex-shrink-0 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                 </svg>
                                 <span class="sidebar-text font-medium">Teams</span>
@@ -88,16 +88,16 @@
                         </li>
                         @endif
                         <li>
-                            <a href="{{ route('requests.index') }}" class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors {{ request()->routeIs('requests.*') ? 'bg-blue-50 dark:bg-blue-900/20' : '' }}">
-                                <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('requests.*') ? 'text-blue-600 dark:text-blue-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <a href="{{ route('requests.index') }}" class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors {{ request()->routeIs('requests.*') ? 'bg-teal-50 dark:bg-teal-900/20' : '' }}">
+                                <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('requests.*') ? 'text-teal-600 dark:text-teal-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
                                 <span class="sidebar-text {{ request()->routeIs('requests.*') ? 'font-medium' : '' }}">Requests</span>
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('notifications.index') }}" class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors {{ request()->routeIs('notifications.*') ? 'bg-blue-50 dark:bg-blue-900/20' : '' }}">
-                                <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('notifications.*') ? 'text-blue-600 dark:text-blue-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <a href="{{ route('notifications.index') }}" class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors {{ request()->routeIs('notifications.*') ? 'bg-teal-50 dark:bg-teal-900/20' : '' }}">
+                                <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('notifications.*') ? 'text-teal-600 dark:text-teal-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                                 </svg>
                                 <span class="sidebar-text {{ request()->routeIs('notifications.*') ? 'font-medium' : '' }}">Notifications</span>
@@ -107,8 +107,8 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('calendar') }}" class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors {{ request()->routeIs('calendar') ? 'bg-blue-50 dark:bg-blue-900/20' : '' }}">
-                                <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('calendar') ? 'text-blue-600 dark:text-blue-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <a href="{{ route('calendar') }}" class="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors {{ request()->routeIs('calendar') ? 'bg-teal-50 dark:bg-teal-900/20' : '' }}">
+                                <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('calendar') ? 'text-teal-600 dark:text-teal-400' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
                                 <span class="sidebar-text {{ request()->routeIs('calendar') ? 'font-medium' : '' }}">Calendar</span>
@@ -129,7 +129,7 @@
                             </svg>
                         </button>
                         <div class="flex items-center space-x-3">
-                            <div class="flex items-center justify-center w-8 h-8 bg-blue-600 rounded-lg">
+                            <div class="flex items-center justify-center w-8 h-8 bg-teal-600 rounded-lg">
                                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                                 </svg>
@@ -156,7 +156,7 @@
 
                         <div class="relative">
                             <button id="profile-menu-btn" class="flex items-center space-x-3 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                                <div class="flex items-center justify-center w-8 h-8 bg-blue-600 rounded-full text-white font-semibold">
+                                <div class="flex items-center justify-center w-8 h-8 bg-teal-600 rounded-full text-white font-semibold">
                                     {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                                 </div>
                                 <span class="hidden md:block font-medium">{{ Auth::user()->name }}</span>
@@ -191,7 +191,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <div>
                             <div class="flex items-center space-x-3">
-                                <a href="{{ route('teams.index') }}" class="text-blue-600 hover:text-blue-700">
+                                <a href="{{ route('teams.index') }}" class="text-teal-600 hover:text-teal-700">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                     </svg>
@@ -210,7 +210,7 @@
 
                     <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
                         <nav class="flex space-x-8">
-                            <button onclick="showTab('employees')" id="employees-tab" class="px-3 py-2 border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 font-medium">
+                            <button onclick="showTab('employees')" id="employees-tab" class="px-3 py-2 border-b-2 border-teal-600 text-teal-600 dark:text-teal-400 font-medium">
                                 Employees
                             </button>
                             <button onclick="showTab('salary')" id="salary-tab" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
@@ -227,8 +227,8 @@
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Total Employees</p>
                                     <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mt-1">{{ $team->employees->count() }}</p>
                                 </div>
-                                <div class="flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-                                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="flex items-center justify-center w-12 h-12 bg-teal-100 dark:bg-teal-900/20 rounded-lg">
+                                    <svg class="w-6 h-6 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                                     </svg>
                                 </div>
@@ -281,10 +281,10 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Final Pay (After EMI)</p>
-                                    <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-blue-600 dark:text-blue-400 mt-1">₹{{ number_format($totalFinalPay, 2) }}</p>
+                                    <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-teal-600 dark:text-teal-400 mt-1">₹{{ number_format($totalFinalPay, 2) }}</p>
                                 </div>
-                                <div class="flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-                                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="flex items-center justify-center w-12 h-12 bg-teal-100 dark:bg-teal-900/20 rounded-lg">
+                                    <svg class="w-6 h-6 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                     </svg>
                                 </div>
@@ -299,14 +299,14 @@
                             @csrf
                             <div class="flex-1">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Employee</label>
-                                <select name="employee_id" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                                <select name="employee_id" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:text-white">
                                     <option value="">Choose an employee...</option>
                                     @foreach($unassignedEmployees as $employee)
                                     <option value="{{ $employee->id }}">{{ $employee->user->name }} ({{ $employee->user->mobile }})</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                            <button type="submit" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors">
                                 Assign
                             </button>
                         </form>
@@ -330,7 +330,7 @@
                             @endphp
                             <div class="p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                 <div class="flex items-center space-x-4">
-                                    <div class="flex items-center justify-center w-12 h-12 bg-blue-600 rounded-full text-white font-semibold text-base md:text-lg">
+                                    <div class="flex items-center justify-center w-12 h-12 bg-teal-600 rounded-full text-white font-semibold text-base md:text-lg">
                                         {{ strtoupper(substr($employee->user->name, 0, 1)) }}
                                     </div>
                                     <div>
@@ -357,7 +357,7 @@
                                                     value="{{ $currentWorkingDays }}" 
                                                     min="0" 
                                                     max="31" 
-                                                    class="w-20 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                                                    class="w-20 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:text-white"
                                                     onchange="this.form.submit()"
                                                 >
                                             </div>
@@ -373,7 +373,7 @@
                                     </div>
                                     <div class="text-right">
                                         <p class="text-sm text-gray-600 dark:text-gray-400">Final Pay</p>
-                                        <p class="font-semibold text-blue-600 dark:text-blue-400">₹{{ number_format($finalPay, 2) }}</p>
+                                        <p class="font-semibold text-teal-600 dark:text-teal-400">₹{{ number_format($finalPay, 2) }}</p>
                                     </div>
                                     <form action="{{ route('teams.remove', [$team->id, $employee->id]) }}" method="POST">
                                         @csrf
@@ -418,7 +418,7 @@
                                         <h2 class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">Salary Settings - {{ date('F Y', mktime(0, 0, 0, $currentMonth, 1, $currentYear)) }}</h2>
                                         <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Update working days and EMI deduction settings for all team members</p>
                                     </div>
-                                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors">
+                                    <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg transition-colors">
                                         Save All Changes
                                     </button>
                                 </div>
@@ -453,7 +453,7 @@
                                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                                                 <td class="px-6 py-4 whitespace-nowrap">
                                                     <div class="flex items-center">
-                                                        <div class="flex items-center justify-center w-10 h-10 bg-blue-600 rounded-full text-white font-semibold text-sm mr-3">
+                                                        <div class="flex items-center justify-center w-10 h-10 bg-teal-600 rounded-full text-white font-semibold text-sm mr-3">
                                                             {{ strtoupper(substr($employee->user->name, 0, 1)) }}
                                                         </div>
                                                         <div>
@@ -471,7 +471,7 @@
                                                            value="{{ $currentWorkingDays }}" 
                                                            min="0" 
                                                            max="31" 
-                                                           class="w-20 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                                                           class="w-20 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:text-white">
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
                                                     <span class="text-sm font-semibold text-green-600 dark:text-green-400">
@@ -485,7 +485,7 @@
                                                                value="1"
                                                                {{ $shouldDeductEmi ? 'checked' : '' }}
                                                                class="sr-only peer">
-                                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-teal-300 dark:peer-focus:ring-teal-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600"></div>
                                                     </label>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -494,7 +494,7 @@
                                                     </span>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
-                                                    <span class="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                                                    <span class="text-sm font-semibold text-teal-600 dark:text-teal-400">
                                                         ₹{{ number_format($finalPay, 2) }}
                                                     </span>
                                                 </td>
@@ -525,11 +525,11 @@
             document.getElementById(tabName + '-content').classList.remove('hidden');
             
             document.querySelectorAll('[id$="-tab"]').forEach(btn => {
-                btn.classList.remove('border-blue-600', 'text-blue-600', 'dark:text-blue-400', 'font-medium');
+                btn.classList.remove('border-teal-600', 'text-teal-600', 'dark:text-teal-400', 'font-medium');
                 btn.classList.add('border-transparent', 'text-gray-600', 'dark:text-gray-400');
             });
             
-            document.getElementById(tabName + '-tab').classList.add('border-blue-600', 'text-blue-600', 'dark:text-blue-400', 'font-medium');
+            document.getElementById(tabName + '-tab').classList.add('border-teal-600', 'text-teal-600', 'dark:text-teal-400', 'font-medium');
             document.getElementById(tabName + '-tab').classList.remove('border-transparent', 'text-gray-600', 'dark:text-gray-400');
         }
 
