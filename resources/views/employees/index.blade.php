@@ -300,17 +300,17 @@
             }
         }
 
-        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarToggle?.addEventListener('click', toggleSidebar);
         if (mobileMenuToggle) {
             mobileMenuToggle.addEventListener('click', toggleSidebar);
         }
 
-        profileMenuBtn.addEventListener('click', () => {
-            profileDropdown.classList.toggle('hidden');
+        profileMenuBtn?.addEventListener('click', () => {
+            profileDropdown?.classList.toggle('hidden');
         });
 
         document.addEventListener('click', (e) => {
-            if (!profileMenuBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+            if (profileMenuBtn && profileDropdown && !profileMenuBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
                 profileDropdown.classList.add('hidden');
             }
         });
@@ -322,19 +322,19 @@
         const closeModalBtn = document.getElementById('close-modal-btn');
         const cancelBtn = document.getElementById('cancel-btn');
 
-        addEmployeeBtn.addEventListener('click', () => {
-            modal.classList.remove('hidden');
+        addEmployeeBtn?.addEventListener('click', () => {
+            modal?.classList.remove('hidden');
             if (document.querySelectorAll('.bank-account-item').length === 0) {
                 addBankAccount();
             }
         });
 
-        closeModalBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
+        closeModalBtn?.addEventListener('click', () => {
+            modal?.classList.add('hidden');
         });
 
-        cancelBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
+        cancelBtn?.addEventListener('click', () => {
+            modal?.classList.add('hidden');
         });
 
         let bankAccountIndex = 0;
@@ -381,15 +381,15 @@
             bankAccountIndex++;
         }
 
-        document.getElementById('add-bank-account-btn').addEventListener('click', addBankAccount);
+        document.getElementById('add-bank-account-btn')?.addEventListener('click', addBankAccount);
 
-        document.getElementById('bank-accounts-container').addEventListener('click', (e) => {
+        document.getElementById('bank-accounts-container')?.addEventListener('click', (e) => {
             if (e.target.classList.contains('remove-bank-account')) {
                 e.target.closest('.bank-account-item').remove();
             }
         });
 
-        document.getElementById('bank-accounts-container').addEventListener('change', (e) => {
+        document.getElementById('bank-accounts-container')?.addEventListener('change', (e) => {
             if (e.target.name === 'default_bank') {
                 document.querySelectorAll('.is-default-input').forEach(input => {
                     input.value = '0';
@@ -431,9 +431,9 @@
             documentIndex++;
         }
 
-        document.getElementById('add-document-btn').addEventListener('click', addDocument);
+        document.getElementById('add-document-btn')?.addEventListener('click', addDocument);
 
-        document.getElementById('documents-container').addEventListener('click', (e) => {
+        document.getElementById('documents-container')?.addEventListener('click', (e) => {
             if (e.target.classList.contains('remove-document')) {
                 e.target.closest('.document-item').remove();
             }
