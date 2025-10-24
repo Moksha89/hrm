@@ -180,9 +180,9 @@
                             <input type="email" name="email" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Team *</label>
-                            <select name="team_id" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
-                                <option value="">Select Team</option>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Team</label>
+                            <select name="team_id" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                                <option value="">Select Team (Optional)</option>
                                 @foreach($teams as $team)
                                 <option value="{{ $team->id }}">{{ $team->name }}</option>
                                 @endforeach

@@ -43,7 +43,7 @@ class EmployeeController extends Controller
             DB::beginTransaction();
             
             $teamId = $request->team_id;
-            if (auth()->user()->isTeamLeader() && !auth()->user()->isAdmin()) {
+            if ($teamId && auth()->user()->isTeamLeader() && !auth()->user()->isAdmin()) {
                 $assignedTeamIds = auth()->user()->assignedTeams()->pluck('teams.id');
                 if (!$assignedTeamIds->contains($teamId)) {
                     return back()->withErrors(['error' => 'You can only assign employees to your own teams.'])->withInput();
