@@ -47,9 +47,42 @@
                     </div>
                     @endif
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="mb-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+                        <div class="flex flex-wrap gap-4">
+                            <div class="flex-1 min-w-[200px]">
+                                <input type="text" id="search-employee" placeholder="Search by name or mobile..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:text-white">
+                            </div>
+                            <div class="min-w-[150px]">
+                                <select id="filter-status" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:text-white">
+                                    <option value="">All Statuses</option>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                    <option value="resigned">Resigned</option>
+                                </select>
+                            </div>
+                            <div class="min-w-[150px]">
+                                <select id="filter-team" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:text-white">
+                                    <option value="">All Teams</option>
+                                    @foreach($teams as $team)
+                                    <option value="{{ $team->id }}">{{ $team->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <button id="clear-filters" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
+                                Clear Filters
+                            </button>
+                        </div>
+                        <div id="filter-results" class="mt-3 text-sm text-gray-600 dark:text-gray-400"></div>
+                    </div>
+
+                    <div id="employees-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @forelse($employees as $employee)
-                        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow">
+                        <div data-employee-card 
+                             data-employee-name="{{ strtolower($employee->user->name) }}" 
+                             data-employee-mobile="{{ $employee->user->mobile }}" 
+                             data-employee-status="{{ $employee->status }}" 
+                             data-employee-team="{{ $employee->team_id ?? '' }}"
+                             class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow">
                             <div class="flex items-center justify-between mb-4">
                                 <div class="flex items-center space-x-4 flex-1">
                                     <div class="flex items-center justify-center w-12 h-12 bg-teal-600 rounded-full text-white font-semibold text-base md:text-lg flex-shrink-0">
@@ -487,6 +520,60 @@
                 html.classList.add('dark');
                 localStorage.theme = 'dark';
             }
+        });
+
+        const searchInput = document.getElementById('search-employee');
+        const statusFilter = document.getElementById('filter-status');
+        const teamFilter = document.getElementById('filter-team');
+        const clearFiltersBtn = document.getElementById('clear-filters');
+        const filterResults = document.getElementById('filter-results');
+        const employeesGrid = document.getElementById('employees-grid');
+        
+        function filterEmployees() {
+            const searchTerm = searchInput?.value.toLowerCase() || '';
+            const statusValue = statusFilter?.value || '';
+            const teamValue = teamFilter?.value || '';
+            
+            const employeeCards = employeesGrid?.querySelectorAll('[data-employee-card]') || [];
+            let visibleCount = 0;
+            let totalCount = employeeCards.length;
+            
+            employeeCards.forEach(card => {
+                const name = card.dataset.employeeName?.toLowerCase() || '';
+                const mobile = card.dataset.employeeMobile?.toLowerCase() || '';
+                const status = card.dataset.employeeStatus || '';
+                const teamId = card.dataset.employeeTeam || '';
+                
+                const matchesSearch = !searchTerm || name.includes(searchTerm) || mobile.includes(searchTerm);
+                const matchesStatus = !statusValue || status === statusValue;
+                const matchesTeam = !teamValue || teamId === teamValue;
+                
+                if (matchesSearch && matchesStatus && matchesTeam) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            if (filterResults) {
+                if (searchTerm || statusValue || teamValue) {
+                    filterResults.textContent = `Showing ${visibleCount} of ${totalCount} employees`;
+                } else {
+                    filterResults.textContent = '';
+                }
+            }
+        }
+        
+        searchInput?.addEventListener('input', filterEmployees);
+        statusFilter?.addEventListener('change', filterEmployees);
+        teamFilter?.addEventListener('change', filterEmployees);
+        
+        clearFiltersBtn?.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            if (statusFilter) statusFilter.value = '';
+            if (teamFilter) teamFilter.value = '';
+            filterEmployees();
         });
 
         function confirmDelete(employeeId, employeeName) {
