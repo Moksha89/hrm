@@ -141,9 +141,11 @@
                             </svg>
                             <h3 class="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">No employees yet</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">Get started by adding your first employee.</p>
+                            @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader())
                             <button onclick="document.getElementById('add-employee-btn').click()" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-colors">
                                 Add Employee
                             </button>
+                            @endif
                         </div>
                         @endforelse
                     </div>
