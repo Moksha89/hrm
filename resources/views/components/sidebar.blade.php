@@ -48,7 +48,7 @@
                 </li>
                 @endif
                 
-                @if(auth()->user()->isAdmin() || auth()->user()->isAccountant())
+                @if(auth()->user()->isAdmin() || auth()->user()->isAccountant() || auth()->user()->isManager())
                 <li>
                     <a href="{{ route('payments.index') }}" class="flex items-center justify-center px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-700 transition-colors {{ request()->routeIs('payments.*') ? 'text-teal-400 bg-gray-700' : '' }}" title="Payments">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
