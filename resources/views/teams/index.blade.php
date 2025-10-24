@@ -21,12 +21,14 @@
                             <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">Teams</h1>
                             <p class="text-gray-600 dark:text-gray-400 mt-1">Manage your organization's teams</p>
                         </div>
+                        @if(auth()->user()->isAdmin())
                         <button id="add-team-btn" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
                             <span>Create Team</span>
                         </button>
+                        @endif
                     </div>
 
                     @if(session('success'))
@@ -76,6 +78,7 @@
                                     <span class="font-medium text-gray-900 dark:text-white">₹{{ number_format($team->total_loan, 2) }}</span>
                                 </div>
                             </div>
+                            @if(auth()->user()->isAdmin())
                             <div class="flex items-center justify-end space-x-2 pt-4 border-t border-gray-200 dark:border-gray-700">
                                 <button onclick="openEditModal({{ $team->id }}, '{{ addslashes($team->name) }}')" class="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors flex items-center space-x-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,6 +93,7 @@
                                     <span>Delete</span>
                                 </button>
                             </div>
+                            @endif
                         </div>
                         @empty
                         <div class="col-span-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-12 text-center">
@@ -98,9 +102,11 @@
                             </svg>
                             <h3 class="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">No teams yet</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">Get started by creating your first team.</p>
+                            @if(auth()->user()->isAdmin())
                             <button onclick="document.getElementById('add-team-btn').click()" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-colors">
                                 Create Team
                             </button>
+                            @endif
                         </div>
                         @endforelse
                     </div>
