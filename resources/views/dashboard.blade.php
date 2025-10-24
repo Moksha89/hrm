@@ -25,7 +25,7 @@
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">Total Employees</p>
-                                        <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">0</p>
+                                        <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ $totalEmployees }}</p>
                                     </div>
                                     <div class="w-12 h-12 bg-teal-100 dark:bg-teal-900/20 rounded-lg flex items-center justify-center">
                                         <svg class="w-6 h-6 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,7 +39,7 @@
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">Active Teams</p>
-                                        <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">0</p>
+                                        <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ $activeTeams }}</p>
                                     </div>
                                     <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
                                         <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,7 +53,7 @@
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">Pending Requests</p>
-                                        <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">0</p>
+                                        <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ $pendingRequests }}</p>
                                     </div>
                                     <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center">
                                         <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,7 +67,7 @@
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">Total Payments</p>
-                                        <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">₹0</p>
+                                        <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">₹{{ number_format($totalPayments, 2) }}</p>
                                     </div>
                                     <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
                                         <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

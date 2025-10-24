@@ -12,9 +12,7 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
     
     Route::middleware('role:admin,team-leader,manager,hr')->group(function () {
         Route::get('/employees', [App\Http\Controllers\EmployeeController::class, 'index'])->name('employees.index');
