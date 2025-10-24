@@ -35,6 +35,131 @@ class EmployeeController extends Controller
         return view('employees.index', compact('employees', 'teams'));
     }
 
+    public function show($id)
+    {
+        $employee = Employee::with(['user', 'team', 'bankAccounts', 'documents', 'loans.loanPayments', 'salaryPayments', 'activities.performedBy'])->findOrFail($id);
+        
+        $this->authorize('view', $employee);
+        
+        return view('employees.show', compact('employee'));
+    }
+
+    public function edit($id)
+    {
+        $employee = Employee::with(['user', 'bankAccounts'])->findOrFail($id);
+        
+        $this->authorize('update', $employee);
+        
+        $teams = Team::all();
+        
+        return view('employees.edit', compact('employee', 'teams'));
+    }
+
+    public function update(StoreEmployeeRequest $request, $id)
+    {
+        $employee = Employee::findOrFail($id);
+        
+        $this->authorize('update', $employee);
+        
+        try {
+            DB::beginTransaction();
+            
+            $teamId = $request->team_id;
+            if ($teamId && auth()->user()->isTeamLeader() && !auth()->user()->isAdmin()) {
+                $assignedTeamIds = auth()->user()->assignedTeams()->pluck('teams.id');
+                if (!$assignedTeamIds->contains($teamId)) {
+                    return back()->withErrors(['error' => 'You can only assign employees to your own teams.'])->withInput();
+                }
+            }
+
+            $employee->user->update([
+                'name' => $request->name,
+                'mobile' => $request->mobile,
+                'email' => $request->email,
+            ]);
+
+            $oldTeamId = $employee->team_id;
+            $employee->update([
+                'team_id' => $request->team_id,
+                'salary' => $request->salary,
+                'loan' => $request->loan,
+                'emi' => $request->emi,
+                'aadhar' => $request->aadhar,
+                'pan' => $request->pan,
+                'dob' => $request->dob,
+                'date_of_joining' => $request->date_of_joining,
+            ]);
+
+            if ($oldTeamId != $request->team_id) {
+                \App\Models\EmployeeActivity::create([
+                    'employee_id' => $employee->id,
+                    'activity_type' => 'team_changed',
+                    'description' => 'Employee team changed',
+                    'data' => [
+                        'old_team_id' => $oldTeamId,
+                        'new_team_id' => $request->team_id,
+                    ],
+                    'performed_by' => auth()->id(),
+                ]);
+            }
+
+            if ($request->has('bank_accounts')) {
+                $employee->bankAccounts()->delete();
+                foreach ($request->bank_accounts as $bankAccount) {
+                    BankAccount::create([
+                        'employee_id' => $employee->id,
+                        'account_holder_name' => $bankAccount['account_holder_name'],
+                        'account_number' => $bankAccount['account_number'],
+                        'ifsc_code' => $bankAccount['ifsc_code'],
+                        'bank_name' => $bankAccount['bank_name'],
+                        'is_default' => isset($bankAccount['is_default']) ? (bool)$bankAccount['is_default'] : false,
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('employees.show', $employee->id)->with('success', 'Employee updated successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Failed to update employee: ' . $e->getMessage()])->withInput();
+        }
+    }
+
+    public function destroy($id)
+    {
+        $employee = Employee::findOrFail($id);
+        
+        $this->authorize('delete', $employee);
+        
+        try {
+            DB::beginTransaction();
+            
+            \App\Models\EmployeeActivity::create([
+                'employee_id' => $employee->id,
+                'activity_type' => 'deleted',
+                'description' => 'Employee record deleted',
+                'data' => [
+                    'name' => $employee->user->name,
+                    'mobile' => $employee->user->mobile,
+                ],
+                'performed_by' => auth()->id(),
+            ]);
+            
+            $employee->bankAccounts()->delete();
+            $employee->documents()->delete();
+            $employee->user()->delete();
+            $employee->delete();
+            
+            DB::commit();
+            
+            return redirect()->route('employees.index')->with('success', 'Employee deleted successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Failed to delete employee: ' . $e->getMessage()]);
+        }
+    }
+
     public function store(StoreEmployeeRequest $request)
     {
         $this->authorize('create', Employee::class);

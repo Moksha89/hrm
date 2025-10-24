@@ -16,8 +16,12 @@ Route::middleware('auth')->group(function () {
     
     Route::middleware('role:admin,team-leader,manager,hr')->group(function () {
         Route::get('/employees', [App\Http\Controllers\EmployeeController::class, 'index'])->name('employees.index');
+        Route::get('/employees/{id}', [App\Http\Controllers\EmployeeController::class, 'show'])->name('employees.show');
     });
     Route::post('/employees', [App\Http\Controllers\EmployeeController::class, 'store'])->name('employees.store')->middleware('role:admin,team-leader');
+    Route::get('/employees/{id}/edit', [App\Http\Controllers\EmployeeController::class, 'edit'])->name('employees.edit')->middleware('role:admin,team-leader');
+    Route::put('/employees/{id}', [App\Http\Controllers\EmployeeController::class, 'update'])->name('employees.update')->middleware('role:admin,team-leader');
+    Route::delete('/employees/{id}', [App\Http\Controllers\EmployeeController::class, 'destroy'])->name('employees.destroy')->middleware('role:admin');
     Route::post('/employees/{id}/status/{status}', [App\Http\Controllers\EmployeeController::class, 'updateStatus'])->name('employees.updateStatus')->middleware('role:admin,team-leader');
     
     Route::middleware('role:admin,manager,team-leader')->group(function () {
