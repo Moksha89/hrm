@@ -21,12 +21,14 @@
                             <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">Employees</h1>
                             <p class="text-gray-600 dark:text-gray-400 mt-1">Manage your organization's employees</p>
                         </div>
+                        @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader())
                         <button id="add-employee-btn" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
                             <span>Add Employee</span>
                         </button>
+                        @endif
                     </div>
 
                     @if(session('success'))

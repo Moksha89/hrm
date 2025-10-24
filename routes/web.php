@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/loans/{loanId}/activate', [App\Http\Controllers\LoanController::class, 'activateLoan'])->name('loans.activate')->middleware('role:admin');
     Route::post('/loans/payment/{paymentId}/mark-paid', [App\Http\Controllers\LoanController::class, 'markPaymentPaid'])->name('loans.markPaymentPaid')->middleware('role:admin,accountant');
     
-    Route::middleware('role:admin,accountant')->group(function () {
+    Route::middleware('role:admin,accountant,manager')->group(function () {
         Route::get('/payments', [App\Http\Controllers\PaymentController::class, 'index'])->name('payments.index');
         Route::get('/payments/salaries', [App\Http\Controllers\PaymentController::class, 'salaries'])->name('payments.salaries');
         Route::get('/payments/salary/teams', [App\Http\Controllers\PaymentController::class, 'salaryTeams'])->name('payments.salary.teams');
