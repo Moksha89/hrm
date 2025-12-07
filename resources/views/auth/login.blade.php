@@ -6,11 +6,11 @@
     <title>{{ config('app.name') }} - Login</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+<body class="bg-neutral-100 dark:bg-neutral-950 transition-colors duration-200">
     <div class="min-h-screen flex items-center justify-center px-4 py-12">
         <div class="max-w-md w-full">
             <div class="text-right mb-4">
-                <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+                <button id="theme-toggle" type="button" class="text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800 focus:outline-none focus:ring-4 focus:ring-neutral-300 dark:focus:ring-neutral-700 rounded-lg text-sm p-2.5">
                     <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
                     </svg>
@@ -20,22 +20,22 @@
                 </button>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 shadow-xl rounded-lg p-8">
+            <div class="bg-white dark:bg-neutral-900 shadow-xl rounded-xl border border-neutral-200 dark:border-neutral-800 p-8">
                 <div class="text-center mb-8">
-                    <div class="inline-flex items-center justify-center w-20 h-20 bg-blue-600 rounded-full mb-4">
-                        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="inline-flex items-center justify-center w-20 h-20 bg-amber-500 rounded-full mb-4">
+                        <svg class="w-12 h-12 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>
                     </div>
-                    <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">{{ config('app.name') }}</h2>
-                    <p class="mt-2 text-gray-600 dark:text-gray-400">Sign in to your account</p>
+                    <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-white">{{ config('app.name') }}</h2>
+                    <p class="mt-2 text-neutral-600 dark:text-neutral-400">Sign in to your account</p>
                 </div>
 
                 <form method="POST" action="{{ route('login') }}" class="space-y-6">
                     @csrf
 
                     <div>
-                        <label for="mobile" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label for="mobile" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                             Mobile Number
                         </label>
                         <input 
@@ -45,7 +45,7 @@
                             value="{{ old('mobile') }}"
                             required 
                             autofocus 
-                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors @error('mobile') border-red-500 @enderror"
+                            class="w-full px-4 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white transition-colors @error('mobile') border-red-500 @enderror"
                             placeholder="Enter your mobile number"
                         >
                         @error('mobile')
@@ -54,7 +54,7 @@
                     </div>
 
                     <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label for="password" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                             Password
                         </label>
                         <input 
@@ -62,7 +62,7 @@
                             type="password" 
                             name="password" 
                             required 
-                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors"
+                            class="w-full px-4 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white transition-colors"
                             placeholder="Enter your password"
                         >
                     </div>
@@ -72,16 +72,16 @@
                             id="remember" 
                             name="remember" 
                             type="checkbox" 
-                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded dark:border-gray-600 dark:bg-gray-700"
+                            class="h-4 w-4 text-amber-500 focus:ring-amber-500 border-neutral-300 rounded dark:border-neutral-600 dark:bg-neutral-800"
                         >
-                        <label for="remember" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                        <label for="remember" class="ml-2 block text-sm text-neutral-700 dark:text-neutral-300">
                             Remember me
                         </label>
                     </div>
 
                     <button 
                         type="submit" 
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                        class="w-full bg-amber-500 hover:bg-amber-400 text-black font-semibold py-3 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-900"
                     >
                         Sign In
                     </button>
