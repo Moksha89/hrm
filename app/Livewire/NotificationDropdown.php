@@ -11,9 +11,11 @@ class NotificationDropdown extends Component
 {
     public bool $isOpen = false;
     public int $unreadCount = 0;
+    public int $userId;
 
     public function mount()
     {
+        $this->userId = Auth::id();
         $this->loadUnreadCount();
     }
 
