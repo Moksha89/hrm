@@ -1,36 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile - HRM</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-50 dark:bg-gray-900">
-    <div class="flex h-screen overflow-hidden">
-        @include('components.sidebar')
+@extends('layouts.app')
 
-        <div class="flex-1 flex flex-col overflow-hidden ml-20">
-            @include('components.header')
+@section('title', 'My Profile')
 
-            <main class="flex-1 overflow-y-auto p-6">
-                @if(session('success'))
-                    <div class="mb-4 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 rounded-lg">
-                        {{ session('success') }}
-                    </div>
-                @endif
+@section('content')
+<div class="max-w-7xl mx-auto">
+    <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">My Profile</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-1">View your personal information and financial summary</p>
+    </div>
 
-                @if($errors->any())
-                    <div class="mb-4 p-4 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 rounded-lg">
-                        <ul class="list-disc list-inside">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6">
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 bg-blue-500 rounded-lg p-3">
@@ -249,43 +228,5 @@
                         </div>
                     </div>
                 </div>
-            </main>
-        </div>
-    </div>
-
-    <script>
-        function toggleProfileDropdown() {
-            const dropdown = document.getElementById('profileDropdown');
-            dropdown.classList.toggle('hidden');
-        }
-
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('profileDropdown');
-            const button = event.target.closest('button');
-            
-            if (!button || button.getAttribute('onclick') !== 'toggleProfileDropdown()') {
-                dropdown.classList.add('hidden');
-            }
-        });
-
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
-        const html = document.documentElement;
-
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            html.classList.add('dark');
-        } else {
-            html.classList.remove('dark');
-        }
-
-        darkModeToggle?.addEventListener('click', () => {
-            if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                localStorage.theme = 'light';
-            } else {
-                html.classList.add('dark');
-                localStorage.theme = 'dark';
-            }
-        });
-    </script>
-</body>
-</html>
+</div>
+@endsection

@@ -1,21 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name') }} - Teams</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-[#f8fafc] dark:bg-gray-900 overflow-hidden">
-    <div class="flex h-screen">
-        <x-sidebar />
+@extends('layouts.app')
 
-        <div class="flex-1 flex flex-col ml-20">
-            <x-header breadcrumb="Teams" />
+@section('title', 'Teams')
 
-            <main class="flex-1 overflow-y-auto mt-16 p-6">
-                <div class="max-w-7xl mx-auto">
+@section('content')
+<div class="max-w-7xl mx-auto">
                     <div class="flex items-center justify-between mb-6">
                         <div>
                             <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">Teams</h1>
@@ -111,11 +99,8 @@
                         @endforelse
                     </div>
                 </div>
-            </main>
-        </div>
-    </div>
 
-    <div id="add-team-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div id="add-team-modal"class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
             <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                 <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Create New Team</h2>
@@ -317,5 +302,4 @@
             }
         });
     </script>
-</body>
-</html>
+@endsection

@@ -1,21 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name') }} - Employees</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-[#f8fafc] dark:bg-gray-900 overflow-hidden">
-    <div class="flex h-screen">
-        <x-sidebar />
+@extends('layouts.app')
 
-        <div class="flex-1 flex flex-col ml-20">
-            <x-header breadcrumb="Employees" />
+@section('title', 'Employees')
 
-            <main class="flex-1 overflow-y-auto mt-16 p-6">
-                <div class="max-w-7xl mx-auto">
+@section('content')
+<div class="max-w-7xl mx-auto">
                     <div class="flex items-center justify-between mb-6">
                         <div>
                             <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">Employees</h1>
@@ -196,11 +184,8 @@
                         @endforelse
                     </div>
                 </div>
-            </main>
-        </div>
-    </div>
 
-    <div id="add-employee-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div id="add-employee-modal"class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between z-10">
                 <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Add New Employee</h2>
@@ -611,6 +596,34 @@
                 </div>
             </form>
         </div>
-    </div>
-</body>
-</html>
+@endsection
+
+@push('scripts')
+<script>
+    function toggleStatusDropdown(employeeId) {
+        const dropdown = document.getElementById(`status-dropdown-${employeeId}`);
+        document.querySelectorAll('[id^="status-dropdown-"]').forEach(d => {
+            if (d.id !== `status-dropdown-${employeeId}`) {
+                d.classList.add('hidden');
+            }
+        });
+        dropdown.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('[id^="status-dropdown-"]') && !e.target.closest('button[onclick^="toggleStatusDropdown"]')) {
+            document.querySelectorAll('[id^="status-dropdown-"]').forEach(d => d.classList.add('hidden'));
+        }
+    });
+
+    function confirmDelete(employeeId, employeeName) {
+        document.getElementById('delete-employee-name').textContent = employeeName;
+        document.getElementById('delete-employee-form').action = `/employees/${employeeId}`;
+        document.getElementById('delete-modal').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('delete-modal').classList.add('hidden');
+    }
+</script>
+@endpush

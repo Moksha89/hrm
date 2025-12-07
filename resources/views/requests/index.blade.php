@@ -1,23 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Requests - HRM</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-50 dark:bg-gray-900">
-    <div class="flex h-screen overflow-hidden">
-        @include('components.sidebar')
+@extends('layouts.app')
 
-        <div class="flex-1 flex flex-col overflow-hidden ml-20">
-            @include('components.header')
+@section('title', 'Requests')
 
-            <div class="bg-white dark:bg-gray-800 px-6 py-3 border-b border-gray-200 dark:border-gray-700">
-                <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Requests</h2>
-            </div>
-
-            <main class="flex-1 overflow-y-auto p-4 md:p-6">
+@section('content')
+<div class="max-w-7xl mx-auto">
+    <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Requests</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-1">Manage employee requests and approvals</p>
+    </div>
                 @if(session('success'))
                 <div class="mb-4 md:mb-6 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-200 rounded-lg">
                     {{ session('success') }}
@@ -114,11 +104,8 @@
                     </div>
                     @endif
                 </div>
-            </main>
-        </div>
-    </div>
 
-    <div id="createRequestModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
+    <div id="createRequestModal"class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
         <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
             <h3 class="text-lg md:text-xl font-semibold mb-4">Create Request</h3>
             <form method="POST" action="{{ route('requests.store') }}">
@@ -258,5 +245,5 @@
             modal.style.display = 'none';
         }
     </script>
-</body>
-</html>
+</div>
+@endsection
