@@ -83,10 +83,10 @@
                 <a href="{{ route($item['route']) }}" 
                    class="group relative flex items-center {{ $expanded ? 'px-3' : 'justify-center px-2' }} py-3 rounded-lg text-sm font-medium transition-all duration-200
                           {{ $isActive 
-                              ? 'bg-teal-600/20 text-teal-400' 
-                              : 'text-gray-400 hover:text-white hover:bg-gray-700/50' }}"
+                              ? 'bg-amber-500/20 text-amber-400 border-l-2 border-amber-500' 
+                              : 'text-neutral-400 hover:text-white hover:bg-neutral-800' }}"
                    @if(!$expanded) title="{{ $item['title'] }}" @endif>
-                    <svg class="w-6 h-6 flex-shrink-0 {{ $isActive ? 'text-teal-400' : 'text-gray-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 flex-shrink-0 {{ $isActive ? 'text-amber-400' : 'text-neutral-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         {!! $item['icon'] !!}
                     </svg>
                     @if($expanded)
@@ -95,8 +95,8 @@
                     
                     @if(isset($item['badge']) && $item['badge'] && auth()->user()->unreadNotifications()->count() > 0)
                     <span class="absolute {{ $expanded ? 'right-3' : 'top-2 right-2' }} flex h-5 w-5 items-center justify-center">
-                        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
-                        <span class="relative inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white font-medium">
+                        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75"></span>
+                        <span class="relative inline-flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-xs text-black font-medium">
                             {{ auth()->user()->unreadNotifications()->count() > 9 ? '9+' : auth()->user()->unreadNotifications()->count() }}
                         </span>
                     </span>
@@ -110,14 +110,14 @@
 
 <!-- User info at bottom (mobile only) -->
 @if($expanded)
-<div class="border-t border-gray-700 p-4">
+<div class="border-t border-neutral-800 p-4">
     <div class="flex items-center">
-        <div class="flex items-center justify-center w-10 h-10 bg-teal-600 rounded-full text-white font-semibold">
+        <div class="flex items-center justify-center w-10 h-10 bg-amber-500 rounded-full text-black font-semibold">
             {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
         </div>
         <div class="ml-3">
             <p class="text-sm font-medium text-white">{{ Auth::user()->name }}</p>
-            <p class="text-xs text-gray-400">{{ Auth::user()->roles->first()->name ?? 'User' }}</p>
+            <p class="text-xs text-neutral-400">{{ Auth::user()->roles->first()->name ?? 'User' }}</p>
         </div>
     </div>
 </div>
