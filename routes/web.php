@@ -78,4 +78,10 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/password/change', [App\Http\Controllers\PasswordChangeController::class, 'show'])->name('password.change');
     Route::post('/password/change', [App\Http\Controllers\PasswordChangeController::class, 'update'])->name('password.update');
+    
+    Route::middleware('role:admin,manager,team-leader,hr,accountant')->group(function () {
+        Route::get('/export/employees', [App\Http\Controllers\ExportController::class, 'employees'])->name('export.employees');
+        Route::get('/export/loans', [App\Http\Controllers\ExportController::class, 'loans'])->name('export.loans');
+        Route::get('/export/salary-history', [App\Http\Controllers\ExportController::class, 'salaryHistory'])->name('export.salaryHistory');
+    });
 });
