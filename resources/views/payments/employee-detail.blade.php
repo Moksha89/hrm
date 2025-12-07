@@ -1,31 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $employee->user->name }} - Employee Details - HRM</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-50 dark:bg-gray-900">
-    <div class="flex h-screen overflow-hidden">
-        @include('components.sidebar')
+@extends('layouts.app')
 
-        <div class="flex-1 flex flex-col overflow-hidden ml-20">
-            @include('components.header')
+@section('title', $employee->user->name . ' - Employee Details')
 
-            <div class="bg-white dark:bg-gray-800 px-6 py-3 border-b border-gray-200 dark:border-gray-700">
-                <nav class="text-sm text-gray-600 dark:text-gray-400">
-                    <a href="{{ route('payments.employees') }}" class="hover:text-gray-900 dark:hover:text-white">Payments</a>
-                    <span class="mx-2">→</span>
-                    <a href="{{ route('payments.employees') }}" class="hover:text-gray-900 dark:hover:text-white">Employees</a>
-                    <span class="mx-2">→</span>
-                    <span class="text-gray-900 dark:text-white">{{ $employee->user->name }}</span>
-                </nav>
-                <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Employee Financial Details</h2>
-            </header>
+@section('content')
+                <!-- Breadcrumb -->
+                <div class="mb-6">
+                    <nav class="text-sm text-gray-600 dark:text-gray-400">
+                        <a href="{{ route('payments.employees') }}" class="hover:text-gray-900 dark:hover:text-white">Payments</a>
+                        <span class="mx-2">→</span>
+                        <a href="{{ route('payments.employees') }}" class="hover:text-gray-900 dark:hover:text-white">Employees</a>
+                        <span class="mx-2">→</span>
+                        <span class="text-gray-900 dark:text-white">{{ $employee->user->name }}</span>
+                    </nav>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mt-2">Employee Financial Details</h2>
+                </div>
 
-            <main class="flex-1 overflow-y-auto p-6">
                 <div class="max-w-7xl mx-auto space-y-6">
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                         <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-4">Employee Information</h3>
@@ -208,41 +197,4 @@
                         @endif
                     </div>
                 </div>
-            </main>
-        </div>
-    </div>
-
-    <script>
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-        const sidebarClose = document.getElementById('sidebar-close');
-        
-        const savedState = localStorage.getItem('sidebarExpanded');
-        if (savedState === 'false') {
-            sidebar.classList.add('collapsed');
-        }
-        
-        function toggleSidebar() {
-            sidebar.classList.toggle('collapsed');
-            const isExpanded = !sidebar.classList.contains('collapsed');
-            localStorage.setItem('sidebarExpanded', isExpanded);
-        }
-        
-        sidebarToggle?.addEventListener('click', toggleSidebar);
-        sidebarClose?.addEventListener('click', toggleSidebar);
-
-        const profileMenuBtn = document.getElementById('profile-menu-btn');
-        const profileDropdown = document.getElementById('profile-dropdown');
-
-        profileMenuBtn?.addEventListener('click', () => {
-            profileDropdown.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!profileMenuBtn?.contains(e.target) && !profileDropdown?.contains(e.target)) {
-                profileDropdown?.classList.add('hidden');
-            }
-        });
-    </script>
-</body>
-</html>
+@endsection

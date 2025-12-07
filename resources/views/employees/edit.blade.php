@@ -1,19 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name') }} - Edit {{ $employee->user->name }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-50 dark:bg-gray-900 overflow-hidden">
-    <div class="flex h-screen">
-        <x-sidebar />
+@extends('layouts.app')
 
-        <div class="flex-1 flex flex-col ml-20">
-            <x-header breadcrumb="Employees > {{ $employee->user->name }} > Edit" />
+@section('title', 'Edit ' . $employee->user->name)
 
-            <main class="flex-1 overflow-y-auto mt-16 p-6">
+@section('content')
                 <div class="max-w-4xl mx-auto">
                     @if($errors->any())
                         <div class="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-400 px-4 py-3 rounded mb-4">
@@ -198,8 +187,4 @@
                         </div>
                     </form>
                 </div>
-            </main>
-        </div>
-    </div>
-</body>
-</html>
+@endsection

@@ -1,32 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $team->name }} - Salary Payments - HRM</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-50 dark:bg-gray-900">
-    <div class="flex h-screen overflow-hidden">
-        @include('components.sidebar')
+@extends('layouts.app')
 
-        <div class="flex-1 flex flex-col overflow-hidden ml-20">
-            @include('components.header')
+@section('title', $team->name . ' - Salary Payments')
 
-            <div class="bg-white dark:bg-gray-800 px-6 py-3 border-b border-gray-200 dark:border-gray-700">
-                <nav class="text-sm text-gray-600 dark:text-gray-400">
-                    <a href="{{ route('payments.salaries') }}" class="hover:text-gray-900 dark:hover:text-white">Payments</a>
-                    <span class="mx-2">→</span>
-                    <a href="{{ route('payments.salaries') }}" class="hover:text-gray-900 dark:hover:text-white">Salaries</a>
-                    <span class="mx-2">→</span>
-                    <span class="text-gray-900 dark:text-white">{{ $team->name }}</span>
-                </nav>
-                <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">{{ $team->name }} - Salary Payments</h2>
-                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ \Carbon\Carbon::create()->month($currentMonth)->format('F') }} {{ $currentYear }}</p>
-            </header>
+@section('content')
+                <!-- Breadcrumb -->
+                <div class="mb-6">
+                    <nav class="text-sm text-gray-600 dark:text-gray-400">
+                        <a href="{{ route('payments.salaries') }}" class="hover:text-gray-900 dark:hover:text-white">Payments</a>
+                        <span class="mx-2">→</span>
+                        <a href="{{ route('payments.salaries') }}" class="hover:text-gray-900 dark:hover:text-white">Salaries</a>
+                        <span class="mx-2">→</span>
+                        <span class="text-gray-900 dark:text-white">{{ $team->name }}</span>
+                    </nav>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mt-2">{{ $team->name }} - Salary Payments</h2>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ \Carbon\Carbon::create()->month($currentMonth)->format('F') }} {{ $currentYear }}</p>
+                </div>
 
-            <main class="flex-1 overflow-y-auto p-6">
                 <div class="max-w-7xl mx-auto">
 
                     @if(session('success'))
@@ -107,9 +96,6 @@
                     </div>
                     @endif
                 </div>
-            </main>
-        </div>
-    </div>
 
     <div id="disburse-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4">
@@ -138,18 +124,6 @@
     </div>
 
     <script>
-        document.getElementById('profile-menu-btn').addEventListener('click', function() {
-            document.getElementById('profile-dropdown').classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('profile-dropdown');
-            const button = document.getElementById('profile-menu-btn');
-            if (!button.contains(event.target) && !dropdown.contains(event.target)) {
-                dropdown.classList.add('hidden');
-            }
-        });
-
         function disburseSalary(employeeId, employeeName) {
             document.getElementById('employee-name').textContent = employeeName;
             document.getElementById('disburse-form').action = `/payments/salary/disburse/${employeeId}`;
@@ -167,5 +141,4 @@
             }
         });
     </script>
-</body>
-</html>
+@endsection

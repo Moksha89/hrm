@@ -1,20 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaction History - HRM</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-50 dark:bg-gray-900">
-    <div class="flex h-screen overflow-hidden">
-        @include('components.sidebar')
+@extends('layouts.app')
 
-        <div class="flex-1 flex flex-col overflow-hidden ml-20">
-            @include('components.header')
+@section('title', 'Transaction History')
 
-            <main class="flex-1 overflow-y-auto p-6">
+@section('content')
                 <div class="max-w-7xl mx-auto">
                     <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
                         <nav class="flex space-x-8">
@@ -111,41 +99,4 @@
                     </div>
                     @endif
                 </div>
-            </main>
-        </div>
-    </div>
-
-    <script>
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-        const sidebarClose = document.getElementById('sidebar-close');
-        
-        const savedState = localStorage.getItem('sidebarExpanded');
-        if (savedState === 'false') {
-            sidebar.classList.add('collapsed');
-        }
-        
-        function toggleSidebar() {
-            sidebar.classList.toggle('collapsed');
-            const isExpanded = !sidebar.classList.contains('collapsed');
-            localStorage.setItem('sidebarExpanded', isExpanded);
-        }
-        
-        sidebarToggle?.addEventListener('click', toggleSidebar);
-        sidebarClose?.addEventListener('click', toggleSidebar);
-
-        const profileMenuBtn = document.getElementById('profile-menu-btn');
-        const profileDropdown = document.getElementById('profile-dropdown');
-
-        profileMenuBtn?.addEventListener('click', () => {
-            profileDropdown.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!profileMenuBtn?.contains(e.target) && !profileDropdown?.contains(e.target)) {
-                profileDropdown?.classList.add('hidden');
-            }
-        });
-    </script>
-</body>
-</html>
+@endsection

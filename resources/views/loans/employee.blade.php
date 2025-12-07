@@ -1,37 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $employee->user->name }} Loans - HRM</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-50 dark:bg-gray-900">
-    <div class="flex h-screen overflow-hidden">
-        @include('components.sidebar')
+@extends('layouts.app')
 
-        <div class="flex-1 flex flex-col overflow-hidden ml-20">
-            @include('components.header')
+@section('title', $employee->user->name . ' Loans')
 
-            <div class="bg-white dark:bg-gray-800 px-6 py-3 border-b border-gray-200 dark:border-gray-700">
-                <nav class="text-sm text-gray-600 dark:text-gray-400">
-                    <a href="{{ route('loans.index') }}" class="hover:text-gray-900 dark:hover:text-white">Loans</a>
-                    @if($employee->team)
-                    <span class="mx-2">→</span>
-                            <a href="{{ route('loans.team', $employee->team->id) }}" class="hover:text-blue-600 dark:hover:text-blue-400">{{ $employee->team->name }}</a>
-                            @endif
-                            <span class="mx-2">/</span>
-                            <span class="text-gray-900 dark:text-white">{{ $employee->user->name }}</span>
-                        </nav>
+@section('content')
+                <!-- Breadcrumb and Header -->
+                <div class="mb-6">
+                    <nav class="text-sm text-gray-600 dark:text-gray-400">
+                        <a href="{{ route('loans.index') }}" class="hover:text-gray-900 dark:hover:text-white">Loans</a>
+                        @if($employee->team)
+                        <span class="mx-2">→</span>
+                        <a href="{{ route('loans.team', $employee->team->id) }}" class="hover:text-blue-600 dark:hover:text-blue-400">{{ $employee->team->name }}</a>
+                        @endif
+                        <span class="mx-2">/</span>
+                        <span class="text-gray-900 dark:text-white">{{ $employee->user->name }}</span>
+                    </nav>
+                    <div class="flex items-center justify-between mt-2">
                         <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">{{ $employee->user->name }} - Loans</h2>
+                        <button id="add-loan-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            Apply New Loan
+                        </button>
                     </div>
-                    <button id="add-loan-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-                        Apply New Loan
-                    </button>
                 </div>
-            </header>
 
-            <main class="flex-1 overflow-y-auto p-6">
                 <div class="max-w-7xl mx-auto">
                     @if(session('success'))
                     <div class="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-300 px-4 py-3 rounded-lg">
@@ -141,9 +131,6 @@
                     </div>
                     @endforelse
                 </div>
-            </main>
-        </div>
-    </div>
 
     <div id="add-loan-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -251,18 +238,5 @@
             }
         }
 
-        const profileMenuBtn = document.getElementById('profile-menu-btn');
-        const profileDropdown = document.getElementById('profile-dropdown');
-
-        profileMenuBtn?.addEventListener('click', () => {
-            profileDropdown.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!profileMenuBtn?.contains(e.target) && !profileDropdown?.contains(e.target)) {
-                profileDropdown?.classList.add('hidden');
-            }
-        });
     </script>
-</body>
-</html>
+@endsection

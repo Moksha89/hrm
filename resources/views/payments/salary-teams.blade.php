@@ -1,19 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salary Payments - HRM</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-50 dark:bg-gray-900">
-    <div class="flex h-screen overflow-hidden">
-        @include('components.sidebar')
+@extends('layouts.app')
 
-        <div class="flex-1 flex flex-col overflow-hidden ml-20">
-            @include('components.header')
+@section('title', 'Salary Payments - Teams')
 
-            <main class="flex-1 overflow-y-auto p-6">
+@section('content')
                 <div class="max-w-7xl mx-auto">
                     @if($teams->isEmpty())
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
@@ -53,22 +42,4 @@
                     </div>
                     @endif
                 </div>
-            </main>
-        </div>
-    </div>
-
-    <script>
-        document.getElementById('profile-menu-btn').addEventListener('click', function() {
-            document.getElementById('profile-dropdown').classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('profile-dropdown');
-            const button = document.getElementById('profile-menu-btn');
-            if (!button.contains(event.target) && !dropdown.contains(event.target)) {
-                dropdown.classList.add('hidden');
-            }
-        });
-    </script>
-</body>
-</html>
+@endsection

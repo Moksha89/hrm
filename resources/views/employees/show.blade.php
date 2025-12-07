@@ -1,19 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name') }} - {{ $employee->user->name }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-50 dark:bg-gray-900 overflow-hidden">
-    <div class="flex h-screen">
-        <x-sidebar />
+@extends('layouts.app')
 
-        <div class="flex-1 flex flex-col ml-20">
-            <x-header breadcrumb="Employees > {{ $employee->user->name }}" />
+@section('title', $employee->user->name)
 
-            <main class="flex-1 overflow-y-auto mt-16 p-6">
+@section('content')
                 <div class="max-w-7xl mx-auto">
                     @if(session('success'))
                         <div class="bg-green-100 dark:bg-green-900/20 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-400 px-4 py-3 rounded mb-4">
@@ -307,8 +296,4 @@
                         </div>
                     </div>
                 </div>
-            </main>
-        </div>
-    </div>
-</body>
-</html>
+@endsection

@@ -1,19 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payments - HRM</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-50 dark:bg-gray-900">
-    <div class="flex h-screen overflow-hidden">
-        @include('components.sidebar')
+@extends('layouts.app')
 
-        <div class="flex-1 flex flex-col overflow-hidden ml-20">
-            @include('components.header')
+@section('title', 'Payments - Loans')
 
-            <main class="flex-1 overflow-y-auto p-6">
+@section('content')
                 <div class="max-w-7xl mx-auto">
                     <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
                         <nav class="flex space-x-8">
@@ -211,11 +200,8 @@
                         @endif
                     </div>
                 </div>
-            </main>
-        </div>
-    </div>
 
-    <div id="disburse-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div id="disburse-modal"class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
             <div class="p-6">
                 <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-4">Confirm Loan Disbursement</h3>
@@ -294,37 +280,5 @@
             document.getElementById('collect-modal').classList.add('hidden');
         }
 
-        const profileMenuBtn = document.getElementById('profile-menu-btn');
-        const profileDropdown = document.getElementById('profile-dropdown');
-
-        profileMenuBtn?.addEventListener('click', () => {
-            profileDropdown.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!profileMenuBtn?.contains(e.target) && !profileDropdown?.contains(e.target)) {
-                profileDropdown?.classList.add('hidden');
-            }
-        });
-
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
-        const html = document.documentElement;
-
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            html.classList.add('dark');
-        } else {
-            html.classList.remove('dark');
-        }
-
-        darkModeToggle?.addEventListener('click', () => {
-            if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                localStorage.theme = 'light';
-            } else {
-                html.classList.add('dark');
-                localStorage.theme = 'dark';
-            }
-        });
     </script>
-</body>
-</html>
+@endsection
