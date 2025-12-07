@@ -105,7 +105,7 @@
                     @endif
                 </div>
 
-    <div id="createRequestModal"class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
+    <div id="createRequestModal"class="fixed inset-0 bg-black/30 backdrop-blur-sm hidden items-center justify-center z-50" style="display: none;">
         <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
             <h3 class="text-lg md:text-xl font-semibold mb-4">Create Request</h3>
             <form method="POST" action="{{ route('requests.store') }}">
@@ -184,7 +184,7 @@
         </div>
     </div>
 
-    <div id="rejectModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
+    <div id="rejectModal" class="fixed inset-0 bg-black/30 backdrop-blur-sm hidden items-center justify-center z-50" style="display: none;">
         <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
             <h3 class="text-lg md:text-xl font-semibold mb-4">Reject Request</h3>
             <form id="rejectForm" method="POST" action="">

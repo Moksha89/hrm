@@ -161,7 +161,7 @@
 
         <!-- Reject Modal -->
         @if($request->status === 'pending' && $tab === 'approvals')
-        <div id="reject-modal-{{ $request->id }}" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div id="reject-modal-{{ $request->id }}" class="hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Reject Request</h3>
                 <form action="{{ route('requests.reject', $request->id) }}" method="POST">
