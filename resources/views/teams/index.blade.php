@@ -10,7 +10,7 @@
                             <p class="text-gray-600 dark:text-gray-400 mt-1">Manage your organization's teams</p>
                         </div>
                         @if(auth()->user()->isAdmin())
-                        <button id="add-team-btn" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                        <button id="add-team-btn" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
@@ -39,11 +39,11 @@
                         @forelse($teams as $team)
                         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow">
                             <div class="flex items-center justify-between mb-4">
-                                <a href="{{ route('teams.show', $team->id) }}" class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white hover:text-teal-600 dark:hover:text-teal-400">
+                                <a href="{{ route('teams.show', $team->id) }}" class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white hover:text-amber-600 dark:hover:text-amber-400">
                                     {{ $team->name }}
                                 </a>
                                 <div class="flex items-center space-x-2">
-                                    <div class="flex items-center justify-center w-10 h-10 bg-teal-600 rounded-full text-white font-semibold">
+                                    <div class="flex items-center justify-center w-10 h-10 bg-amber-500 rounded-full text-white font-semibold">
                                         {{ $team->employees_count }}
                                     </div>
                                 </div>
@@ -91,7 +91,7 @@
                             <h3 class="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">No teams yet</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">Get started by creating your first team.</p>
                             @if(auth()->user()->isAdmin())
-                            <button onclick="document.getElementById('add-team-btn').click()" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            <button onclick="document.getElementById('add-team-btn').click()" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg transition-colors">
                                 Create Team
                             </button>
                             @endif
@@ -115,14 +115,14 @@
                 @csrf
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Team Name *</label>
-                    <input type="text" name="name" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:text-white">
+                    <input type="text" name="name" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
                 </div>
 
                 <div class="flex items-center justify-end space-x-4">
                     <button type="button" id="cancel-btn" class="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                         Cancel
                     </button>
-                    <button type="submit" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors">
+                    <button type="submit" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors">
                         Create Team
                     </button>
                 </div>
@@ -146,14 +146,14 @@
                 @method('PUT')
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Team Name *</label>
-                    <input type="text" id="edit-team-name" name="name" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:text-white">
+                    <input type="text" id="edit-team-name" name="name" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
                 </div>
 
                 <div class="flex items-center justify-end space-x-4">
                     <button type="button" onclick="closeEditModal()" class="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                         Cancel
                     </button>
-                    <button type="submit" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors">
+                    <button type="submit" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors">
                         Update Team
                     </button>
                 </div>

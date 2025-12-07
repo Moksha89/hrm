@@ -12,7 +12,7 @@
         @if($unreadCount > 0)
         <form method="POST" action="{{ route('notifications.markAllRead') }}">
             @csrf
-            <button type="submit" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm transition-colors">
+            <button type="submit" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-sm transition-colors">
                 Mark All Read
             </button>
         </form>

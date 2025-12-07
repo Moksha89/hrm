@@ -28,7 +28,7 @@
                                 Back to List
                             </a>
                             @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader())
-                                <a href="{{ route('employees.edit', $employee->id) }}" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition">
+                                <a href="{{ route('employees.edit', $employee->id) }}" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition">
                                     Edit Employee
                                 </a>
                             @endif
@@ -38,22 +38,22 @@
                     <div x-data="{ activeTab: 'personal' }" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                         <div class="border-b border-gray-200 dark:border-gray-700">
                             <nav class="flex -mb-px">
-                                <button @click="activeTab = 'personal'" :class="activeTab === 'personal' ? 'border-teal-600 text-teal-600 dark:text-teal-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'" class="px-6 py-4 border-b-2 font-medium text-sm transition">
+                                <button @click="activeTab = 'personal'" :class="activeTab === 'personal' ? 'border-amber-500 text-amber-600 dark:text-amber-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'" class="px-6 py-4 border-b-2 font-medium text-sm transition">
                                     Personal Information
                                 </button>
-                                <button @click="activeTab = 'bank'" :class="activeTab === 'bank' ? 'border-teal-600 text-teal-600 dark:text-teal-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'" class="px-6 py-4 border-b-2 font-medium text-sm transition">
+                                <button @click="activeTab = 'bank'" :class="activeTab === 'bank' ? 'border-amber-500 text-amber-600 dark:text-amber-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'" class="px-6 py-4 border-b-2 font-medium text-sm transition">
                                     Bank Accounts
                                 </button>
-                                <button @click="activeTab = 'documents'" :class="activeTab === 'documents' ? 'border-teal-600 text-teal-600 dark:text-teal-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'" class="px-6 py-4 border-b-2 font-medium text-sm transition">
+                                <button @click="activeTab = 'documents'" :class="activeTab === 'documents' ? 'border-amber-500 text-amber-600 dark:text-amber-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'" class="px-6 py-4 border-b-2 font-medium text-sm transition">
                                     Documents
                                 </button>
-                                <button @click="activeTab = 'loans'" :class="activeTab === 'loans' ? 'border-teal-600 text-teal-600 dark:text-teal-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'" class="px-6 py-4 border-b-2 font-medium text-sm transition">
+                                <button @click="activeTab = 'loans'" :class="activeTab === 'loans' ? 'border-amber-500 text-amber-600 dark:text-amber-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'" class="px-6 py-4 border-b-2 font-medium text-sm transition">
                                     Loans
                                 </button>
-                                <button @click="activeTab = 'salary'" :class="activeTab === 'salary' ? 'border-teal-600 text-teal-600 dark:text-teal-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'" class="px-6 py-4 border-b-2 font-medium text-sm transition">
+                                <button @click="activeTab = 'salary'" :class="activeTab === 'salary' ? 'border-amber-500 text-amber-600 dark:text-amber-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'" class="px-6 py-4 border-b-2 font-medium text-sm transition">
                                     Salary History
                                 </button>
-                                <button @click="activeTab = 'activity'" :class="activeTab === 'activity' ? 'border-teal-600 text-teal-600 dark:text-teal-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'" class="px-6 py-4 border-b-2 font-medium text-sm transition">
+                                <button @click="activeTab = 'activity'" :class="activeTab === 'activity' ? 'border-amber-500 text-amber-600 dark:text-amber-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'" class="px-6 py-4 border-b-2 font-medium text-sm transition">
                                     Activity Log
                                 </button>
                             </nav>
@@ -113,11 +113,11 @@
                                 @if($employee->bankAccounts->count() > 0)
                                     <div class="space-y-4">
                                         @foreach($employee->bankAccounts as $account)
-                                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 {{ $account->is_default ? 'bg-teal-50 dark:bg-teal-900/10' : '' }}">
+                                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 {{ $account->is_default ? 'bg-amber-50 dark:bg-amber-900/10' : '' }}">
                                                 <div class="flex justify-between items-start mb-3">
                                                     <h3 class="font-semibold text-gray-900 dark:text-white">{{ $account->bank_name }}</h3>
                                                     @if($account->is_default)
-                                                        <span class="px-2 py-1 text-xs bg-teal-600 text-white rounded">Default</span>
+                                                        <span class="px-2 py-1 text-xs bg-amber-500 text-white rounded">Default</span>
                                                     @endif
                                                 </div>
                                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">

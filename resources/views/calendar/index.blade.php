@@ -19,7 +19,7 @@
                 </svg>
             </a>
             <a href="{{ route('calendar') }}" 
-               class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-medium transition-colors">
+               class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-sm font-medium transition-colors">
                 Today
             </a>
             <a href="{{ route('calendar', ['month' => $currentDate->copy()->addMonth()->month, 'year' => $currentDate->copy()->addMonth()->year]) }}" 
@@ -57,7 +57,7 @@
                     <div class="min-h-16 sm:min-h-32 p-1 sm:p-2 border-b border-r border-gray-200 dark:border-gray-700 {{ $isCurrentMonth ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-900' }}">
                         @if($isCurrentMonth)
                             <div class="flex items-center justify-between mb-1">
-                                <span class="text-xs sm:text-sm font-medium {{ $isToday ? 'bg-teal-600 text-white w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center' : 'text-gray-700 dark:text-gray-300' }}">
+                                <span class="text-xs sm:text-sm font-medium {{ $isToday ? 'bg-amber-500 text-white w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center' : 'text-gray-700 dark:text-gray-300' }}">
                                     {{ $day }}
                                 </span>
                             </div>

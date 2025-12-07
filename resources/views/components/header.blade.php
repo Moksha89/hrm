@@ -38,7 +38,7 @@
 
             <div class="relative">
                 <button id="profile-menu-btn" class="flex items-center space-x-2 text-gray-300 hover:text-white p-2 rounded-lg hover:bg-gray-700 transition-colors">
-                    <div class="flex items-center justify-center w-8 h-8 bg-teal-600 rounded-full text-white font-semibold text-sm">
+                    <div class="flex items-center justify-center w-8 h-8 bg-amber-500 rounded-full text-white font-semibold text-sm">
                         {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                     </div>
                     <span class="hidden md:block font-medium">{{ Auth::user()->name }}</span>

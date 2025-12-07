@@ -9,8 +9,8 @@
                             <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">Employees</h1>
                             <p class="text-gray-600 dark:text-gray-400 mt-1">Manage your organization's employees</p>
                         </div>
-                        @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader())
-                        <button id="add-employee-btn" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                                                @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader())
+                                                <button id="add-employee-btn" class="bg-amber-500 hover:bg-amber-400 text-black px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
@@ -38,10 +38,10 @@
                     <div class="mb-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
                         <div class="flex flex-wrap gap-4">
                             <div class="flex-1 min-w-[200px]">
-                                <input type="text" id="search-employee" placeholder="Search by name or mobile..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:text-white">
+                                <input type="text" id="search-employee" placeholder="Search by name or mobile..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
                             </div>
                             <div class="min-w-[150px]">
-                                <select id="filter-status" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:text-white">
+                                <select id="filter-status" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
                                     <option value="">All Statuses</option>
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
@@ -49,7 +49,7 @@
                                 </select>
                             </div>
                             <div class="min-w-[150px]">
-                                <select id="filter-team" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:text-white">
+                                <select id="filter-team" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
                                     <option value="">All Teams</option>
                                     @foreach($teams as $team)
                                     <option value="{{ $team->id }}">{{ $team->name }}</option>
@@ -73,13 +73,13 @@
                              class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow">
                             <div class="flex items-center justify-between mb-4">
                                 <div class="flex items-center space-x-4 flex-1">
-                                    <div class="flex items-center justify-center w-12 h-12 bg-teal-600 rounded-full text-white font-semibold text-base md:text-lg flex-shrink-0">
+                                    <div class="flex items-center justify-center w-12 h-12 bg-amber-500 rounded-full text-white font-semibold text-base md:text-lg flex-shrink-0">
                                         {{ strtoupper(substr($employee->user->name, 0, 1)) }}
                                     </div>
                                     <div class="flex-1">
                                         <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white">{{ $employee->user->name }}</h3>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">{{ $employee->user->mobile }}</p>
-                                        <p class="text-sm text-teal-600 dark:text-teal-400 mt-1">
+                                        <p class="text-sm text-amber-600 dark:text-amber-400 mt-1">
                                             {{ $employee->team ? $employee->team->name : 'No Team' }}
                                         </p>
                                     </div>
@@ -176,7 +176,7 @@
                             <h3 class="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">No employees yet</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">Get started by adding your first employee.</p>
                             @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader())
-                            <button onclick="document.getElementById('add-employee-btn').click()" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            <button onclick="document.getElementById('add-employee-btn').click()" class="bg-amber-500 hover:bg-amber-400 text-black px-4 py-2 rounded-lg transition-colors">
                                 Add Employee
                             </button>
                             @endif
@@ -269,7 +269,7 @@
                 <div class="mb-6">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white">Bank Accounts *</h3>
-                        <button type="button" id="add-bank-account-btn" class="text-teal-600 hover:text-teal-700 dark:text-teal-400 text-sm font-medium">
+                        <button type="button" id="add-bank-account-btn" class="text-amber-600 hover:text-amber-500 dark:text-amber-400 text-sm font-medium">
                             + Add Bank Account
                         </button>
                     </div>
@@ -280,7 +280,7 @@
                 <div class="mb-6">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-base md:text-lg font-semibold text-gray-900 dark:text-white">Documents</h3>
-                        <button type="button" id="add-document-btn" class="text-teal-600 hover:text-teal-700 dark:text-teal-400 text-sm font-medium">
+                        <button type="button" id="add-document-btn" class="text-amber-600 hover:text-amber-500 dark:text-amber-400 text-sm font-medium">
                             + Add Document
                         </button>
                     </div>
@@ -292,9 +292,9 @@
                     <button type="button" id="cancel-btn" class="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                         Cancel
                     </button>
-                    <button type="submit" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors">
-                        Create Employee
-                    </button>
+                                        <button type="submit" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black rounded-lg transition-colors">
+                                            Create Employee
+                                        </button>
                 </div>
             </form>
         </div>
