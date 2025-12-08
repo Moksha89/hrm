@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Rules\StrongPassword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 
 class PasswordChangeController extends Controller
 {
@@ -18,7 +18,7 @@ class PasswordChangeController extends Controller
     {
         $request->validate([
             'current_password' => ['required'],
-            'password' => ['required', 'confirmed', Password::min(8)],
+            'password' => ['required', 'confirmed', new StrongPassword()],
         ]);
 
         if (!Hash::check($request->current_password, Auth::user()->password)) {

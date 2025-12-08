@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\DashboardUpdated;
+use App\Events\LoanStatusChanged;
 use App\Models\Employee;
 use App\Models\Loan;
 use App\Models\LoanPayment;
@@ -135,9 +137,13 @@ class LoanController extends Controller
 
     public function activateLoan($loanId)
     {
-        $loan = Loan::findOrFail($loanId);
+        $loan = Loan::with('employee')->findOrFail($loanId);
         $loan->status = 'active';
         $loan->save();
+
+        // Broadcast real-time events
+        event(new LoanStatusChanged($loan));
+        event(new DashboardUpdated('loan_activated', ['loan_id' => $loan->id]));
 
         return redirect()->back()->with('success', 'Loan activated successfully!');
     }
@@ -154,6 +160,7 @@ class LoanController extends Controller
         $payment->save();
 
         $loan = $payment->loan;
+        $loan->load('employee');
         $loan->remaining_balance = max(0, $loan->remaining_balance - $payment->amount);
         $loan->remaining_months = $loan->payments()->where('status', 'pending')->count();
         
@@ -162,6 +169,10 @@ class LoanController extends Controller
         }
         
         $loan->save();
+
+        // Broadcast real-time events
+        event(new LoanStatusChanged($loan));
+        event(new DashboardUpdated('payment_collected', ['loan_id' => $loan->id, 'payment_id' => $payment->id]));
 
         return redirect()->back()->with('success', 'Payment marked as paid!');
     }

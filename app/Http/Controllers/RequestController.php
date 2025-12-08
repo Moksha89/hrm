@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\DashboardUpdated;
+use App\Events\NotificationCreated;
+use App\Events\RequestStatusChanged;
 use App\Models\Employee;
 use App\Models\EmployeeActivity;
 use App\Models\Notification;
@@ -77,16 +80,25 @@ class RequestController extends Controller
                 $q->whereIn('slug', ['admin', 'manager']);
             })->get();
 
+            $notifications = [];
             foreach ($admins as $admin) {
-                Notification::create([
+                $notification = Notification::create([
                     'user_id' => $admin->id,
                     'type' => 'request_created',
                     'message' => 'New ' . str_replace('_', ' ', $validated['type']) . ' request created',
                     'data' => ['request_id' => $newRequest->id],
                 ]);
+                $notifications[] = $notification;
             }
 
             DB::commit();
+            
+            // Broadcast real-time events
+            foreach ($notifications as $notification) {
+                event(new NotificationCreated($notification));
+            }
+            event(new DashboardUpdated('request_created', ['request_id' => $newRequest->id]));
+            
             return redirect()->route('requests.index')->with('success', 'Request submitted successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -186,7 +198,7 @@ class RequestController extends Controller
                     break;
             }
 
-            Notification::create([
+            $notification = Notification::create([
                 'user_id' => $req->requested_by,
                 'type' => 'request_approved',
                 'message' => 'Your ' . str_replace('_', ' ', $req->type) . ' request has been approved',
@@ -194,6 +206,12 @@ class RequestController extends Controller
             ]);
 
             DB::commit();
+            
+            // Broadcast real-time events
+            event(new RequestStatusChanged($req));
+            event(new NotificationCreated($notification));
+            event(new DashboardUpdated('request_approved', ['request_id' => $req->id]));
+            
             return redirect()->route('requests.index')->with('success', 'Request approved successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -234,7 +252,7 @@ class RequestController extends Controller
                 'performed_by' => auth()->id(),
             ]);
 
-            Notification::create([
+            $notification = Notification::create([
                 'user_id' => $req->requested_by,
                 'type' => 'request_rejected',
                 'message' => 'Your ' . str_replace('_', ' ', $req->type) . ' request has been rejected',
@@ -242,6 +260,12 @@ class RequestController extends Controller
             ]);
 
             DB::commit();
+            
+            // Broadcast real-time events
+            event(new RequestStatusChanged($req));
+            event(new NotificationCreated($notification));
+            event(new DashboardUpdated('request_rejected', ['request_id' => $req->id]));
+            
             return redirect()->route('requests.index')->with('success', 'Request rejected.');
         } catch (\Exception $e) {
             DB::rollBack();
