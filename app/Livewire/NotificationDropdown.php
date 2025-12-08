@@ -4,18 +4,15 @@ namespace App\Livewire;
 
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\On;
 use Livewire\Component;
 
 class NotificationDropdown extends Component
 {
     public bool $isOpen = false;
     public int $unreadCount = 0;
-    public int $userId;
 
     public function mount()
     {
-        $this->userId = Auth::id();
         $this->loadUnreadCount();
     }
 
@@ -57,7 +54,6 @@ class NotificationDropdown extends Component
         $this->unreadCount = 0;
     }
 
-    #[On('echo-private:notifications.{userId},NotificationReceived')]
     public function handleNewNotification()
     {
         $this->loadUnreadCount();
