@@ -50,7 +50,6 @@ class DashboardStats extends Component
         $this->loadStats();
     }
 
-    #[On('echo-private:dashboard,StatsUpdated')]
     public function handleStatsUpdate()
     {
         $this->loadStats();
