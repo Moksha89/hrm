@@ -52,7 +52,6 @@ class RequestsList extends Component
         // Livewire will automatically re-render
     }
 
-    #[On('echo-private:requests.{userId},RequestUpdated')]
     public function handleRequestUpdate()
     {
         // Livewire will automatically re-render
