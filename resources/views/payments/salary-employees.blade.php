@@ -140,13 +140,24 @@
                 </div>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Disburse salary for <span id="employee-name" class="font-semibold text-gray-900 dark:text-white"></span>?</p>
                 
-                <form id="disburse-form" method="POST">
+                <form id="disburse-form" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="month" id="disburse-month">
                     <input type="hidden" name="year" id="disburse-year">
                     <div class="mb-4">
-                        <label for="notes" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Notes (Optional)</label>
+                        <label for="utr_number" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">UTR Number (Optional)</label>
+                        <input type="text" id="utr_number" name="utr_number" class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white" placeholder="Enter UTR/transaction number...">
+                    </div>
+                    <div class="mb-4">
+                        <label for="notes" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Remarks (Optional)</label>
                         <textarea id="notes" name="notes" rows="2" class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white" placeholder="Add any notes about this payment..."></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="screenshot" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Payment Screenshot (Optional)</label>
+                        <div class="relative">
+                            <input type="file" id="screenshot" name="screenshot" accept="image/*" class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white file:mr-3 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-medium file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 dark:file:bg-amber-900/30 dark:file:text-amber-400">
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Upload payment confirmation screenshot (JPG, PNG, GIF - Max 5MB)</p>
+                        </div>
                     </div>
 
                     <div class="flex justify-end space-x-2">

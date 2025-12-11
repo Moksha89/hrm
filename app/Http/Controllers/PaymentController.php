@@ -109,6 +109,7 @@ class PaymentController extends Controller
         $validated = $request->validate([
             'utr_number' => 'required|string',
             'notes' => 'nullable|string',
+            'screenshot' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
         
         $loan = Loan::with(['employee', 'bankAccount'])->findOrFail($loanId);
@@ -117,7 +118,13 @@ class PaymentController extends Controller
             return redirect()->back()->with('error', 'Loan must be approved before disbursement.');
         }
 
-        DB::transaction(function () use ($loan, $validated) {
+        // Handle screenshot upload
+        $screenshotPath = null;
+        if ($request->hasFile('screenshot')) {
+            $screenshotPath = $request->file('screenshot')->store('payment-screenshots', 'public');
+        }
+
+        DB::transaction(function () use ($loan, $validated, $screenshotPath) {
             Payment::create([
                 'payment_type' => 'loan_disbursement',
                 'employee_id' => $loan->employee_id,
@@ -131,6 +138,7 @@ class PaymentController extends Controller
                 'notes' => 'Loan disbursed to employee bank account',
                 'utr' => $validated['utr_number'],
                 'remarks' => $validated['notes'] ?? null,
+                'screenshot' => $screenshotPath,
             ]);
 
             $loan->status = 'active';
@@ -164,13 +172,25 @@ class PaymentController extends Controller
 
     public function collectEmi(Request $request, $loanPaymentId)
     {
+        $validated = $request->validate([
+            'utr_number' => 'nullable|string',
+            'notes' => 'nullable|string',
+            'screenshot' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+        ]);
+
         $loanPayment = LoanPayment::with(['loan'])->findOrFail($loanPaymentId);
         
         if ($loanPayment->status === 'paid') {
             return redirect()->back()->with('error', 'This EMI has already been paid.');
         }
 
-        DB::transaction(function () use ($loanPayment, $request) {
+        // Handle screenshot upload
+        $screenshotPath = null;
+        if ($request->hasFile('screenshot')) {
+            $screenshotPath = $request->file('screenshot')->store('payment-screenshots', 'public');
+        }
+
+        DB::transaction(function () use ($loanPayment, $validated, $screenshotPath) {
             Payment::create([
                 'payment_type' => 'emi_collection',
                 'employee_id' => $loanPayment->loan->employee_id,
@@ -179,9 +199,16 @@ class PaymentController extends Controller
                 'loan_payment_id' => $loanPayment->id,
                 'status' => 'completed',
                 'transaction_date' => now(),
-                'notes' => $request->notes ?? 'EMI collected from employee salary',
+                'notes' => $validated['notes'] ?? 'EMI collected from employee salary',
+                'utr' => $validated['utr_number'] ?? null,
+                'remarks' => $validated['notes'] ?? null,
+                'screenshot' => $screenshotPath,
             ]);
 
+            // Update loan payment record with UTR and screenshot
+            $loanPayment->utr = $validated['utr_number'] ?? null;
+            $loanPayment->remarks = $validated['notes'] ?? null;
+            $loanPayment->screenshot = $screenshotPath;
             $loanPayment->status = 'paid';
             $loanPayment->paid_date = now();
             $loanPayment->save();
@@ -353,10 +380,18 @@ class PaymentController extends Controller
         }
         
         $validated = $request->validate([
+            'utr_number' => 'nullable|string',
             'notes' => 'nullable|string',
+            'screenshot' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
             'month' => 'nullable|integer|min:1|max:12',
             'year' => 'nullable|integer|min:2020|max:' . (date('Y') + 1),
         ]);
+
+        // Handle screenshot upload
+        $screenshotPath = null;
+        if ($request->hasFile('screenshot')) {
+            $screenshotPath = $request->file('screenshot')->store('payment-screenshots', 'public');
+        }
         
         $employee = Employee::with(['bankAccounts'])->findOrFail($employeeId);
         $currentMonth = $validated['month'] ?? now()->month;
@@ -382,7 +417,7 @@ class PaymentController extends Controller
         
         $defaultBankAccount = $employee->bankAccounts()->where('is_default', true)->first();
         
-        DB::transaction(function () use ($employee, $currentMonth, $currentYear, $netPay, $totalEmi, $finalPay, $workingDays, $defaultBankAccount, $validated) {
+        DB::transaction(function () use ($employee, $currentMonth, $currentYear, $netPay, $totalEmi, $finalPay, $workingDays, $defaultBankAccount, $validated, $screenshotPath) {
             SalaryPayment::updateOrCreate(
                 [
                     'employee_id' => $employee->id,
@@ -401,8 +436,9 @@ class PaymentController extends Controller
                     'processed_by' => auth()->id(),
                     'payment_date' => now(),
                     'notes' => $validated['notes'] ?? 'Salary disbursed to employee bank account',
-                    'utr' => null,
-                    'remarks' => null,
+                    'utr' => $validated['utr_number'] ?? null,
+                    'remarks' => $validated['notes'] ?? null,
+                    'screenshot' => $screenshotPath,
                 ]
             );
             
