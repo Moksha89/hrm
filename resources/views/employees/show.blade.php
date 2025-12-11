@@ -195,19 +195,19 @@
                                                 <div class="grid grid-cols-2 gap-4 text-sm">
                                                     <div>
                                                         <span class="text-gray-600 dark:text-gray-400">Amount:</span>
-                                                        <span class="text-gray-900 dark:text-white ml-2">₹{{ number_format($loan->amount, 2) }}</span>
+                                                        <span class="text-gray-900 dark:text-white ml-2">₹{{ number_format($loan->total_amount, 2) }}</span>
                                                     </div>
                                                     <div>
                                                         <span class="text-gray-600 dark:text-gray-400">EMI:</span>
-                                                        <span class="text-gray-900 dark:text-white ml-2">₹{{ number_format($loan->emi, 2) }}</span>
+                                                        <span class="text-gray-900 dark:text-white ml-2">₹{{ number_format($loan->monthly_emi, 2) }}</span>
                                                     </div>
                                                     <div>
                                                         <span class="text-gray-600 dark:text-gray-400">Paid:</span>
-                                                        <span class="text-gray-900 dark:text-white ml-2">₹{{ number_format($loan->loanPayments->where('status', 'paid')->sum('amount'), 2) }}</span>
+                                                        <span class="text-gray-900 dark:text-white ml-2">₹{{ number_format($loan->payments->where('status', 'paid')->sum('amount'), 2) }}</span>
                                                     </div>
                                                     <div>
                                                         <span class="text-gray-600 dark:text-gray-400">Balance:</span>
-                                                        <span class="text-gray-900 dark:text-white ml-2">₹{{ number_format($loan->amount - $loan->loanPayments->where('status', 'paid')->sum('amount'), 2) }}</span>
+                                                        <span class="text-gray-900 dark:text-white ml-2">₹{{ number_format($loan->total_amount - $loan->payments->where('status', 'paid')->sum('amount'), 2) }}</span>
                                                     </div>
                                                 </div>
                                             </div>
