@@ -36,73 +36,69 @@
                     </div>
 
                     <div id="employees-content" class="tab-content">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-6">
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Total Employees</p>
-                                    <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mt-1">{{ $team->employees->count() }}</p>
-                                </div>
-                                <div class="flex items-center justify-center w-12 h-12 bg-amber-100 dark:bg-amber-900/20 rounded-lg">
-                                    <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                                    </svg>
-                                </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 mb-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-3 md:p-4">
+                            <div class="flex flex-col min-w-0">
+                                <p class="text-xs text-gray-600 dark:text-gray-400 truncate">Total Employees</p>
+                                <p class="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ $team->employees->count() }}</p>
                             </div>
                         </div>
 
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Gross Salary</p>
-                                    <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mt-1">₹{{ number_format($totalSalary, 2) }}</p>
-                                </div>
-                                <div class="flex items-center justify-center w-12 h-12 bg-gray-100 dark:bg-gray-900/20 rounded-lg">
-                                    <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                    </svg>
-                                </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-3 md:p-4">
+                            <div class="flex flex-col min-w-0">
+                                <p class="text-xs text-gray-600 dark:text-gray-400 truncate">Gross Salary</p>
+                                <p class="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white mt-1 break-all">₹{{ number_format($totalSalary, 0) }}</p>
                             </div>
                         </div>
 
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Net Pay (After WD)</p>
-                                    <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-green-600 dark:text-green-400 mt-1">₹{{ number_format($totalNetPay, 2) }}</p>
-                                </div>
-                                <div class="flex items-center justify-center w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg">
-                                    <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-3 md:p-4">
+                            <div class="flex flex-col min-w-0">
+                                <p class="text-xs text-gray-600 dark:text-gray-400 truncate">Net Pay</p>
+                                <p class="text-lg md:text-xl lg:text-2xl font-bold text-green-600 dark:text-green-400 mt-1 break-all">₹{{ number_format($totalNetPay, 0) }}</p>
                             </div>
                         </div>
 
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Total EMI</p>
-                                    <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-orange-600 dark:text-orange-400 mt-1">₹{{ number_format($totalEmi, 2) }}</p>
-                                </div>
-                                <div class="flex items-center justify-center w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg">
-                                    <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-3 md:p-4">
+                            <div class="flex flex-col min-w-0">
+                                <p class="text-xs text-gray-600 dark:text-gray-400 truncate">Total EMI</p>
+                                <p class="text-lg md:text-xl lg:text-2xl font-bold text-orange-600 dark:text-orange-400 mt-1 break-all">₹{{ number_format($totalEmi, 0) }}</p>
                             </div>
                         </div>
 
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Final Pay (After EMI)</p>
-                                    <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-amber-600 dark:text-amber-400 mt-1">₹{{ number_format($totalFinalPay, 2) }}</p>
-                                </div>
-                                <div class="flex items-center justify-center w-12 h-12 bg-amber-100 dark:bg-amber-900/20 rounded-lg">
-                                    <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-3 md:p-4 col-span-2 md:col-span-1">
+                            <div class="flex flex-col min-w-0">
+                                <p class="text-xs text-gray-600 dark:text-gray-400 truncate">Final Pay</p>
+                                <p class="text-lg md:text-xl lg:text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1 break-all">₹{{ number_format($totalFinalPay, 0) }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 flex flex-wrap gap-3 items-center justify-between">
+                        <div class="flex-1 min-w-[200px] max-w-md">
+                            <input type="text" id="team-member-search" placeholder="Search by name or mobile..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white text-sm">
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <select id="team-member-sort" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white text-sm">
+                                <option value="">Sort by</option>
+                                <option value="name_asc">Name (A-Z)</option>
+                                <option value="name_desc">Name (Z-A)</option>
+                                <option value="salary_high">Salary (High-Low)</option>
+                                <option value="salary_low">Salary (Low-High)</option>
+                            </select>
+                            <div class="relative">
+                                <button onclick="toggleTeamExportDropdown()" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg flex items-center space-x-2 transition-colors text-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                                     </svg>
+                                    <span>Export</span>
+                                </button>
+                                <div id="team-export-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
+                                    <a href="{{ route('export.employees', ['format' => 'xlsx', 'team_id' => $team->id]) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
+                                        Export to Excel (.xlsx)
+                                    </a>
+                                    <a href="{{ route('export.employees', ['format' => 'csv', 'team_id' => $team->id]) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
+                                        Export to CSV
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -135,7 +131,7 @@
                         </div>
                         
                         @if($team->employees->count() > 0)
-                        <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <div id="team-members-container" class="divide-y divide-gray-200 dark:divide-gray-700">
                             @foreach($team->employees as $employee)
                             @php
                                 $workingDay = $employee->workingDays->first();
@@ -144,7 +140,10 @@
                                 $monthlyEmi = $employee->getTotalMonthlyEmi();
                                 $finalPay = $employee->getFinalPay($currentMonth, $currentYear);
                             @endphp
-                            <div class="p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <div class="team-member-card p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                                 data-name="{{ strtolower($employee->user->name) }}"
+                                 data-mobile="{{ $employee->user->mobile }}"
+                                 data-salary="{{ $employee->salary ?? 0 }}">
                                 <div class="flex items-center space-x-4">
                                     <div class="flex items-center justify-center w-12 h-12 bg-amber-500 rounded-full text-white font-semibold text-base md:text-lg">
                                         {{ strtoupper(substr($employee->user->name, 0, 1)) }}
@@ -357,6 +356,59 @@
             
             document.getElementById(tabName + '-tab').classList.add('border-amber-500', 'text-amber-600', 'dark:text-amber-400', 'font-medium');
             document.getElementById(tabName + '-tab').classList.remove('border-transparent', 'text-gray-600', 'dark:text-gray-400');
+        }
+        
+        function toggleTeamExportDropdown() {
+            const dropdown = document.getElementById('team-export-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+        
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#team-export-dropdown') && !e.target.closest('button[onclick="toggleTeamExportDropdown()"]')) {
+                document.getElementById('team-export-dropdown')?.classList.add('hidden');
+            }
+        });
+        
+        const searchInput = document.getElementById('team-member-search');
+        const sortSelect = document.getElementById('team-member-sort');
+        const container = document.getElementById('team-members-container');
+        
+        if (searchInput && container) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const cards = container.querySelectorAll('.team-member-card');
+                
+                cards.forEach(card => {
+                    const name = card.dataset.name || '';
+                    const mobile = card.dataset.mobile || '';
+                    const matches = name.includes(searchTerm) || mobile.includes(searchTerm);
+                    card.style.display = matches ? '' : 'none';
+                });
+            });
+        }
+        
+        if (sortSelect && container) {
+            sortSelect.addEventListener('change', function() {
+                const sortValue = this.value;
+                if (!sortValue) return;
+                
+                const cards = Array.from(container.querySelectorAll('.team-member-card'));
+                
+                cards.sort((a, b) => {
+                    if (sortValue === 'name_asc') {
+                        return (a.dataset.name || '').localeCompare(b.dataset.name || '');
+                    } else if (sortValue === 'name_desc') {
+                        return (b.dataset.name || '').localeCompare(a.dataset.name || '');
+                    } else if (sortValue === 'salary_high') {
+                        return parseFloat(b.dataset.salary || 0) - parseFloat(a.dataset.salary || 0);
+                    } else if (sortValue === 'salary_low') {
+                        return parseFloat(a.dataset.salary || 0) - parseFloat(b.dataset.salary || 0);
+                    }
+                    return 0;
+                });
+                
+                cards.forEach(card => container.appendChild(card));
+            });
         }
     </script>
 @endsection

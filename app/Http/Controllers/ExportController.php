@@ -20,16 +20,24 @@ class ExportController extends Controller
         
         $user = auth()->user();
         $format = $request->get('format', 'xlsx');
+        $teamId = $request->get('team_id');
         
         if ($user->isAdmin() || $user->isHR() || $user->isAccountant()) {
-            $employees = Employee::with(['user', 'team'])->get();
+            $query = Employee::with(['user', 'team']);
         } elseif ($user->isManager() || $user->isTeamLeader()) {
             $assignedTeamIds = $user->assignedTeams()->pluck('teams.id');
-            $employees = Employee::with(['user', 'team'])
-                ->whereIn('team_id', $assignedTeamIds)
-                ->get();
+            $query = Employee::with(['user', 'team'])
+                ->whereIn('team_id', $assignedTeamIds);
         } else {
             $employees = collect();
+            $query = null;
+        }
+        
+        if ($query) {
+            if ($teamId) {
+                $query->where('team_id', $teamId);
+            }
+            $employees = $query->get();
         }
         
         $headers = ['ID', 'Name', 'Mobile', 'Email', 'Team', 'Salary', 'Status', 'Date of Joining'];

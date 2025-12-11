@@ -4,21 +4,43 @@
 
 @section('content')
                 <div class="max-w-7xl mx-auto">
-                    <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
-                        <nav class="flex space-x-8">
-                            <a href="{{ route('payments.salaries') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
-                                Salaries
-                            </a>
-                            <a href="{{ route('payments.index') }}" class="px-3 py-2 border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 font-medium">
-                                Loans
-                            </a>
-                            <a href="{{ route('payments.transactions') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
-                                Transactions
-                            </a>
-                            <a href="{{ route('payments.employees') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
-                                Employees
-                            </a>
-                        </nav>
+                    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                        <div class="flex-1">
+                            <nav class="flex space-x-8 border-b border-gray-200 dark:border-gray-700">
+                                <a href="{{ route('payments.salaries') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
+                                    Salaries
+                                </a>
+                                <a href="{{ route('payments.index') }}" class="px-3 py-2 border-b-2 border-amber-500 text-amber-600 dark:text-amber-400 font-medium">
+                                    Loans
+                                </a>
+                                <a href="{{ route('payments.transactions') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
+                                    Transactions
+                                </a>
+                                <a href="{{ route('payments.employees') }}" class="px-3 py-2 border-b-2 border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300">
+                                    Employees
+                                </a>
+                            </nav>
+                        </div>
+                        <div class="relative">
+                            <button onclick="togglePaymentsExportDropdown()" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg flex items-center space-x-2 transition-colors text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                                <span>Export</span>
+                            </button>
+                            <div id="payments-export-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
+                                <a href="{{ route('export.loans', ['format' => 'xlsx']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
+                                    Export Loans (.xlsx)
+                                </a>
+                                <a href="{{ route('export.transactions', ['format' => 'xlsx']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
+                                    Export Transactions (.xlsx)
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <input type="text" id="payments-search" placeholder="Search by employee name or team..." class="w-full max-w-md px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white text-sm">
                     </div>
 
                     @if(session('success'))
@@ -278,6 +300,28 @@
 
         function closeCollectModal() {
             document.getElementById('collect-modal').classList.add('hidden');
+        }
+        
+        function togglePaymentsExportDropdown() {
+            const dropdown = document.getElementById('payments-export-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+        
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#payments-export-dropdown') && !e.target.closest('button[onclick="togglePaymentsExportDropdown()"]')) {
+                document.getElementById('payments-export-dropdown')?.classList.add('hidden');
+            }
+        });
+        
+        const paymentsSearch = document.getElementById('payments-search');
+        if (paymentsSearch) {
+            paymentsSearch.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                document.querySelectorAll('tbody tr').forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
         }
 
     </script>

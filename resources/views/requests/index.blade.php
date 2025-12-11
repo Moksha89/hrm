@@ -4,9 +4,48 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto">
-    <div class="mb-6">
-        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Requests</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">Manage employee requests and approvals</p>
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Requests</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">Manage employee requests and approvals</p>
+        </div>
+        <div class="flex items-center space-x-3">
+            <div class="relative">
+                <button onclick="toggleRequestsExportDropdown()" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg flex items-center space-x-2 transition-colors text-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    <span>Export</span>
+                </button>
+                <div id="requests-export-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
+                    <a href="{{ route('export.requests', ['format' => 'xlsx']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
+                        Export to Excel (.xlsx)
+                    </a>
+                    <a href="{{ route('export.requests', ['format' => 'csv']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
+                        Export to CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-4 flex flex-wrap gap-3 items-center">
+        <div class="flex-1 min-w-[200px] max-w-md">
+            <input type="text" id="requests-search" placeholder="Search by employee, type, or status..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white text-sm">
+        </div>
+        <select id="requests-status-filter" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white text-sm">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+        </select>
+        <select id="requests-type-filter" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white text-sm">
+            <option value="">All Types</option>
+            <option value="salary_hike">Salary Hike</option>
+            <option value="promotion">Promotion</option>
+            <option value="loan">Loan</option>
+            <option value="resign">Resignation</option>
+        </select>
     </div>
                 @if(session('success'))
                 <div class="mb-4 md:mb-6 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-200 rounded-lg">
@@ -244,6 +283,35 @@
             const modal = document.getElementById('rejectModal');
             modal.style.display = 'none';
         }
+        
+        function toggleRequestsExportDropdown() {
+            const dropdown = document.getElementById('requests-export-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+        
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#requests-export-dropdown') && !e.target.closest('button[onclick="toggleRequestsExportDropdown()"]')) {
+                document.getElementById('requests-export-dropdown')?.classList.add('hidden');
+            }
+        });
+        
+        function filterRequests() {
+            const searchTerm = document.getElementById('requests-search')?.value.toLowerCase() || '';
+            const statusFilter = document.getElementById('requests-status-filter')?.value.toLowerCase() || '';
+            const typeFilter = document.getElementById('requests-type-filter')?.value.toLowerCase() || '';
+            
+            document.querySelectorAll('tbody tr').forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const matchesSearch = text.includes(searchTerm);
+                const matchesStatus = !statusFilter || text.includes(statusFilter);
+                const matchesType = !typeFilter || text.includes(typeFilter.replace('_', ' '));
+                row.style.display = (matchesSearch && matchesStatus && matchesType) ? '' : 'none';
+            });
+        }
+        
+        document.getElementById('requests-search')?.addEventListener('input', filterRequests);
+        document.getElementById('requests-status-filter')?.addEventListener('change', filterRequests);
+        document.getElementById('requests-type-filter')?.addEventListener('change', filterRequests);
     </script>
 </div>
 @endsection
