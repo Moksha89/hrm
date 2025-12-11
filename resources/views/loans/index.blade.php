@@ -4,9 +4,27 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto">
-    <div class="mb-6">
-        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Loans</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">View and manage employee loans by team</p>
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Loans</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">View and manage employee loans by team</p>
+        </div>
+        <div class="relative">
+            <button onclick="toggleExportDropdown()" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                <span>Export</span>
+            </button>
+            <div id="export-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
+                <a href="{{ route('export.loans', ['format' => 'xlsx']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    Export to Excel (.xlsx)
+                </a>
+                <a href="{{ route('export.loans', ['format' => 'csv']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    Export to CSV
+                </a>
+            </div>
+        </div>
     </div>
 
     @if($teams->isEmpty())
@@ -61,3 +79,18 @@
     @endif
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function toggleExportDropdown() {
+        const dropdown = document.getElementById('export-dropdown');
+        dropdown.classList.toggle('hidden');
+    }
+    
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#export-dropdown') && !e.target.closest('button[onclick="toggleExportDropdown()"]')) {
+            document.getElementById('export-dropdown')?.classList.add('hidden');
+        }
+    });
+</script>
+@endpush

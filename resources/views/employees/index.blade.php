@@ -9,14 +9,32 @@
                             <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">Employees</h1>
                             <p class="text-gray-600 dark:text-gray-400 mt-1">Manage your organization's employees</p>
                         </div>
-                                                @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader())
-                                                <button id="add-employee-btn" class="bg-amber-500 hover:bg-amber-400 text-black px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                            </svg>
-                            <span>Add Employee</span>
-                        </button>
-                        @endif
+                        <div class="flex items-center space-x-3">
+                            <div class="relative">
+                                <button onclick="toggleExportDropdown()" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                    </svg>
+                                    <span>Export</span>
+                                </button>
+                                <div id="export-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
+                                    <a href="{{ route('export.employees', ['format' => 'xlsx']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                                        Export to Excel (.xlsx)
+                                    </a>
+                                    <a href="{{ route('export.employees', ['format' => 'csv']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                                        Export to CSV
+                                    </a>
+                                </div>
+                            </div>
+                            @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader())
+                            <button id="add-employee-btn" class="bg-amber-500 hover:bg-amber-400 text-black px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                <span>Add Employee</span>
+                            </button>
+                            @endif
+                        </div>
                     </div>
 
                     @if(session('success'))
@@ -600,6 +618,11 @@
 
 @push('scripts')
 <script>
+    function toggleExportDropdown() {
+        const dropdown = document.getElementById('export-dropdown');
+        dropdown.classList.toggle('hidden');
+    }
+    
     function toggleStatusDropdown(employeeId) {
         const dropdown = document.getElementById(`status-dropdown-${employeeId}`);
         document.querySelectorAll('[id^="status-dropdown-"]').forEach(d => {
@@ -611,6 +634,9 @@
     }
 
     document.addEventListener('click', function(e) {
+        if (!e.target.closest('#export-dropdown') && !e.target.closest('button[onclick="toggleExportDropdown()"]')) {
+            document.getElementById('export-dropdown')?.classList.add('hidden');
+        }
         if (!e.target.closest('[id^="status-dropdown-"]') && !e.target.closest('button[onclick^="toggleStatusDropdown"]')) {
             document.querySelectorAll('[id^="status-dropdown-"]').forEach(d => d.classList.add('hidden'));
         }
