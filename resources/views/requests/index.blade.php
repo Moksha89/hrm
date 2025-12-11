@@ -4,10 +4,10 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto">
-    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div>
-            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Requests</h1>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">Manage employee requests and approvals</p>
+            <h1 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">Requests</h1>
+            <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">Manage employee requests and approvals</p>
         </div>
         <div class="flex items-center space-x-3">
             <div class="relative">
@@ -64,71 +64,86 @@
                 @endif
 
                 @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader())
-                <div class="mb-4 md:mb-6 flex justify-end">
-                    <button onclick="showCreateRequestModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm md:text-base">
+                <div class="mb-4 flex justify-end">
+                    <button onclick="showCreateRequestModal()" class="inline-flex items-center px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-sm rounded-lg transition-all duration-200 hover:shadow-md">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
                         Create Request
                     </button>
                 </div>
                 @endif
 
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full">
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
-                                    <th class="px-4 md:px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Type</th>
-                                    <th class="px-4 md:px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Employee</th>
-                                    <th class="px-4 md:px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Requested By</th>
-                                    <th class="px-4 md:px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                                    <th class="px-4 md:px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
+                                    <th class="px-3 md:px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Type</th>
+                                    <th class="px-3 md:px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Employee</th>
+                                    <th class="px-3 md:px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Requested By</th>
+                                    <th class="px-3 md:px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                    <th class="px-3 md:px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
                                     @if(auth()->user()->isAdmin() || auth()->user()->isManager())
-                                    <th class="px-4 md:px-6 py-3 text-left text-xs md:text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                                    <th class="px-3 md:px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                                     @endif
                                 </tr>
                             </thead>
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 @forelse($requests as $request)
-                                <tr>
-                                    <td class="px-4 md:px-6 py-4 whitespace-nowrap text-sm md:text-base">
-                                        <span class="px-2 py-1 text-xs md:text-sm font-semibold rounded-full
-                                            @if($request->type === 'promotion') bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
-                                            @elseif($request->type === 'salary_hike') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
-                                            @elseif($request->type === 'loan') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
-                                            @elseif($request->type === 'resign') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                    <td class="px-3 md:px-4 py-3 whitespace-nowrap">
+                                        <span class="px-2 py-0.5 text-xs font-medium rounded-full
+                                            @if($request->type === 'promotion') bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300
+                                            @elseif($request->type === 'salary_hike') bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300
+                                            @elseif($request->type === 'loan') bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300
+                                            @elseif($request->type === 'resign') bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300
                                             @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
                                             @endif">
                                             {{ ucfirst(str_replace('_', ' ', $request->type)) }}
                                         </span>
                                     </td>
-                                    <td class="px-4 md:px-6 py-4 whitespace-nowrap text-sm md:text-base">{{ $request->employee->user->name }}</td>
-                                    <td class="px-4 md:px-6 py-4 whitespace-nowrap text-sm md:text-base">{{ $request->requestedBy->name }}</td>
-                                    <td class="px-4 md:px-6 py-4 whitespace-nowrap text-sm md:text-base">
-                                        <span class="px-2 py-1 text-xs md:text-sm font-semibold rounded-full
-                                            @if($request->status === 'pending') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
-                                            @elseif($request->status === 'approved') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
-                                            @else bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                                    <td class="px-3 md:px-4 py-3 whitespace-nowrap text-xs md:text-sm text-gray-900 dark:text-white">{{ $request->employee->user->name }}</td>
+                                    <td class="px-3 md:px-4 py-3 whitespace-nowrap text-xs md:text-sm text-gray-600 dark:text-gray-400">{{ $request->requestedBy->name }}</td>
+                                    <td class="px-3 md:px-4 py-3 whitespace-nowrap">
+                                        <span class="px-2 py-0.5 text-xs font-medium rounded-full
+                                            @if($request->status === 'pending') bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300
+                                            @elseif($request->status === 'approved') bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300
+                                            @else bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300
                                             @endif">
                                             {{ ucfirst($request->status) }}
                                         </span>
                                     </td>
-                                    <td class="px-4 md:px-6 py-4 whitespace-nowrap text-sm md:text-base">{{ $request->created_at->format('M d, Y') }}</td>
+                                    <td class="px-3 md:px-4 py-3 whitespace-nowrap text-xs text-gray-600 dark:text-gray-400">{{ $request->created_at->format('M d, Y') }}</td>
                                     @if(auth()->user()->isAdmin() || auth()->user()->isManager())
-                                    <td class="px-4 md:px-6 py-4 whitespace-nowrap text-sm md:text-base">
+                                    <td class="px-3 md:px-4 py-3 whitespace-nowrap">
                                         @if($request->status === 'pending')
-                                        <form method="POST" action="{{ route('requests.approve', $request->id) }}" class="inline">
-                                            @csrf
-                                            <button type="submit" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-xs md:text-sm">Approve</button>
-                                        </form>
-                                        <button onclick="showRejectModal({{ $request->id }})" class="ml-2 px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs md:text-sm">Reject</button>
+                                        <div class="flex items-center space-x-2">
+                                            <form method="POST" action="{{ route('requests.approve', $request->id) }}" class="inline">
+                                                @csrf
+                                                <button type="submit" class="inline-flex items-center px-2 py-1 bg-green-500 hover:bg-green-600 text-white rounded text-xs transition-all duration-200 hover:shadow-md">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                    </svg>
+                                                    Approve
+                                                </button>
+                                            </form>
+                                            <button onclick="showRejectModal({{ $request->id }})" class="inline-flex items-center px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-xs transition-all duration-200 hover:shadow-md">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                                Reject
+                                            </button>
+                                        </div>
                                         @else
-                                        <span class="text-gray-500 dark:text-gray-400 text-xs md:text-sm">{{ $request->status === 'approved' ? 'Approved' : 'Rejected' }}</span>
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">{{ $request->status === 'approved' ? 'Approved' : 'Rejected' }}</span>
                                         @endif
                                     </td>
                                     @endif
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="px-4 md:px-6 py-8 text-center text-gray-500 dark:text-gray-400 text-sm md:text-base">
+                                    <td colspan="6" class="px-3 md:px-4 py-8 text-center text-gray-500 dark:text-gray-400 text-xs">
                                         No requests found
                                     </td>
                                 </tr>
@@ -144,14 +159,24 @@
                     @endif
                 </div>
 
-    <div id="createRequestModal"class="fixed inset-0 bg-black/30 backdrop-blur-sm hidden items-center justify-center z-50" style="display: none;">
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <h3 class="text-lg md:text-xl font-semibold mb-4">Create Request</h3>
+    <div id="createRequestModal" class="fixed inset-0 bg-black/30 backdrop-blur-sm hidden items-center justify-center z-50" style="display: none;">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-5 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto animate-modal-in">
+            <div class="flex items-center mb-4">
+                <div class="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mr-3">
+                    <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-sm md:text-base font-semibold text-gray-900 dark:text-white">Create Request</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Submit a new employee request</p>
+                </div>
+            </div>
             <form method="POST" action="{{ route('requests.store') }}">
                 @csrf
-                <div class="mb-4">
-                    <label class="block text-sm md:text-base font-medium mb-2">Request Type</label>
-                    <select name="type" id="request_type" required onchange="toggleRequestFields()" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm md:text-base">
+                <div class="mb-3">
+                    <label class="block text-xs font-medium mb-1.5 text-gray-700 dark:text-gray-300">Request Type</label>
+                    <select name="type" id="request_type" required onchange="toggleRequestFields()" class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-amber-500">
                         <option value="">Select Type</option>
                         <option value="salary_hike">Salary Hike</option>
                         <option value="promotion">Promotion</option>
@@ -161,9 +186,9 @@
                         <option value="remove">Remove from Team</option>
                     </select>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-sm md:text-base font-medium mb-2">Employee</label>
-                    <select name="employee_id" id="request_employee_id" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm md:text-base">
+                <div class="mb-3">
+                    <label class="block text-xs font-medium mb-1.5 text-gray-700 dark:text-gray-300">Employee</label>
+                    <select name="employee_id" id="request_employee_id" required class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-amber-500">
                         <option value="">Select Employee</option>
                         @foreach($employees ?? [] as $emp)
                             <option value="{{ $emp->id }}">{{ $emp->user->name }} ({{ $emp->user->mobile }})</option>
@@ -172,73 +197,93 @@
                 </div>
 
                 <div id="salary_hike_fields" style="display: none;">
-                    <div class="mb-3">
-                        <label class="block text-sm font-medium mb-1">Current Salary</label>
-                        <input type="number" name="details[current_salary]" id="current_salary" step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm">
+                    <div class="mb-2">
+                        <label class="block text-xs font-medium mb-1 text-gray-700 dark:text-gray-300">Current Salary</label>
+                        <input type="number" name="details[current_salary]" id="current_salary" step="0.01" class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div class="mb-2">
+                        <label class="block text-xs font-medium mb-1 text-gray-700 dark:text-gray-300">New Salary</label>
+                        <input type="number" name="details[new_salary]" id="new_salary" step="0.01" class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-amber-500">
                     </div>
                     <div class="mb-3">
-                        <label class="block text-sm font-medium mb-1">New Salary</label>
-                        <input type="number" name="details[new_salary]" id="new_salary" step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm">
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-1">Reason</label>
-                        <textarea name="details[reason]" id="salary_reason" rows="2" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm"></textarea>
+                        <label class="block text-xs font-medium mb-1 text-gray-700 dark:text-gray-300">Reason</label>
+                        <textarea name="details[reason]" id="salary_reason" rows="2" class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-amber-500"></textarea>
                     </div>
                 </div>
 
                 <div id="promotion_fields" style="display: none;">
-                    <div class="mb-3">
-                        <label class="block text-sm font-medium mb-1">Current Position</label>
-                        <input type="text" name="details[current_position]" id="current_position" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm">
+                    <div class="mb-2">
+                        <label class="block text-xs font-medium mb-1 text-gray-700 dark:text-gray-300">Current Position</label>
+                        <input type="text" name="details[current_position]" id="current_position" class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-amber-500">
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-1">New Position</label>
-                        <input type="text" name="details[new_position]" id="new_position" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm">
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium mb-1 text-gray-700 dark:text-gray-300">New Position</label>
+                        <input type="text" name="details[new_position]" id="new_position" class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-amber-500">
                     </div>
                 </div>
 
                 <div id="loan_fields" style="display: none;">
-                    <div class="mb-3">
-                        <label class="block text-sm font-medium mb-1">Loan Amount</label>
-                        <input type="number" name="details[loan_amount]" id="loan_amount" step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm">
+                    <div class="mb-2">
+                        <label class="block text-xs font-medium mb-1 text-gray-700 dark:text-gray-300">Loan Amount</label>
+                        <input type="number" name="details[loan_amount]" id="loan_amount" step="0.01" class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-amber-500">
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-1">Monthly EMI</label>
-                        <input type="number" name="details[emi]" id="loan_emi" step="0.01" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm">
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium mb-1 text-gray-700 dark:text-gray-300">Monthly EMI</label>
+                        <input type="number" name="details[emi]" id="loan_emi" step="0.01" class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-amber-500">
                     </div>
                 </div>
 
                 <div id="reason_field" style="display: none;">
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-1">Reason</label>
-                        <textarea name="details[reason]" id="general_reason" rows="3" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm"></textarea>
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium mb-1 text-gray-700 dark:text-gray-300">Reason</label>
+                        <textarea name="details[reason]" id="general_reason" rows="2" class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-amber-500"></textarea>
                     </div>
                 </div>
 
                 <div class="flex justify-end space-x-2">
-                    <button type="button" onclick="hideCreateRequestModal()" class="px-4 py-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 rounded-lg text-sm md:text-base">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm md:text-base">Submit Request</button>
+                    <button type="button" onclick="hideCreateRequestModal()" class="px-3 py-1.5 text-sm bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg transition-colors">Cancel</button>
+                    <button type="submit" class="px-3 py-1.5 text-sm bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-all duration-200 hover:shadow-md">Submit Request</button>
                 </div>
             </form>
         </div>
     </div>
 
     <div id="rejectModal" class="fixed inset-0 bg-black/30 backdrop-blur-sm hidden items-center justify-center z-50" style="display: none;">
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 class="text-lg md:text-xl font-semibold mb-4">Reject Request</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-5 max-w-md w-full mx-4 animate-modal-in">
+            <div class="flex items-center mb-4">
+                <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mr-3">
+                    <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-sm md:text-base font-semibold text-gray-900 dark:text-white">Reject Request</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Provide a reason for rejection</p>
+                </div>
+            </div>
             <form id="rejectForm" method="POST" action="">
                 @csrf
                 <div class="mb-4">
-                    <label class="block text-sm md:text-base font-medium mb-2">Rejection Reason</label>
-                    <textarea name="rejection_reason" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm md:text-base" rows="4"></textarea>
+                    <label class="block text-xs font-medium mb-1.5 text-gray-700 dark:text-gray-300">Rejection Reason</label>
+                    <textarea name="rejection_reason" required class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-red-500" rows="3"></textarea>
                 </div>
                 <div class="flex justify-end space-x-2">
-                    <button type="button" onclick="hideRejectModal()" class="px-4 py-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 rounded-lg text-sm md:text-base">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm md:text-base">Reject</button>
+                    <button type="button" onclick="hideRejectModal()" class="px-3 py-1.5 text-sm bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg transition-colors">Cancel</button>
+                    <button type="submit" class="px-3 py-1.5 text-sm bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all duration-200 hover:shadow-md">Reject</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <style>
+        @keyframes modal-in {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-modal-in {
+            animation: modal-in 0.2s ease-out;
+        }
+    </style>
 
     <script>
         function toggleRequestFields() {

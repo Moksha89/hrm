@@ -4,10 +4,10 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto">
-                    <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center justify-between mb-4">
                         <div>
-                            <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">Employees</h1>
-                            <p class="text-gray-600 dark:text-gray-400 mt-1">Manage your organization's employees</p>
+                            <h1 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">Employees</h1>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">Manage your organization's employees</p>
                         </div>
                         <div class="flex items-center space-x-3">
                             <div class="relative">

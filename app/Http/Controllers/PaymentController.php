@@ -220,14 +220,18 @@ class PaymentController extends Controller
         return view('payments.salary-teams', compact('teams', 'currentMonth', 'currentYear'));
     }
 
-    public function salaryTeamEmployees($teamId)
+    public function salaryTeamEmployees(Request $request, $teamId)
     {
         $team = Team::with(['employees' => function ($query) {
             $query->where('status', 'active')->with(['user', 'bankAccounts']);
         }])->findOrFail($teamId);
         
-        $currentMonth = now()->month;
-        $currentYear = now()->year;
+        $currentMonth = $request->get('month', now()->month);
+        $currentYear = $request->get('year', now()->year);
+        
+        // Validate month and year
+        $currentMonth = max(1, min(12, (int) $currentMonth));
+        $currentYear = max(2020, min(date('Y') + 1, (int) $currentYear));
         
         $employees = $team->employees->map(function ($employee) use ($currentMonth, $currentYear) {
             $employee->net_pay = $employee->getNetPay($currentMonth, $currentYear);
@@ -329,11 +333,13 @@ class PaymentController extends Controller
         
         $validated = $request->validate([
             'notes' => 'nullable|string',
+            'month' => 'nullable|integer|min:1|max:12',
+            'year' => 'nullable|integer|min:2020|max:' . (date('Y') + 1),
         ]);
         
         $employee = Employee::with(['bankAccounts'])->findOrFail($employeeId);
-        $currentMonth = now()->month;
-        $currentYear = now()->year;
+        $currentMonth = $validated['month'] ?? now()->month;
+        $currentYear = $validated['year'] ?? now()->year;
         
         $existingPayment = SalaryPayment::where('employee_id', $employeeId)
             ->where('month', $currentMonth)
@@ -418,10 +424,14 @@ class PaymentController extends Controller
         return view('payments.transaction-history', compact('transactions'));
     }
 
-    public function salaries()
+    public function salaries(Request $request)
     {
-        $currentMonth = now()->month;
-        $currentYear = now()->year;
+        $currentMonth = $request->get('month', now()->month);
+        $currentYear = $request->get('year', now()->year);
+        
+        // Validate month and year
+        $currentMonth = max(1, min(12, (int) $currentMonth));
+        $currentYear = max(2020, min(date('Y') + 1, (int) $currentYear));
         
         $teams = Team::withCount(['employees' => function ($query) {
             $query->where('status', 'active');
