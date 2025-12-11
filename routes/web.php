@@ -83,5 +83,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/export/employees', [App\Http\Controllers\ExportController::class, 'employees'])->name('export.employees');
         Route::get('/export/loans', [App\Http\Controllers\ExportController::class, 'loans'])->name('export.loans');
         Route::get('/export/salary-history', [App\Http\Controllers\ExportController::class, 'salaryHistory'])->name('export.salaryHistory');
+        Route::get('/export/transactions', [App\Http\Controllers\ExportController::class, 'transactions'])->name('export.transactions');
+        Route::get('/export/requests', [App\Http\Controllers\ExportController::class, 'requests'])->name('export.requests');
     });
 });

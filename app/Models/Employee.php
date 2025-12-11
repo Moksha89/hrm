@@ -103,9 +103,37 @@ class Employee extends Model
             ->first();
         
         $shouldDeductEmi = $workingDay ? ($workingDay->deduct_emi ?? true) : true;
-        $monthlyEmi = $shouldDeductEmi ? $this->getTotalMonthlyEmi() : 0;
+        
+        if (!$shouldDeductEmi) {
+            $monthlyEmi = 0;
+        } elseif ($workingDay && $workingDay->emi_override_amount !== null) {
+            $monthlyEmi = $workingDay->emi_override_amount;
+        } else {
+            $monthlyEmi = $this->getTotalMonthlyEmi();
+        }
         
         return max(0, round($netPay - $monthlyEmi, 2));
+    }
+    
+    public function getEmiDeductionForMonth($month = null, $year = null)
+    {
+        $month = $month ?? now()->month;
+        $year = $year ?? now()->year;
+        
+        $workingDay = $this->workingDays()
+            ->where('month', $month)
+            ->where('year', $year)
+            ->first();
+        
+        $shouldDeductEmi = $workingDay ? ($workingDay->deduct_emi ?? true) : true;
+        
+        if (!$shouldDeductEmi) {
+            return 0;
+        } elseif ($workingDay && $workingDay->emi_override_amount !== null) {
+            return $workingDay->emi_override_amount;
+        } else {
+            return $this->getTotalMonthlyEmi();
+        }
     }
 
     public function getWorkingDays($month = null, $year = null)
