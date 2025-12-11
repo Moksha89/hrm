@@ -16,6 +16,9 @@ class LoanPayment extends Model
         'due_date',
         'status',
         'paid_date',
+        'utr',
+        'remarks',
+        'screenshot',
     ];
 
     protected function casts(): array

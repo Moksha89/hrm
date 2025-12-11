@@ -23,6 +23,7 @@ class Payment extends Model
         'notes',
         'utr',
         'remarks',
+        'screenshot',
     ];
 
     protected function casts(): array
