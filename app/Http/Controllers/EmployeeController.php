@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreEmployeeRequest;
+use App\Models\AuditLog;
 use App\Models\BankAccount;
 use App\Models\Document;
 use App\Models\Employee;
@@ -64,31 +65,56 @@ class EmployeeController extends Controller
         try {
             DB::beginTransaction();
             
-            $teamId = $request->team_id;
-            if ($teamId && auth()->user()->isTeamLeader() && !auth()->user()->isAdmin()) {
-                $assignedTeamIds = auth()->user()->assignedTeams()->pluck('teams.id');
-                if (!$assignedTeamIds->contains($teamId)) {
-                    return back()->withErrors(['error' => 'You can only assign employees to your own teams.'])->withInput();
-                }
-            }
+                        $teamId = $request->team_id;
+                        if ($teamId && auth()->user()->isTeamLeader() && !auth()->user()->isAdmin()) {
+                            $assignedTeamIds = auth()->user()->assignedTeams()->pluck('teams.id');
+                            if (!$assignedTeamIds->contains($teamId)) {
+                                return back()->withErrors(['error' => 'You can only assign employees to your own teams.'])->withInput();
+                            }
+                        }
 
-            $employee->user->update([
-                'name' => $request->name,
-                'mobile' => $request->mobile,
-                'email' => $request->email,
-            ]);
+                        // Capture old values for audit log
+                        $oldValues = [
+                            'name' => $employee->user->name,
+                            'mobile' => $employee->user->mobile,
+                            'email' => $employee->user->email,
+                            'team_id' => $employee->team_id,
+                            'salary' => $employee->salary,
+                        ];
 
-            $oldTeamId = $employee->team_id;
-            $employee->update([
-                'team_id' => $request->team_id,
-                'salary' => $request->salary,
-                'loan' => $request->loan,
-                'emi' => $request->emi,
-                'aadhar' => $request->aadhar,
-                'pan' => $request->pan,
-                'dob' => $request->dob,
-                'date_of_joining' => $request->date_of_joining,
-            ]);
+                        $employee->user->update([
+                            'name' => $request->name,
+                            'mobile' => $request->mobile,
+                            'email' => $request->email,
+                        ]);
+
+                        $oldTeamId = $employee->team_id;
+                        $employee->update([
+                            'team_id' => $request->team_id,
+                            'salary' => $request->salary,
+                            'loan' => $request->loan,
+                            'emi' => $request->emi,
+                            'aadhar' => $request->aadhar,
+                            'pan' => $request->pan,
+                            'dob' => $request->dob,
+                            'date_of_joining' => $request->date_of_joining,
+                        ]);
+            
+                        // Audit log for employee update
+                        $newValues = [
+                            'name' => $request->name,
+                            'mobile' => $request->mobile,
+                            'email' => $request->email,
+                            'team_id' => $request->team_id,
+                            'salary' => $request->salary,
+                        ];
+                        AuditLog::logUpdated(
+                            'employees',
+                            $employee,
+                            "Employee updated: {$employee->user->name}",
+                            $oldValues,
+                            $newValues
+                        );
 
             if ($oldTeamId != $request->team_id) {
                 \App\Models\EmployeeActivity::create([
@@ -135,25 +161,35 @@ class EmployeeController extends Controller
         try {
             DB::beginTransaction();
             
-            \App\Models\EmployeeActivity::create([
-                'employee_id' => $employee->id,
-                'activity_type' => 'deleted',
-                'description' => 'Employee record deleted',
-                'data' => [
-                    'name' => $employee->user->name,
-                    'mobile' => $employee->user->mobile,
-                ],
-                'performed_by' => auth()->id(),
-            ]);
+                        $employeeName = $employee->user->name;
+                        $employeeMobile = $employee->user->mobile;
             
-            $employee->bankAccounts()->delete();
-            $employee->documents()->delete();
-            $employee->user()->delete();
-            $employee->delete();
+                        \App\Models\EmployeeActivity::create([
+                            'employee_id' => $employee->id,
+                            'activity_type' => 'deleted',
+                            'description' => 'Employee record deleted',
+                            'data' => [
+                                'name' => $employeeName,
+                                'mobile' => $employeeMobile,
+                            ],
+                            'performed_by' => auth()->id(),
+                        ]);
             
-            DB::commit();
+                        // Audit log for employee deletion
+                        AuditLog::logDeleted(
+                            'employees',
+                            $employee,
+                            "Employee deleted: {$employeeName} (Mobile: {$employeeMobile})"
+                        );
             
-            return redirect()->route('employees.index')->with('success', 'Employee deleted successfully!');
+                        $employee->bankAccounts()->delete();
+                        $employee->documents()->delete();
+                        $employee->user()->delete();
+                        $employee->delete();
+            
+                        DB::commit();
+            
+                        return redirect()->route('employees.index')->with('success', 'Employee deleted successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'Failed to delete employee: ' . $e->getMessage()]);
@@ -228,21 +264,28 @@ class EmployeeController extends Controller
                 }
             }
             
-            \App\Models\EmployeeActivity::create([
-                'employee_id' => $employee->id,
-                'activity_type' => 'joined',
-                'description' => 'Employee joined the organization',
-                'data' => [
-                    'team_id' => $teamId,
-                    'salary' => $request->salary,
-                    'date_of_joining' => $request->date_of_joining,
-                ],
-                'performed_by' => auth()->id(),
-            ]);
+                        \App\Models\EmployeeActivity::create([
+                            'employee_id' => $employee->id,
+                            'activity_type' => 'joined',
+                            'description' => 'Employee joined the organization',
+                            'data' => [
+                                'team_id' => $teamId,
+                                'salary' => $request->salary,
+                                'date_of_joining' => $request->date_of_joining,
+                            ],
+                            'performed_by' => auth()->id(),
+                        ]);
+            
+                        // Audit log for employee creation
+                        AuditLog::logCreated(
+                            'employees',
+                            $employee,
+                            "New employee created: {$user->name} (Mobile: {$user->mobile})"
+                        );
 
-            DB::commit();
+                        DB::commit();
 
-            return redirect()->route('employees.index')->with('success', 'Employee created successfully!');
+                        return redirect()->route('employees.index')->with('success', 'Employee created successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'Failed to create employee: ' . $e->getMessage()])->withInput();
@@ -262,17 +305,26 @@ class EmployeeController extends Controller
         $employee->status = $status;
         $employee->save();
         
-        \App\Models\EmployeeActivity::create([
-            'employee_id' => $employee->id,
-            'activity_type' => 'status_changed',
-            'description' => 'Employee status changed from ' . $oldStatus . ' to ' . $status,
-            'data' => [
-                'old_status' => $oldStatus,
-                'new_status' => $status,
-            ],
-            'performed_by' => auth()->id(),
-        ]);
+                \App\Models\EmployeeActivity::create([
+                    'employee_id' => $employee->id,
+                    'activity_type' => 'status_changed',
+                    'description' => 'Employee status changed from ' . $oldStatus . ' to ' . $status,
+                    'data' => [
+                        'old_status' => $oldStatus,
+                        'new_status' => $status,
+                    ],
+                    'performed_by' => auth()->id(),
+                ]);
+        
+                // Audit log for status change
+                AuditLog::logUpdated(
+                    'employees',
+                    $employee,
+                    "Employee status changed: {$employee->user->name} ({$oldStatus} → {$status})",
+                    ['status' => $oldStatus],
+                    ['status' => $status]
+                );
 
-        return redirect()->route('employees.index')->with('success', 'Employee status updated successfully!');
+                return redirect()->route('employees.index')->with('success', 'Employee status updated successfully!');
     }
 }

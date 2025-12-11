@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLog;
 use App\Models\Employee;
 use App\Models\Loan;
 use App\Models\LoanPayment;
@@ -135,20 +136,30 @@ class PaymentController extends Controller
             $loan->status = 'active';
             $loan->save();
             
-            \App\Models\EmployeeActivity::create([
-                'employee_id' => $loan->employee_id,
-                'activity_type' => 'loan_disbursed',
-                'description' => 'Loan of ₹' . number_format($loan->total_amount, 2) . ' disbursed',
-                'data' => [
-                    'loan_id' => $loan->id,
-                    'amount' => $loan->total_amount,
-                    'utr' => $validated['utr_number'],
-                ],
-                'performed_by' => auth()->id(),
-            ]);
-        });
+                    \App\Models\EmployeeActivity::create([
+                        'employee_id' => $loan->employee_id,
+                        'activity_type' => 'loan_disbursed',
+                        'description' => 'Loan of ₹' . number_format($loan->total_amount, 2) . ' disbursed',
+                        'data' => [
+                            'loan_id' => $loan->id,
+                            'amount' => $loan->total_amount,
+                            'utr' => $validated['utr_number'],
+                        ],
+                        'performed_by' => auth()->id(),
+                    ]);
+            
+                    // Audit log for loan disbursement
+                    AuditLog::log(
+                        'disbursed',
+                        'loans',
+                        "Loan disbursed: ₹" . number_format($loan->total_amount, 2) . " to {$loan->employee->user->name}",
+                        $loan,
+                        ['status' => 'pending'],
+                        ['status' => 'active', 'utr' => $validated['utr_number']]
+                    );
+                });
 
-        return redirect()->route('payments.index')->with('success', 'Loan disbursed successfully!');
+                return redirect()->route('payments.index')->with('success', 'Loan disbursed successfully!');
     }
 
     public function collectEmi(Request $request, $loanPaymentId)
@@ -185,20 +196,30 @@ class PaymentController extends Controller
             
             $loan->save();
             
-            \App\Models\EmployeeActivity::create([
-                'employee_id' => $loanPayment->loan->employee_id,
-                'activity_type' => 'emi_collected',
-                'description' => 'EMI of ₹' . number_format($loanPayment->amount, 2) . ' collected for loan',
-                'data' => [
-                    'loan_id' => $loanPayment->loan_id,
-                    'amount' => $loanPayment->amount,
-                    'installment_number' => $loanPayment->installment_number,
-                ],
-                'performed_by' => auth()->id(),
-            ]);
-        });
+                    \App\Models\EmployeeActivity::create([
+                        'employee_id' => $loanPayment->loan->employee_id,
+                        'activity_type' => 'emi_collected',
+                        'description' => 'EMI of ₹' . number_format($loanPayment->amount, 2) . ' collected for loan',
+                        'data' => [
+                            'loan_id' => $loanPayment->loan_id,
+                            'amount' => $loanPayment->amount,
+                            'installment_number' => $loanPayment->installment_number,
+                        ],
+                        'performed_by' => auth()->id(),
+                    ]);
+            
+                    // Audit log for EMI collection
+                    AuditLog::log(
+                        'emi_collected',
+                        'loans',
+                        "EMI collected: ₹" . number_format($loanPayment->amount, 2) . " (Installment #{$loanPayment->installment_number}) from {$loanPayment->loan->employee->user->name}",
+                        $loanPayment->loan,
+                        ['remaining_balance' => $loanPayment->loan->remaining_balance + $loanPayment->amount],
+                        ['remaining_balance' => $loanPayment->loan->remaining_balance, 'installment_paid' => $loanPayment->installment_number]
+                    );
+                });
 
-        return redirect()->route('payments.index')->with('success', 'EMI payment collected successfully!');
+                return redirect()->route('payments.index')->with('success', 'EMI payment collected successfully!');
     }
 
     public function salaryTeams()
@@ -385,24 +406,34 @@ class PaymentController extends Controller
                 ]
             );
             
-            $monthName = date('F', mktime(0, 0, 0, $currentMonth, 1));
-            \App\Models\EmployeeActivity::create([
-                'employee_id' => $employee->id,
-                'activity_type' => 'salary_credited',
-                'description' => 'Salary of ₹' . number_format($finalPay, 2) . ' credited for ' . $monthName . ' ' . $currentYear,
-                'data' => [
-                    'month' => $currentMonth,
-                    'year' => $currentYear,
-                    'gross_salary' => $employee->salary,
-                    'net_pay' => $netPay,
-                    'total_emi' => $totalEmi,
-                    'final_pay' => $finalPay,
-                ],
-                'performed_by' => auth()->id(),
-            ]);
-        });
+                    $monthName = date('F', mktime(0, 0, 0, $currentMonth, 1));
+                    \App\Models\EmployeeActivity::create([
+                        'employee_id' => $employee->id,
+                        'activity_type' => 'salary_credited',
+                        'description' => 'Salary of ₹' . number_format($finalPay, 2) . ' credited for ' . $monthName . ' ' . $currentYear,
+                        'data' => [
+                            'month' => $currentMonth,
+                            'year' => $currentYear,
+                            'gross_salary' => $employee->salary,
+                            'net_pay' => $netPay,
+                            'total_emi' => $totalEmi,
+                            'final_pay' => $finalPay,
+                        ],
+                        'performed_by' => auth()->id(),
+                    ]);
+            
+                    // Audit log for salary disbursement
+                    AuditLog::log(
+                        'salary_disbursed',
+                        'salaries',
+                        "Salary disbursed: ₹" . number_format($finalPay, 2) . " to {$employee->user->name} for {$monthName} {$currentYear}",
+                        $employee,
+                        [],
+                        ['month' => $currentMonth, 'year' => $currentYear, 'gross_salary' => $employee->salary, 'net_pay' => $netPay, 'total_emi' => $totalEmi, 'final_pay' => $finalPay]
+                    );
+                });
         
-        return redirect()->back()->with('success', 'Salary payment disbursed successfully!');
+                return redirect()->back()->with('success', 'Salary payment disbursed successfully!');
     }
 
     public function salaryHistory()

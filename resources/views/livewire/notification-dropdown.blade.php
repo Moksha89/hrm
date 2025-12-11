@@ -1,4 +1,4 @@
-<div class="relative" x-data="{ open: @entangle('isOpen') }" @click.away="open = false">
+<div class="relative" x-data="{ open: false }" @click.away="open = false">
     <!-- Notification Bell Button -->
     <button @click="open = !open" class="relative p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

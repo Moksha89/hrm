@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLog;
 use App\Models\Employee;
 use App\Models\EmployeeWorkingDay;
 use App\Models\Team;
@@ -45,38 +46,65 @@ class TeamController extends Controller
             'name' => 'required|string|max:255|unique:teams,name',
         ]);
 
-        Team::create([
-            'name' => $request->name,
-        ]);
+                $team = Team::create([
+                    'name' => $request->name,
+                ]);
+        
+                // Audit log for team creation
+                AuditLog::logCreated(
+                    'teams',
+                    $team,
+                    "New team created: {$team->name}"
+                );
 
-        return redirect()->route('teams.index')->with('success', 'Team created successfully!');
+                return redirect()->route('teams.index')->with('success', 'Team created successfully!');
     }
 
-    public function update(Request $request, $id)
-    {
-        $team = Team::findOrFail($id);
+        public function update(Request $request, $id)
+        {
+            $team = Team::findOrFail($id);
         
-        $request->validate([
-            'name' => 'required|string|max:255|unique:teams,name,' . $id,
-        ]);
+            $request->validate([
+                'name' => 'required|string|max:255|unique:teams,name,' . $id,
+            ]);
 
-        $team->update([
-            'name' => $request->name,
-        ]);
-
-        return redirect()->route('teams.index')->with('success', 'Team updated successfully!');
-    }
-
-    public function destroy($id)
-    {
-        $team = Team::findOrFail($id);
+            $oldName = $team->name;
+            $team->update([
+                'name' => $request->name,
+            ]);
         
-        $team->employees()->update(['team_id' => null]);
-        
-        $team->delete();
+            // Audit log for team update
+            AuditLog::logUpdated(
+                'teams',
+                $team,
+                "Team renamed: {$oldName} → {$request->name}",
+                ['name' => $oldName],
+                ['name' => $request->name]
+            );
 
-        return redirect()->route('teams.index')->with('success', 'Team deleted successfully!');
-    }
+            return redirect()->route('teams.index')->with('success', 'Team updated successfully!');
+        }
+
+        public function destroy($id)
+        {
+            $team = Team::findOrFail($id);
+        
+            $teamName = $team->name;
+            $employeeCount = $team->employees()->count();
+        
+            $team->employees()->update(['team_id' => null]);
+        
+            // Audit log for team deletion
+            AuditLog::logDeleted(
+                'teams',
+                $team,
+                "Team deleted: {$teamName} ({$employeeCount} employees unassigned)"
+            );
+        
+            $team->delete();
+
+            return redirect()->route('teams.index')->with('success', 'Team deleted successfully!');
+        }
 
     public function show($id)
     {
@@ -120,27 +148,51 @@ class TeamController extends Controller
         return view('teams.show', compact('team', 'totalSalary', 'totalLoan', 'totalNetPay', 'totalEmi', 'totalFinalPay', 'unassignedEmployees', 'currentMonth', 'currentYear'));
     }
 
-    public function assignEmployee(Request $request, $id)
-    {
-        $request->validate([
-            'employee_id' => 'required|exists:employees,id',
-        ]);
+        public function assignEmployee(Request $request, $id)
+        {
+            $request->validate([
+                'employee_id' => 'required|exists:employees,id',
+            ]);
 
-        $employee = Employee::findOrFail($request->employee_id);
-        $employee->team_id = $id;
-        $employee->save();
+            $team = Team::findOrFail($id);
+            $employee = Employee::with('user')->findOrFail($request->employee_id);
+            $oldTeamId = $employee->team_id;
+            $employee->team_id = $id;
+            $employee->save();
+        
+            // Audit log for employee assignment
+            AuditLog::log(
+                'assigned',
+                'teams',
+                "Employee {$employee->user->name} assigned to team {$team->name}",
+                $employee,
+                ['team_id' => $oldTeamId],
+                ['team_id' => $id]
+            );
 
-        return redirect()->route('teams.show', $id)->with('success', 'Employee assigned to team successfully!');
-    }
+            return redirect()->route('teams.show', $id)->with('success', 'Employee assigned to team successfully!');
+        }
 
-    public function removeEmployee($teamId, $employeeId)
-    {
-        $employee = Employee::findOrFail($employeeId);
-        $employee->team_id = null;
-        $employee->save();
+        public function removeEmployee($teamId, $employeeId)
+        {
+            $team = Team::findOrFail($teamId);
+            $employee = Employee::with('user')->findOrFail($employeeId);
+            $oldTeamId = $employee->team_id;
+            $employee->team_id = null;
+            $employee->save();
+        
+            // Audit log for employee removal
+            AuditLog::log(
+                'removed',
+                'teams',
+                "Employee {$employee->user->name} removed from team {$team->name}",
+                $employee,
+                ['team_id' => $oldTeamId],
+                ['team_id' => null]
+            );
 
-        return redirect()->route('teams.show', $teamId)->with('success', 'Employee removed from team successfully!');
-    }
+            return redirect()->route('teams.show', $teamId)->with('success', 'Employee removed from team successfully!');
+        }
 
     public function updateWorkingDays(Request $request, $teamId)
     {
