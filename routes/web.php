@@ -93,12 +93,27 @@ Route::middleware('auth')->group(function () {
     Route::get('/password/change', [App\Http\Controllers\PasswordChangeController::class, 'show'])->name('password.change');
     Route::post('/password/change', [App\Http\Controllers\PasswordChangeController::class, 'update'])->name('password.update');
     
+    // Two-Factor Authentication Routes
+    Route::get('/two-factor', [App\Http\Controllers\TwoFactorController::class, 'show'])->name('two-factor.show');
+    Route::get('/two-factor/enable', [App\Http\Controllers\TwoFactorController::class, 'enable'])->name('two-factor.enable');
+    Route::post('/two-factor/verify', [App\Http\Controllers\TwoFactorController::class, 'verify'])->name('two-factor.verify');
+    Route::post('/two-factor/disable', [App\Http\Controllers\TwoFactorController::class, 'disable'])->name('two-factor.disable');
+    Route::get('/two-factor/challenge', [App\Http\Controllers\TwoFactorController::class, 'challenge'])->name('two-factor.challenge');
+    Route::post('/two-factor/challenge', [App\Http\Controllers\TwoFactorController::class, 'verifyChallenge'])->name('two-factor.challenge.verify');
+    
     Route::middleware('role:admin,manager,team-leader,hr,accountant')->group(function () {
         Route::get('/export/employees', [App\Http\Controllers\ExportController::class, 'employees'])->name('export.employees');
         Route::get('/export/loans', [App\Http\Controllers\ExportController::class, 'loans'])->name('export.loans');
         Route::get('/export/salary-history', [App\Http\Controllers\ExportController::class, 'salaryHistory'])->name('export.salaryHistory');
         Route::get('/export/transactions', [App\Http\Controllers\ExportController::class, 'transactions'])->name('export.transactions');
         Route::get('/export/requests', [App\Http\Controllers\ExportController::class, 'requests'])->name('export.requests');
+    });
+    
+    // Import Routes
+    Route::middleware('role:admin,hr')->group(function () {
+        Route::get('/import/employees', [App\Http\Controllers\ImportController::class, 'showEmployeeImport'])->name('import.employees.show');
+        Route::post('/import/employees', [App\Http\Controllers\ImportController::class, 'importEmployees'])->name('import.employees');
+        Route::get('/import/template', [App\Http\Controllers\ImportController::class, 'downloadTemplate'])->name('import.template');
     });
     
     // Audit Logs Routes
