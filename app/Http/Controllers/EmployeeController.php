@@ -37,7 +37,7 @@ class EmployeeController extends Controller
 
     public function show($id)
     {
-        $employee = Employee::with(['user', 'team', 'bankAccounts', 'documents', 'loans.loanPayments', 'salaryPayments', 'activities.performedBy'])->findOrFail($id);
+        $employee = Employee::with(['user', 'team', 'bankAccounts', 'documents', 'loans.payments', 'salaryPayments', 'activities.performedBy'])->findOrFail($id);
         
         $this->authorize('view', $employee);
         
