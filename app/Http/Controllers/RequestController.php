@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\DashboardUpdated;
 use App\Events\NotificationCreated;
 use App\Events\RequestStatusChanged;
+use App\Models\AuditLog;
 use App\Models\Employee;
 use App\Models\EmployeeActivity;
 use App\Models\Notification;
@@ -90,6 +91,13 @@ class RequestController extends Controller
                 ]);
                 $notifications[] = $notification;
             }
+
+            // Log to audit
+            AuditLog::logCreated(
+                'requests',
+                $newRequest,
+                ucfirst(str_replace('_', ' ', $validated['type'])) . ' request created for ' . $newRequest->employee->user->name
+            );
 
             DB::commit();
             
@@ -205,6 +213,13 @@ class RequestController extends Controller
                 'data' => ['request_id' => $req->id],
             ]);
 
+            // Log to audit
+            AuditLog::logApproved(
+                'requests',
+                $req,
+                ucfirst(str_replace('_', ' ', $req->type)) . ' request approved for ' . $req->employee->user->name
+            );
+
             DB::commit();
             
             // Broadcast real-time events
@@ -258,6 +273,14 @@ class RequestController extends Controller
                 'message' => 'Your ' . str_replace('_', ' ', $req->type) . ' request has been rejected',
                 'data' => ['request_id' => $req->id, 'reason' => $validated['rejection_reason']],
             ]);
+
+            // Log to audit
+            AuditLog::logRejected(
+                'requests',
+                $req,
+                ucfirst(str_replace('_', ' ', $req->type)) . ' request rejected for ' . $req->employee->user->name,
+                $validated['rejection_reason']
+            );
 
             DB::commit();
             

@@ -45,6 +45,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/loans/{loanId}/activate', [App\Http\Controllers\LoanController::class, 'activateLoan'])->name('loans.activate')->middleware('role:admin');
     Route::post('/loans/payment/{paymentId}/mark-paid', [App\Http\Controllers\LoanController::class, 'markPaymentPaid'])->name('loans.markPaymentPaid')->middleware('role:admin,accountant');
     
+    // Loan Management Routes (EMI change, tenure change, pre-closure, waive-off)
+    Route::middleware('role:admin,manager,team-leader')->group(function () {
+        Route::get('/loans/{loanId}/manage', [App\Http\Controllers\LoanController::class, 'manage'])->name('loans.manage');
+        Route::post('/loans/{loanId}/update-emi', [App\Http\Controllers\LoanController::class, 'updateEmi'])->name('loans.updateEmi');
+        Route::post('/loans/{loanId}/update-tenure', [App\Http\Controllers\LoanController::class, 'updateTenure'])->name('loans.updateTenure');
+        Route::post('/loans/{loanId}/pre-close', [App\Http\Controllers\LoanController::class, 'preClose'])->name('loans.preClose');
+    });
+    Route::post('/loans/{loanId}/waive-off', [App\Http\Controllers\LoanController::class, 'waiveOff'])->name('loans.waiveOff')->middleware('role:admin');
+    
     Route::middleware('role:admin,accountant,manager')->group(function () {
         Route::get('/payments', [App\Http\Controllers\PaymentController::class, 'index'])->name('payments.index');
         Route::get('/payments/salaries', [App\Http\Controllers\PaymentController::class, 'salaries'])->name('payments.salaries');
@@ -85,5 +94,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/export/salary-history', [App\Http\Controllers\ExportController::class, 'salaryHistory'])->name('export.salaryHistory');
         Route::get('/export/transactions', [App\Http\Controllers\ExportController::class, 'transactions'])->name('export.transactions');
         Route::get('/export/requests', [App\Http\Controllers\ExportController::class, 'requests'])->name('export.requests');
+    });
+    
+    // Audit Logs Routes
+    Route::middleware('role:admin,manager,team-leader')->group(function () {
+        Route::get('/logs', [App\Http\Controllers\AuditLogController::class, 'index'])->name('logs.index');
+        Route::get('/logs/{id}', [App\Http\Controllers\AuditLogController::class, 'show'])->name('logs.show');
     });
 });
