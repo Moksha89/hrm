@@ -106,8 +106,8 @@ class PaymentController extends Controller
         }
         
         $validated = $request->validate([
-            'utr' => 'required|string',
-            'remarks' => 'nullable|string',
+            'utr_number' => 'required|string',
+            'notes' => 'nullable|string',
         ]);
         
         $loan = Loan::with(['employee', 'bankAccount'])->findOrFail($loanId);
@@ -128,8 +128,8 @@ class PaymentController extends Controller
                 'processed_by' => auth()->id(),
                 'transaction_date' => now(),
                 'notes' => 'Loan disbursed to employee bank account',
-                'utr' => $validated['utr'],
-                'remarks' => $validated['remarks'] ?? null,
+                'utr' => $validated['utr_number'],
+                'remarks' => $validated['notes'] ?? null,
             ]);
 
             $loan->status = 'active';
@@ -142,7 +142,7 @@ class PaymentController extends Controller
                 'data' => [
                     'loan_id' => $loan->id,
                     'amount' => $loan->total_amount,
-                    'utr' => $validated['utr'],
+                    'utr' => $validated['utr_number'],
                 ],
                 'performed_by' => auth()->id(),
             ]);
@@ -328,8 +328,7 @@ class PaymentController extends Controller
         }
         
         $validated = $request->validate([
-            'utr' => 'required|string',
-            'remarks' => 'nullable|string',
+            'notes' => 'nullable|string',
         ]);
         
         $employee = Employee::with(['bankAccounts'])->findOrFail($employeeId);
@@ -374,9 +373,9 @@ class PaymentController extends Controller
                     'approval_status' => 'approved',
                     'processed_by' => auth()->id(),
                     'payment_date' => now(),
-                    'notes' => 'Salary disbursed to employee bank account',
-                    'utr' => $validated['utr'],
-                    'remarks' => $validated['remarks'] ?? null,
+                    'notes' => $validated['notes'] ?? 'Salary disbursed to employee bank account',
+                    'utr' => null,
+                    'remarks' => null,
                 ]
             );
             
@@ -392,7 +391,6 @@ class PaymentController extends Controller
                     'net_pay' => $netPay,
                     'total_emi' => $totalEmi,
                     'final_pay' => $finalPay,
-                    'utr' => $validated['utr'],
                 ],
                 'performed_by' => auth()->id(),
             ]);
