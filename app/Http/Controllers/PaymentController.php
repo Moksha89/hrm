@@ -11,6 +11,7 @@ use App\Models\SalaryPayment;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PaymentController extends Controller
 {
@@ -543,5 +544,109 @@ class PaymentController extends Controller
             ->get();
         
         return view('payments.employee-detail', compact('employee', 'currentMonth', 'currentYear', 'recentTransactions'));
+    }
+
+    public function showScreenshot($type, $id)
+    {
+        $model = match($type) {
+            'payment' => Payment::findOrFail($id),
+            'salary' => SalaryPayment::findOrFail($id),
+            'loan_payment' => LoanPayment::findOrFail($id),
+            default => abort(404, 'Invalid payment type'),
+        };
+
+        if (!$model->screenshot) {
+            abort(404, 'No screenshot available for this payment.');
+        }
+
+        if (!Storage::disk('public')->exists($model->screenshot)) {
+            abort(404, 'Screenshot file not found.');
+        }
+
+        return response()->file(Storage::disk('public')->path($model->screenshot));
+    }
+
+    public function bulkDisburseSalary(Request $request)
+    {
+        if (!auth()->user()->isAccountant() && !auth()->user()->isAdmin()) {
+            abort(403, 'Only accountants can disburse payments.');
+        }
+
+        $validated = $request->validate([
+            'employee_ids' => 'required|array',
+            'employee_ids.*' => 'integer|exists:employees,id',
+            'month' => 'required|integer|min:1|max:12',
+            'year' => 'required|integer|min:2020|max:' . (date('Y') + 1),
+            'utr_number' => 'nullable|string',
+            'notes' => 'nullable|string',
+            'screenshot' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+        ]);
+
+        $screenshotPath = null;
+        if ($request->hasFile('screenshot')) {
+            $screenshotPath = $request->file('screenshot')->store('payment-screenshots', 'public');
+        }
+
+        $successCount = 0;
+        $errors = [];
+
+        DB::transaction(function () use ($validated, $screenshotPath, &$successCount, &$errors) {
+            foreach ($validated['employee_ids'] as $employeeId) {
+                try {
+                    $employee = Employee::with(['bankAccounts'])->findOrFail($employeeId);
+                    
+                    $existingPayment = SalaryPayment::where('employee_id', $employeeId)
+                        ->where('month', $validated['month'])
+                        ->where('year', $validated['year'])
+                        ->first();
+                    
+                    if ($existingPayment && $existingPayment->status === 'completed') {
+                        $errors[] = "{$employee->user->name}: Salary already paid for this month.";
+                        continue;
+                    }
+
+                    $netPay = $employee->getNetPay($validated['month'], $validated['year']);
+                    $totalEmi = $employee->getTotalMonthlyEmi();
+                    $finalPay = $employee->getFinalPay($validated['month'], $validated['year']);
+                    $workingDays = $employee->getWorkingDays($validated['month'], $validated['year']);
+                    $defaultBankAccount = $employee->bankAccounts()->where('is_default', true)->first();
+
+                    SalaryPayment::updateOrCreate(
+                        [
+                            'employee_id' => $employee->id,
+                            'month' => $validated['month'],
+                            'year' => $validated['year'],
+                        ],
+                        [
+                            'gross_salary' => $employee->salary,
+                            'working_days' => $workingDays,
+                            'net_pay' => $netPay,
+                            'total_emi' => $totalEmi,
+                            'final_pay' => $finalPay,
+                            'bank_account_id' => $defaultBankAccount?->id,
+                            'status' => 'completed',
+                            'approval_status' => 'approved',
+                            'processed_by' => auth()->id(),
+                            'payment_date' => now(),
+                            'notes' => $validated['notes'] ?? 'Bulk salary disbursement',
+                            'utr' => $validated['utr_number'] ?? null,
+                            'remarks' => $validated['notes'] ?? null,
+                            'screenshot' => $screenshotPath,
+                        ]
+                    );
+
+                    $successCount++;
+                } catch (\Exception $e) {
+                    $errors[] = "Employee ID {$employeeId}: " . $e->getMessage();
+                }
+            }
+        });
+
+        $message = "Successfully disbursed salary to {$successCount} employees.";
+        if (!empty($errors)) {
+            $message .= " Errors: " . implode(', ', $errors);
+        }
+
+        return redirect()->back()->with($successCount > 0 ? 'success' : 'error', $message);
     }
 }

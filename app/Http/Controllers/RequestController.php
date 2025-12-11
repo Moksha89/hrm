@@ -295,4 +295,110 @@ class RequestController extends Controller
             return back()->withErrors(['error' => 'Failed to reject request: ' . $e->getMessage()]);
         }
     }
+
+    public function bulkUpdate(HttpRequest $request)
+    {
+        $validated = $request->validate([
+            'request_ids' => 'required|array',
+            'request_ids.*' => 'integer|exists:requests,id',
+            'action' => 'required|in:approve,reject',
+            'rejection_reason' => 'required_if:action,reject|nullable|string',
+        ]);
+
+        $successCount = 0;
+        $errors = [];
+
+        DB::beginTransaction();
+        try {
+            $requests = Request::with('employee.user')->whereIn('id', $validated['request_ids'])->get();
+
+            foreach ($requests as $req) {
+                if ($req->status !== 'pending') {
+                    $errors[] = "Request #{$req->id}: Already processed.";
+                    continue;
+                }
+
+                if ($validated['action'] === 'approve') {
+                    $req->update([
+                        'status' => 'approved',
+                        'approved_by' => auth()->id(),
+                        'approved_at' => now(),
+                    ]);
+
+                    // Handle type-specific actions
+                    switch ($req->type) {
+                        case 'salary_hike':
+                            $newSalary = $req->details['new_salary'] ?? null;
+                            if ($newSalary) {
+                                $req->employee->update(['salary' => $newSalary]);
+                            }
+                            break;
+                        case 'resign':
+                            $req->employee->update(['status' => 'resigned', 'team_id' => null]);
+                            break;
+                        case 'idle':
+                            $req->employee->update(['status' => 'inactive', 'team_id' => null]);
+                            break;
+                        case 'remove':
+                            $req->employee->update(['team_id' => null]);
+                            break;
+                    }
+
+                    Notification::create([
+                        'user_id' => $req->requested_by,
+                        'type' => 'request_approved',
+                        'message' => 'Your ' . str_replace('_', ' ', $req->type) . ' request has been approved',
+                        'data' => ['request_id' => $req->id],
+                    ]);
+
+                    AuditLog::log(
+                        'bulk_approved',
+                        'requests',
+                        ucfirst(str_replace('_', ' ', $req->type)) . ' request bulk approved for ' . $req->employee->user->name,
+                        $req,
+                        ['status' => 'pending'],
+                        ['status' => 'approved']
+                    );
+                } else {
+                    $req->update([
+                        'status' => 'rejected',
+                        'approved_by' => auth()->id(),
+                        'approved_at' => now(),
+                        'rejection_reason' => $validated['rejection_reason'],
+                    ]);
+
+                    Notification::create([
+                        'user_id' => $req->requested_by,
+                        'type' => 'request_rejected',
+                        'message' => 'Your ' . str_replace('_', ' ', $req->type) . ' request has been rejected',
+                        'data' => ['request_id' => $req->id, 'reason' => $validated['rejection_reason']],
+                    ]);
+
+                    AuditLog::log(
+                        'bulk_rejected',
+                        'requests',
+                        ucfirst(str_replace('_', ' ', $req->type)) . ' request bulk rejected for ' . $req->employee->user->name,
+                        $req,
+                        ['status' => 'pending'],
+                        ['status' => 'rejected', 'reason' => $validated['rejection_reason']]
+                    );
+                }
+
+                $successCount++;
+            }
+
+            DB::commit();
+
+            $actionText = $validated['action'] === 'approve' ? 'approved' : 'rejected';
+            $message = "Successfully {$actionText} {$successCount} request(s).";
+            if (!empty($errors)) {
+                $message .= " Errors: " . implode(', ', $errors);
+            }
+
+            return redirect()->back()->with($successCount > 0 ? 'success' : 'error', $message);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Failed to process bulk action: ' . $e->getMessage()]);
+        }
+    }
 }

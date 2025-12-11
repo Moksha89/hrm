@@ -34,6 +34,8 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">EMI</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Final Pay</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Payment Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">UTR</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Screenshot</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -65,6 +67,21 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                                         {{ $payment->payment_date ? $payment->payment_date->format('M d, Y') : 'N/A' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                        {{ $payment->utr ?? '—' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        @if($payment->screenshot)
+                                            <a href="{{ route('payments.screenshot', ['type' => 'salary', 'id' => $payment->id]) }}" target="_blank" class="inline-flex items-center text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                </svg>
+                                                View
+                                            </a>
+                                        @else
+                                            <span class="text-gray-400">—</span>
+                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach

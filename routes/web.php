@@ -71,6 +71,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/payments/salary/disburse/{employeeId}', [App\Http\Controllers\PaymentController::class, 'disburseSalary'])->name('payments.salary.disburse')->middleware('role:admin,accountant');
     Route::post('/payments/approve-salary/{employeeId}', [App\Http\Controllers\PaymentController::class, 'approveSalary'])->name('payments.salary.approve')->middleware('role:admin,manager');
     Route::post('/payments/reject-salary/{employeeId}', [App\Http\Controllers\PaymentController::class, 'rejectSalary'])->name('payments.salary.reject')->middleware('role:admin,manager');
+    Route::get('/payments/screenshot/{type}/{id}', [App\Http\Controllers\PaymentController::class, 'showScreenshot'])->name('payments.screenshot')->middleware('role:admin,accountant,manager');
+    
+    // Bulk actions for requests
+    Route::post('/requests/bulk', [App\Http\Controllers\RequestController::class, 'bulkUpdate'])->name('requests.bulk')->middleware('role:admin,manager');
+    Route::post('/payments/salary/bulk-disburse', [App\Http\Controllers\PaymentController::class, 'bulkDisburseSalary'])->name('payments.salary.bulkDisburse')->middleware('role:admin,accountant');
     
     Route::get('/requests', [App\Http\Controllers\RequestController::class, 'index'])->name('requests.index');
     Route::post('/requests', [App\Http\Controllers\RequestController::class, 'store'])->name('requests.store')->middleware('role:admin,team-leader');
