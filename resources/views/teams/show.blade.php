@@ -305,9 +305,22 @@
                                                     </label>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
-                                                    <span class="text-sm font-semibold text-orange-600 dark:text-orange-400">
-                                                        ₹{{ number_format($monthlyEmi, 2) }}
-                                                    </span>
+                                                    @if($monthlyEmi > 0)
+                                                    <div class="flex items-center space-x-2">
+                                                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                                                            ₹{{ number_format($monthlyEmi, 2) }}
+                                                        </span>
+                                                        <input type="number" 
+                                                               name="employees[{{ $employee->id }}][emi_override_amount]" 
+                                                               value="{{ $workingDayRecord?->emi_override_amount ?? '' }}" 
+                                                               placeholder="Override"
+                                                               step="0.01"
+                                                               min="0"
+                                                               class="w-24 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
+                                                    </div>
+                                                    @else
+                                                    <span class="text-sm text-gray-500 dark:text-gray-400">₹0.00</span>
+                                                    @endif
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
                                                     <span class="text-sm font-semibold text-amber-600 dark:text-amber-400">

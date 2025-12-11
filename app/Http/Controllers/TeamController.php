@@ -170,12 +170,33 @@ class TeamController extends Controller
         $request->validate([
             'employees' => 'required|array',
             'employees.*.working_days' => 'required|integer|min:0|max:31',
+            'employees.*.emi_override_amount' => 'nullable|numeric|min:0',
             'month' => 'required|integer|min:1|max:12',
             'year' => 'required|integer|min:2020|max:2100',
         ]);
 
         foreach ($request->employees as $employeeId => $data) {
             $employee = Employee::findOrFail($employeeId);
+            $deductEmi = isset($data['deduct_emi']) ? true : false;
+            
+            $updateData = [
+                'working_days' => $data['working_days'],
+                'deduct_emi' => $deductEmi,
+            ];
+            
+            if (isset($data['emi_override_amount']) && $data['emi_override_amount'] !== '' && $data['emi_override_amount'] !== null) {
+                $updateData['emi_override_amount'] = $data['emi_override_amount'];
+                $updateData['emi_override_by'] = auth()->id();
+                $updateData['emi_override_reason'] = 'Manual adjustment by team leader';
+            } else {
+                $updateData['emi_override_amount'] = null;
+                $updateData['emi_override_by'] = null;
+                $updateData['emi_override_reason'] = null;
+            }
+            
+            if (!$deductEmi) {
+                $this->handleEmiSkipRollover($employee, $request->month, $request->year);
+            }
             
             EmployeeWorkingDay::updateOrCreate(
                 [
@@ -183,13 +204,42 @@ class TeamController extends Controller
                     'month' => $request->month,
                     'year' => $request->year,
                 ],
-                [
-                    'working_days' => $data['working_days'],
-                    'deduct_emi' => isset($data['deduct_emi']) ? true : false,
-                ]
+                $updateData
             );
         }
 
         return redirect()->route('teams.show', $teamId)->with('success', 'Salary settings updated successfully for all team members!');
+    }
+    
+    private function handleEmiSkipRollover(Employee $employee, int $month, int $year)
+    {
+        $activeLoans = $employee->activeLoans()->get();
+        
+        foreach ($activeLoans as $loan) {
+            $currentMonthStart = \Carbon\Carbon::create($year, $month, 1)->startOfMonth();
+            $currentMonthEnd = \Carbon\Carbon::create($year, $month, 1)->endOfMonth();
+            
+            $pendingPayment = $loan->payments()
+                ->where('status', 'pending')
+                ->whereBetween('due_date', [$currentMonthStart, $currentMonthEnd])
+                ->first();
+            
+            if ($pendingPayment) {
+                $lastPayment = $loan->payments()
+                    ->orderBy('installment_number', 'desc')
+                    ->first();
+                
+                $newDueDate = \Carbon\Carbon::parse($lastPayment->due_date)->addMonth();
+                $newInstallmentNumber = $lastPayment->installment_number + 1;
+                
+                $pendingPayment->update([
+                    'due_date' => $newDueDate,
+                    'installment_number' => $newInstallmentNumber,
+                ]);
+                
+                $loan->increment('total_months');
+                $loan->increment('remaining_months');
+            }
+        }
     }
 }
