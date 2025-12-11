@@ -9,24 +9,32 @@
                             <h1 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">Employees</h1>
                             <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">Manage your organization's employees</p>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <div class="relative">
-                                <button onclick="toggleExportDropdown()" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                                    </svg>
-                                    <span>Export</span>
-                                </button>
-                                <div id="export-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
-                                    <a href="{{ route('export.employees', ['format' => 'xlsx']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
-                                        Export to Excel (.xlsx)
-                                    </a>
-                                    <a href="{{ route('export.employees', ['format' => 'csv']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
-                                        Export to CSV
-                                    </a>
-                                </div>
-                            </div>
-                            @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader())
+                                                <div class="flex items-center space-x-3">
+                                                    <div class="relative">
+                                                        <button onclick="toggleExportDropdown()" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                                            </svg>
+                                                            <span>Export</span>
+                                                        </button>
+                                                        <div id="export-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
+                                                            <a href="{{ route('export.employees', ['format' => 'xlsx']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                                                                Export to Excel (.xlsx)
+                                                            </a>
+                                                            <a href="{{ route('export.employees', ['format' => 'csv']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                                                                Export to CSV
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    @if(auth()->user()->isAdmin() || auth()->user()->isHR())
+                                                    <a href="{{ route('import.employees.show') }}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m4-8l-4-4m0 0L12 8m4-4v12"></path>
+                                                        </svg>
+                                                        <span>Import</span>
+                                                    </a>
+                                                    @endif
+                                                    @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader())
                             <button id="add-employee-btn" class="bg-amber-500 hover:bg-amber-400 text-black px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
