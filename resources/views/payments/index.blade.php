@@ -32,21 +32,21 @@
                                 <div class="px-3 py-2 border-b border-gray-200 dark:border-gray-700">
                                     <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">Loans</span>
                                 </div>
-                                <a href="{{ route('export.loans', ['format' => 'xlsx']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
+                                <button onclick="exportData('loans', 'xlsx')" class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
                                     Export to Excel (.xlsx)
-                                </a>
-                                <a href="{{ route('export.loans', ['format' => 'pdf']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
+                                </button>
+                                <button onclick="exportData('loans', 'pdf')" class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
                                     Export to PDF
-                                </a>
+                                </button>
                                 <div class="px-3 py-2 border-b border-t border-gray-200 dark:border-gray-700">
                                     <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">Transactions</span>
                                 </div>
-                                <a href="{{ route('export.transactions', ['format' => 'xlsx']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
+                                <button onclick="exportData('transactions', 'xlsx')" class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
                                     Export to Excel (.xlsx)
-                                </a>
-                                <a href="{{ route('export.transactions', ['format' => 'pdf']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
+                                </button>
+                                <button onclick="exportData('transactions', 'pdf')" class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
                                     Export to PDF
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -417,6 +417,52 @@
                 btn.innerHTML = '<svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
                 setTimeout(() => { btn.innerHTML = originalHTML; }, 1000);
             });
+        }
+        
+        function exportData(type, format) {
+            const url = `/export/${type}?format=${format}`;
+            
+            // Use fetch with credentials to ensure session cookie is sent
+            fetch(url, {
+                method: 'GET',
+                credentials: 'same-origin',
+                headers: {
+                    'Accept': format === 'pdf' ? 'application/pdf' : (format === 'xlsx' ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' : 'text/csv')
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Export failed');
+                }
+                // Get filename from Content-Disposition header or generate one
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = `${type}_export.${format}`;
+                if (contentDisposition) {
+                    const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                    if (match && match[1]) {
+                        filename = match[1].replace(/['"]/g, '');
+                    }
+                }
+                return response.blob().then(blob => ({ blob, filename }));
+            })
+            .then(({ blob, filename }) => {
+                // Create download link and trigger download
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(downloadUrl);
+                document.body.removeChild(a);
+            })
+            .catch(error => {
+                console.error('Export error:', error);
+                alert('Export failed. Please try again.');
+            });
+            
+            // Close dropdown
+            document.getElementById('payments-export-dropdown').classList.add('hidden');
         }
         
         function togglePaymentsExportDropdown() {
