@@ -101,6 +101,14 @@
                                     </a>
                                 </div>
                             </div>
+                            @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader() || auth()->user()->isHR())
+                            <button id="create-employee-btn" class="bg-amber-500 hover:bg-amber-400 text-black px-3 py-2 rounded-lg flex items-center space-x-2 transition-colors text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                <span>Create Employee</span>
+                            </button>
+                            @endif
                         </div>
                     </div>
 
@@ -410,5 +418,183 @@
                 cards.forEach(card => container.appendChild(card));
             });
         }
+        
+        // Create Employee Modal
+        const createEmployeeModal = document.getElementById('create-employee-modal');
+        const createEmployeeBtn = document.getElementById('create-employee-btn');
+        const closeCreateEmployeeModalBtn = document.getElementById('close-create-employee-modal-btn');
+        const cancelCreateEmployeeBtn = document.getElementById('cancel-create-employee-btn');
+        
+        createEmployeeBtn?.addEventListener('click', () => {
+            createEmployeeModal?.classList.remove('hidden');
+            if (document.querySelectorAll('.team-bank-account-item').length === 0) {
+                addTeamBankAccount();
+            }
+        });
+        
+        closeCreateEmployeeModalBtn?.addEventListener('click', () => {
+            createEmployeeModal?.classList.add('hidden');
+        });
+        
+        cancelCreateEmployeeBtn?.addEventListener('click', () => {
+            createEmployeeModal?.classList.add('hidden');
+        });
+        
+        let teamBankAccountIndex = 0;
+        
+        function addTeamBankAccount() {
+            const container = document.getElementById('team-bank-accounts-container');
+            const isFirst = container.children.length === 0;
+            
+            const bankAccountHtml = `
+                <div class="team-bank-account-item border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-medium text-gray-900 dark:text-white">Bank Account ${teamBankAccountIndex + 1}</h4>
+                        ${!isFirst ? '<button type="button" class="remove-team-bank-account text-red-600 hover:text-red-700 text-sm">Remove</button>' : ''}
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Account Holder Name *</label>
+                            <input type="text" name="bank_accounts[${teamBankAccountIndex}][account_holder_name]" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Account Number *</label>
+                            <input type="text" name="bank_accounts[${teamBankAccountIndex}][account_number]" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">IFSC Code *</label>
+                            <input type="text" name="bank_accounts[${teamBankAccountIndex}][ifsc_code]" required pattern="[A-Z]{4}0[A-Z0-9]{6}" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Bank Name *</label>
+                            <input type="text" name="bank_accounts[${teamBankAccountIndex}][bank_name]" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="bank_accounts[${teamBankAccountIndex}][is_default]" value="1" ${isFirst ? 'checked' : ''} class="rounded border-gray-300 dark:border-gray-600 text-amber-500 focus:ring-amber-500">
+                                <span class="text-sm text-gray-700 dark:text-gray-300">Set as default account</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', bankAccountHtml);
+            teamBankAccountIndex++;
+            
+            container.querySelectorAll('.remove-team-bank-account').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.team-bank-account-item').remove();
+                });
+            });
+        }
+        
+        document.getElementById('add-team-bank-account-btn')?.addEventListener('click', addTeamBankAccount);
     </script>
+    
+    <!-- Create Employee Modal -->
+    @if(auth()->user()->isAdmin() || auth()->user()->isTeamLeader() || auth()->user()->isHR())
+    <div id="create-employee-modal" class="hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between z-10">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">Create New Employee</h2>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">This employee will be assigned to <span class="font-medium text-amber-600">{{ $team->name }}</span></p>
+                </div>
+                <button id="close-create-employee-modal-btn" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data" class="p-6">
+                @csrf
+                <input type="hidden" name="team_id" value="{{ $team->id }}">
+
+                <div class="mb-6">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4">Basic Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name *</label>
+                            <input type="text" name="name" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mobile Number *</label>
+                            <input type="text" name="mobile" required pattern="[0-9]{10}" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email *</label>
+                            <input type="email" name="email" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Team</label>
+                            <input type="text" value="{{ $team->name }}" disabled class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-300">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4">Financial Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Salary</label>
+                            <input type="number" name="salary" step="0.01" min="0" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Loan</label>
+                            <input type="number" name="loan" step="0.01" min="0" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">EMI</label>
+                            <input type="number" name="emi" step="0.01" min="0" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4">Personal Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Aadhar Number</label>
+                            <input type="text" name="aadhar" pattern="[0-9]{12}" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">PAN Number</label>
+                            <input type="text" name="pan" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date of Birth</label>
+                            <input type="date" name="dob" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date of Joining</label>
+                            <input type="date" name="date_of_joining" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:bg-gray-700 dark:text-white">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-semibold text-gray-900 dark:text-white">Bank Accounts *</h3>
+                        <button type="button" id="add-team-bank-account-btn" class="text-amber-600 hover:text-amber-500 dark:text-amber-400 text-sm font-medium">
+                            + Add Bank Account
+                        </button>
+                    </div>
+                    <div id="team-bank-accounts-container" class="space-y-4">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <button type="button" id="cancel-create-employee-btn" class="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black rounded-lg transition-colors">
+                        Create Employee
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
 @endsection
