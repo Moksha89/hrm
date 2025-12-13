@@ -28,12 +28,24 @@
                                 </svg>
                                 <span>Export</span>
                             </button>
-                            <div id="payments-export-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
+                            <div id="payments-export-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
+                                <div class="px-3 py-2 border-b border-gray-200 dark:border-gray-700">
+                                    <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">Loans</span>
+                                </div>
                                 <a href="{{ route('export.loans', ['format' => 'xlsx']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
-                                    Export Loans (.xlsx)
+                                    Export to Excel (.xlsx)
                                 </a>
+                                <a href="{{ route('export.loans', ['format' => 'pdf']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
+                                    Export to PDF
+                                </a>
+                                <div class="px-3 py-2 border-b border-t border-gray-200 dark:border-gray-700">
+                                    <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">Transactions</span>
+                                </div>
                                 <a href="{{ route('export.transactions', ['format' => 'xlsx']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
-                                    Export Transactions (.xlsx)
+                                    Export to Excel (.xlsx)
+                                </a>
+                                <a href="{{ route('export.transactions', ['format' => 'pdf']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
+                                    Export to PDF
                                 </a>
                             </div>
                         </div>
@@ -128,7 +140,10 @@
                                                         </button>
                                                     </form>
                                                     @elseif($loan->approval_status === 'approved')
-                                                    <button onclick="openDisburseModal({{ $loan->id }})" class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors">
+                                                    @php
+                                                        $loanBankAccount = $loan->bankAccount ?? $loan->employee->bankAccounts->where('is_default', true)->first() ?? $loan->employee->bankAccounts->first();
+                                                    @endphp
+                                                    <button onclick="openDisburseModal({{ $loan->id }}, '{{ $loan->employee->user->name }}', '{{ $loan->employee->team?->name ?? 'No Team' }}', {{ $loan->total_amount }}, {{ $loan->total_months }}, '{{ $loanBankAccount?->account_holder_name ?? '' }}', '{{ $loanBankAccount?->account_number ?? '' }}', '{{ $loanBankAccount?->ifsc_code ?? '' }}', '{{ $loanBankAccount?->bank_name ?? '' }}')" class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors">
                                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                         </svg>
@@ -223,11 +238,71 @@
                     </div>
                 </div>
 
-    <div id="disburse-modal"class="hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+    <div id="disburse-modal" class="hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-lg w-full">
             <div class="p-6">
-                <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-4">Confirm Loan Disbursement</h3>
-                <p class="text-gray-600 dark:text-gray-400 mb-6">Are you sure you want to disburse this loan? This action will activate the loan and begin the EMI schedule.</p>
+                <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-2">Confirm Loan Disbursement</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Disburse loan for <span id="loan-employee-name" class="font-semibold text-gray-900 dark:text-white"></span></p>
+                
+                <!-- Loan Details -->
+                <div class="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                            <span class="text-gray-500 dark:text-gray-400">Team:</span>
+                            <span id="loan-team" class="ml-1 font-medium text-gray-900 dark:text-white"></span>
+                        </div>
+                        <div>
+                            <span class="text-gray-500 dark:text-gray-400">Tenure:</span>
+                            <span id="loan-tenure" class="ml-1 font-medium text-gray-900 dark:text-white"></span>
+                        </div>
+                        <div class="col-span-2">
+                            <span class="text-gray-500 dark:text-gray-400">Loan Amount:</span>
+                            <span id="loan-amount" class="ml-1 font-bold text-blue-600 dark:text-blue-400"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bank Account Details -->
+                <div class="mb-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
+                    <h4 class="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                        </svg>
+                        Bank Account Details
+                    </h4>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-500 dark:text-gray-400">Account Holder:</span>
+                            <span id="loan-bank-holder" class="font-medium text-gray-900 dark:text-white"></span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-500 dark:text-gray-400">Account Number:</span>
+                            <div class="flex items-center space-x-2">
+                                <span id="loan-bank-account" class="font-medium text-gray-900 dark:text-white font-mono"></span>
+                                <button type="button" onclick="copyToClipboard('loan-bank-account')" class="text-amber-600 hover:text-amber-700 dark:text-amber-400" title="Copy">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-500 dark:text-gray-400">IFSC Code:</span>
+                            <div class="flex items-center space-x-2">
+                                <span id="loan-bank-ifsc" class="font-medium text-gray-900 dark:text-white font-mono"></span>
+                                <button type="button" onclick="copyToClipboard('loan-bank-ifsc')" class="text-amber-600 hover:text-amber-700 dark:text-amber-400" title="Copy">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-500 dark:text-gray-400">Bank Name:</span>
+                            <span id="loan-bank-name" class="font-medium text-gray-900 dark:text-white"></span>
+                        </div>
+                    </div>
+                </div>
                 
                 <form id="disburse-form" method="POST" enctype="multipart/form-data">
                     @csrf
@@ -298,10 +373,23 @@
     </div>
 
     <script>
-        function openDisburseModal(loanId) {
+        function openDisburseModal(loanId, employeeName, teamName, loanAmount, tenure, bankHolder, bankAccount, bankIfsc, bankName) {
             const modal = document.getElementById('disburse-modal');
             const form = document.getElementById('disburse-form');
             form.action = `/payments/disburse/${loanId}`;
+            
+            // Populate loan details
+            document.getElementById('loan-employee-name').textContent = employeeName || '';
+            document.getElementById('loan-team').textContent = teamName || 'No Team';
+            document.getElementById('loan-amount').textContent = '₹' + new Intl.NumberFormat('en-IN').format(loanAmount || 0);
+            document.getElementById('loan-tenure').textContent = (tenure || 0) + ' months';
+            
+            // Populate bank account details
+            document.getElementById('loan-bank-holder').textContent = bankHolder || 'N/A';
+            document.getElementById('loan-bank-account').textContent = bankAccount || 'N/A';
+            document.getElementById('loan-bank-ifsc').textContent = bankIfsc || 'N/A';
+            document.getElementById('loan-bank-name').textContent = bankName || 'N/A';
+            
             modal.classList.remove('hidden');
         }
 
@@ -318,6 +406,17 @@
 
         function closeCollectModal() {
             document.getElementById('collect-modal').classList.add('hidden');
+        }
+        
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                // Show brief feedback
+                const btn = event.currentTarget;
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+                setTimeout(() => { btn.innerHTML = originalHTML; }, 1000);
+            });
         }
         
         function togglePaymentsExportDropdown() {

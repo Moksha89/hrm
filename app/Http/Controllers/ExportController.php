@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use OpenSpout\Writer\XLSX\Writer;
 use OpenSpout\Common\Entity\Row;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ExportController extends Controller
 {
@@ -56,9 +57,12 @@ class ExportController extends Controller
         })->toArray();
         
         $filename = 'employees_' . date('Y-m-d_His');
+        $title = 'Employees Report';
         
         if ($format === 'xlsx') {
             return $this->exportToExcel($headers, $rows, $filename);
+        } elseif ($format === 'pdf') {
+            return $this->exportToPdf($headers, $rows, $filename, $title);
         }
         
         return $this->exportToCsv($headers, $rows, $filename);
@@ -70,10 +74,10 @@ class ExportController extends Controller
         $format = $request->get('format', 'xlsx');
         
         if ($user->isAdmin() || $user->isAccountant()) {
-            $loans = Loan::with(['employee.user', 'employee.team'])->get();
+            $loans = Loan::with(['employee.user', 'employee.team', 'employee.bankAccounts'])->get();
         } elseif ($user->isManager() || $user->isTeamLeader()) {
             $assignedTeamIds = $user->assignedTeams()->pluck('teams.id');
-            $loans = Loan::with(['employee.user', 'employee.team'])
+            $loans = Loan::with(['employee.user', 'employee.team', 'employee.bankAccounts'])
                 ->whereHas('employee', function ($query) use ($assignedTeamIds) {
                     $query->whereIn('team_id', $assignedTeamIds);
                 })
@@ -82,26 +86,33 @@ class ExportController extends Controller
             $loans = collect();
         }
         
-        $headers = ['ID', 'Employee', 'Team', 'Total Amount', 'Monthly EMI', 'Remaining Balance', 'Remaining Months', 'Status', 'Start Date'];
+        $headers = ['Employee Name', 'Team', 'Account Holder', 'Account Number', 'IFSC Code', 'Bank Name', 'Loan Amount', 'Tenure (Months)', 'Monthly EMI', 'Net Payable Amount', 'Status'];
         
         $rows = $loans->map(function ($loan) {
+            $defaultBank = $loan->employee->bankAccounts->where('is_default', true)->first() 
+                ?? $loan->employee->bankAccounts->first();
             return [
-                $loan->id,
                 $loan->employee->user->name,
                 $loan->employee->team?->name ?? 'No Team',
+                $defaultBank?->account_holder_name ?? 'N/A',
+                $defaultBank?->account_number ?? 'N/A',
+                $defaultBank?->ifsc_code ?? 'N/A',
+                $defaultBank?->bank_name ?? 'N/A',
                 $loan->total_amount,
+                $loan->total_months,
                 $loan->monthly_emi,
                 $loan->remaining_balance,
-                $loan->remaining_months,
                 $loan->status,
-                $loan->start_date?->format('Y-m-d'),
             ];
         })->toArray();
         
-        $filename = 'loans_' . date('Y-m-d_His');
+        $filename = 'loan_disbursements_' . date('Y-m-d_His');
+        $title = 'Loan Disbursements Report';
         
         if ($format === 'xlsx') {
             return $this->exportToExcel($headers, $rows, $filename);
+        } elseif ($format === 'pdf') {
+            return $this->exportToPdf($headers, $rows, $filename, $title);
         }
         
         return $this->exportToCsv($headers, $rows, $filename);
@@ -115,13 +126,13 @@ class ExportController extends Controller
         $year = $request->get('year', now()->year);
         
         if ($user->isAdmin() || $user->isAccountant()) {
-            $payments = SalaryPayment::with(['employee.user', 'employee.team'])
+            $payments = SalaryPayment::with(['employee.user', 'employee.team', 'employee.bankAccounts'])
                 ->where('month', $month)
                 ->where('year', $year)
                 ->get();
         } elseif ($user->isManager() || $user->isTeamLeader()) {
             $assignedTeamIds = $user->assignedTeams()->pluck('teams.id');
-            $payments = SalaryPayment::with(['employee.user', 'employee.team'])
+            $payments = SalaryPayment::with(['employee.user', 'employee.team', 'employee.bankAccounts'])
                 ->where('month', $month)
                 ->where('year', $year)
                 ->whereHas('employee', function ($query) use ($assignedTeamIds) {
@@ -132,29 +143,34 @@ class ExportController extends Controller
             $payments = collect();
         }
         
-        $headers = ['ID', 'Employee', 'Team', 'Month', 'Year', 'Base Salary', 'Working Days', 'Net Pay', 'EMI Deduction', 'Final Pay', 'Status', 'UTR'];
+        $headers = ['Employee Name', 'Team', 'Account Holder', 'Account Number', 'IFSC Code', 'Bank Name', 'Gross Salary', 'EMI Deduction', 'Net Payable Amount', 'Status', 'UTR'];
         
         $rows = $payments->map(function ($payment) {
+            $defaultBank = $payment->employee->bankAccounts->where('is_default', true)->first() 
+                ?? $payment->employee->bankAccounts->first();
             return [
-                $payment->id,
                 $payment->employee->user->name,
                 $payment->employee->team?->name ?? 'No Team',
-                $payment->month,
-                $payment->year,
+                $defaultBank?->account_holder_name ?? 'N/A',
+                $defaultBank?->account_number ?? 'N/A',
+                $defaultBank?->ifsc_code ?? 'N/A',
+                $defaultBank?->bank_name ?? 'N/A',
                 $payment->gross_salary ?? 0,
-                $payment->working_days,
-                $payment->net_pay,
                 $payment->total_emi ?? 0,
                 $payment->final_pay,
                 $payment->status,
-                $payment->utr,
+                $payment->utr ?? '',
             ];
         })->toArray();
         
-        $filename = 'salary_history_' . $month . '_' . $year . '_' . date('Y-m-d_His');
+        $filename = 'salary_payments_' . $month . '_' . $year . '_' . date('Y-m-d_His');
+        $monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        $title = 'Salary Payments - ' . $monthNames[$month - 1] . ' ' . $year;
         
         if ($format === 'xlsx') {
             return $this->exportToExcel($headers, $rows, $filename);
+        } elseif ($format === 'pdf') {
+            return $this->exportToPdf($headers, $rows, $filename, $title);
         }
         
         return $this->exportToCsv($headers, $rows, $filename);
@@ -197,9 +213,12 @@ class ExportController extends Controller
         })->toArray();
         
         $filename = 'transactions_' . date('Y-m-d_His');
+        $title = 'Transactions Report';
         
         if ($format === 'xlsx') {
             return $this->exportToExcel($headers, $rows, $filename);
+        } elseif ($format === 'pdf') {
+            return $this->exportToPdf($headers, $rows, $filename, $title);
         }
         
         return $this->exportToCsv($headers, $rows, $filename);
@@ -240,9 +259,12 @@ class ExportController extends Controller
         })->toArray();
         
         $filename = 'requests_' . date('Y-m-d_His');
+        $title = 'Requests Report';
         
         if ($format === 'xlsx') {
             return $this->exportToExcel($headers, $rows, $filename);
+        } elseif ($format === 'pdf') {
+            return $this->exportToPdf($headers, $rows, $filename, $title);
         }
         
         return $this->exportToCsv($headers, $rows, $filename);
@@ -285,5 +307,42 @@ class ExportController extends Controller
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="' . $filename . '.csv"',
         ]);
+    }
+    
+    private function exportToPdf(array $headers, array $rows, string $filename, string $title = 'Export')
+    {
+        $html = '<html><head><style>
+            body { font-family: Arial, sans-serif; font-size: 10px; }
+            h1 { font-size: 16px; margin-bottom: 10px; color: #333; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+            th { background-color: #f59e0b; color: white; padding: 8px; text-align: left; font-size: 9px; }
+            td { border: 1px solid #ddd; padding: 6px; font-size: 9px; }
+            tr:nth-child(even) { background-color: #f9f9f9; }
+            .footer { margin-top: 20px; font-size: 8px; color: #666; }
+        </style></head><body>';
+        $html .= '<h1>' . $title . '</h1>';
+        $html .= '<p style="font-size: 9px; color: #666;">Generated on: ' . date('Y-m-d H:i:s') . '</p>';
+        $html .= '<table><thead><tr>';
+        
+        foreach ($headers as $header) {
+            $html .= '<th>' . htmlspecialchars($header) . '</th>';
+        }
+        $html .= '</tr></thead><tbody>';
+        
+        foreach ($rows as $row) {
+            $html .= '<tr>';
+            foreach ($row as $cell) {
+                $html .= '<td>' . htmlspecialchars($cell ?? '') . '</td>';
+            }
+            $html .= '</tr>';
+        }
+        
+        $html .= '</tbody></table>';
+        $html .= '<div class="footer">Total Records: ' . count($rows) . '</div>';
+        $html .= '</body></html>';
+        
+        $pdf = Pdf::loadHTML($html)->setPaper('a4', 'landscape');
+        
+        return $pdf->download($filename . '.pdf');
     }
 }
