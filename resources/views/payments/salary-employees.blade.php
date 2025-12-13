@@ -38,13 +38,13 @@
                                     <span>Export</span>
                                 </button>
                                 <div id="salary-export-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
-                                    <a href="{{ route('export.salary-history', ['format' => 'xlsx', 'month' => $currentMonth, 'year' => $currentYear]) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs">
+                                    <a href="{{ route('export.salaryHistory', ['format' => 'xlsx', 'month' => $currentMonth, 'year' => $currentYear]) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs">
                                         Export to Excel (.xlsx)
                                     </a>
-                                    <a href="{{ route('export.salary-history', ['format' => 'pdf', 'month' => $currentMonth, 'year' => $currentYear]) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs">
+                                    <a href="{{ route('export.salaryHistory', ['format' => 'pdf', 'month' => $currentMonth, 'year' => $currentYear]) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs">
                                         Export to PDF
                                     </a>
-                                    <a href="{{ route('export.salary-history', ['format' => 'csv', 'month' => $currentMonth, 'year' => $currentYear]) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs">
+                                    <a href="{{ route('export.salaryHistory', ['format' => 'csv', 'month' => $currentMonth, 'year' => $currentYear]) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs">
                                         Export to CSV
                                     </a>
                                 </div>
