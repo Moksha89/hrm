@@ -120,6 +120,13 @@ class ExportController extends Controller
     
     public function salaryHistory(Request $request)
     {
+        \Log::info('ExportController::salaryHistory hit', [
+            'user_id' => auth()->id(),
+            'user_roles' => auth()->user()?->roles->pluck('name')->toArray(),
+            'format' => $request->get('format'),
+            'url' => $request->url(),
+        ]);
+        
         $user = auth()->user();
         $format = $request->get('format', 'xlsx');
         $month = $request->get('month', now()->month);
